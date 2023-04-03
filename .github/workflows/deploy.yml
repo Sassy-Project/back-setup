@@ -9,7 +9,7 @@ on:
       - main
      
 env:
-  S3_BUCKET_NAME: projectsassy.com
+  S3_BUCKET_NAME: projectsassy.net
   CODE_DEPLOY_APPLICATION_NAME: CODE-DEPLOY-SASSY
   CODE_DEPLOY_DEPLOYMENT_GROUP_NAME: CODE-DEPLOY-GROUP
   
