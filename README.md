@@ -1,5 +1,17 @@
 # back-setup
 
+## Git Convention
+- commit 메시지
+  - feat : 새로운 기능의 추가
+  - fix : 버그 수정
+  - docs : 문서 수정
+  - style : 스타일 변경 (포매팅 수정, 들여쓰기 추가, 코드 자체의 변경이 없는 경우)
+  - refactor : 코드 리팩토링
+  - test : 테스트 관련 코드
+  - chore : 그 외 자잘한 수정
+- pull request 
+  - 한글로 작성
+
 ## CI/CD 구축
 ![image](https://user-images.githubusercontent.com/111469930/229506681-aa8ec884-ce90-43f4-b8e4-c418db1842da.png)
 
