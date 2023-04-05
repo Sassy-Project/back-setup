@@ -9,6 +9,7 @@
   - refactor : 코드 리팩토링
   - test : 테스트 관련 코드
   - chore : 그 외 자잘한 수정
+  
 - pull request 
   - 한글로 작성
 
