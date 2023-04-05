@@ -27,7 +27,7 @@ public class UserController {
     /**
      * 아이디 중복검사
      */
-    @GetMapping("/duplicateLoginId")
+    @GetMapping("/join/id")
     public ResponseEntity duplicateLoginId(@RequestBody DuplicateLoginIdDto duplicateLoginIdDto) {
         userService.duplicateLoginId(duplicateLoginIdDto);
         // false 값이 넘어오기 때문에 api 테스트 필요
@@ -37,7 +37,7 @@ public class UserController {
     /**
      * 이메일 중복검사
      */
-    @GetMapping("/duplicateEmail")
+    @GetMapping("/join/email")
     public ResponseEntity duplicateEmail(@RequestBody DuplicateEmailDto duplicateEmailDto) {
         userService.duplicateEmail(duplicateEmailDto);
 
