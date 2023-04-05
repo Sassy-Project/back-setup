@@ -1,13 +1,11 @@
-package com.projectsassy.sassy.user;
+package com.projectsassy.sassy.user.controller;
 
+import com.projectsassy.sassy.user.dto.DuplicateLoginIdDto;
 import com.projectsassy.sassy.user.dto.UserJoinDto;
 import com.projectsassy.sassy.user.service.UserService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.ResponseEntity;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.RequestBody;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
 
 @RestController
 @RequiredArgsConstructor
@@ -23,6 +21,16 @@ public class UserController {
     public ResponseEntity join(@RequestBody UserJoinDto joinDto) {
         userService.join(joinDto);
         return ResponseEntity.ok().body("회가입에 성공하였습니다.");
+    }
+
+    /**
+     * 아이디 중복검사
+     */
+    @GetMapping("/duplicateLoginId")
+    public ResponseEntity duplicateLoginId(@RequestBody DuplicateLoginIdDto duplicateLoginIdDto) {
+        userService.duplicateLoginId(duplicateLoginIdDto);
+
+        return ResponseEntity.ok().body("가입 가능한 아이디입니다.");
     }
 
 }
