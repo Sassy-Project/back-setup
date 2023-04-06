@@ -1,11 +1,14 @@
 package com.projectsassy.sassy.user.dto;
 
 import com.projectsassy.sassy.user.domain.User;
+import lombok.AllArgsConstructor;
 import lombok.Getter;
+import lombok.NoArgsConstructor;
 import lombok.Setter;
 
 @Getter
-@Setter
+@AllArgsConstructor
+@NoArgsConstructor
 public class UserJoinDto {
 
     private String loginId;
@@ -17,6 +20,14 @@ public class UserJoinDto {
     private String image;
 
     public User toEntity() {
-        return User.of(loginId, password, nickname, email, gender, mbti, image);
+        return User.builder()
+                .loginId(loginId)
+                .password(password)
+                .nickname(nickname)
+                .email(email)
+                .gender(gender)
+                .mbti(mbti)
+                .image(image)
+                .build();
     }
 }

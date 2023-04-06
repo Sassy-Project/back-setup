@@ -28,8 +28,8 @@ public class TestDataInit {
         @Transactional
         public void init() {
 
-            User user1 = User.of("qwer1234", "1q2w3e", "qwer@naver.com", "haha", "man", "enfp", "image");
-            User user2 = User.of("sassy0401", "123456", "sassy@naver.com", "sassy", "woman", "intp", "image2");
+            User user1 = User.of("qwer1234", "1q2w3e", "haha", "qwer@naver.com", "man", "enfp", "image");
+            User user2 = User.of("sassy0401", "123456", "sassy", "sassy@naver.com",  "woman", "intp", "image2");
 
             userRepository.save(user1);
             userRepository.save(user2);

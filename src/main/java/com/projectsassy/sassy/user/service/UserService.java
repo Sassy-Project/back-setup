@@ -5,7 +5,7 @@ import com.projectsassy.sassy.user.domain.User;
 import com.projectsassy.sassy.user.dto.DuplicateEmailDto;
 import com.projectsassy.sassy.user.dto.DuplicateLoginIdDto;
 import com.projectsassy.sassy.user.dto.UserJoinDto;
-import com.projectsassy.sassy.user.exception.DuplicatedException;
+import com.projectsassy.sassy.exception.user.DuplicatedException;
 import com.projectsassy.sassy.user.repository.UserRepository;
 import lombok.RequiredArgsConstructor;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;

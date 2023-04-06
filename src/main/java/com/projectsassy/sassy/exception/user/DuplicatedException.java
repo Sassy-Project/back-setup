@@ -1,4 +1,4 @@
-package com.projectsassy.sassy.user.exception;
+package com.projectsassy.sassy.exception.user;
 
 import com.projectsassy.sassy.exception.BusinessExceptionHandler;
 import com.projectsassy.sassy.exception.code.ErrorCode;
