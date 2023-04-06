@@ -3,7 +3,7 @@ name: Java CI-CD
 on:
   push:
     branches:
-      - main
+      - release
      
 env:
   S3_BUCKET_NAME: projectsassy.net
