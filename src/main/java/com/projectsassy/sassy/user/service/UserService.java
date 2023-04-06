@@ -28,6 +28,7 @@ public class UserService {
         // 패스워드 인코딩
         user.encodingPassword(encoder.encode(joinDto.getPassword()));
         userRepository.save(user);
+
     }
 
     /**
