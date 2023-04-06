@@ -9,6 +9,7 @@ import com.projectsassy.sassy.user.exception.DuplicateEmailException;
 import com.projectsassy.sassy.user.exception.DuplicateLoginIdException;
 import com.projectsassy.sassy.user.repository.UserRepository;
 import lombok.RequiredArgsConstructor;
+import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -18,25 +19,15 @@ import org.springframework.transaction.annotation.Transactional;
 public class UserService {
 
     private final UserRepository userRepository;
+    private final BCryptPasswordEncoder encoder;
 
     @Transactional
-    public Long join(UserJoinDto joinDto) {
+    public void join(UserJoinDto joinDto) {
+        User user = joinDto.toEntity();
 
-        if (joinDto.getPassword().equals(joinDto.getPasswordCheck())) {
-                // 이메일, 아이디 2중 중복검사 여부 확인 필요
-            User user = User.builder()
-                    .loginId(joinDto.getLoginId())
-                    .password(joinDto.getPassword()) // 인코딩 필요
-                    .email(joinDto.getEmail())
-                    .nickname(joinDto.getNickname())
-                    .gender(joinDto.getGender())
-                    .mbti(joinDto.getMbti())
-                    .image(joinDto.getImage()) // 이미지 인코딩 여부 확인 필요
-                    .build();
-            userRepository.save(user);
-            return user.getUserId();
-        }
-        throw new IllegalArgumentException("비밀번호가 일치하지 않습니다.");
+        // 패스워드 인코딩
+        user.encodingPassword(encoder.encode(joinDto.getPassword()));
+        userRepository.save(user);
     }
 
     /**
