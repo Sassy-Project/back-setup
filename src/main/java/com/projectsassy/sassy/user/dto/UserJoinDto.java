@@ -10,7 +10,6 @@ public class UserJoinDto {
 
     private String loginId;
     private String password;
-    private String passwordCheck;
     private String nickname;
     private String email;
     private String gender;
@@ -18,14 +17,6 @@ public class UserJoinDto {
     private String image;
 
     public User toEntity() {
-        return User.builder()
-                .loginId(loginId)
-                .password(password)
-                .nickname(nickname)
-                .email(email)
-                .gender(gender)
-                .mbti(mbti)
-                .image(image)
-                .build();
+        return User.of(loginId, password, nickname, email, gender, mbti, image);
     }
 }

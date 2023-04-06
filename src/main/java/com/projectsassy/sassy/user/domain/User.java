@@ -26,9 +26,7 @@ public class User {
     private String image;
 
     @Builder
-    public User(Long id, String loginId, String password, String nickname, String email
-            , String gender, String mbti, String image) {
-        this.id = id;
+    private User(String loginId, String password, String nickname, String email, String gender, String mbti, String image) {
         this.loginId = loginId;
         this.password = password;
         this.nickname = nickname;
@@ -38,8 +36,7 @@ public class User {
         this.image = image;
     }
 
-    public static User of(String loginId, String password, String nickname
-            , String email, String gender, String mbti, String image) {
+    public static User of(String loginId, String password, String nickname, String email, String gender, String mbti, String image) {
         return User.builder()
                 .loginId(loginId)
                 .password(password)
@@ -47,7 +44,8 @@ public class User {
                 .email(email)
                 .gender(gender)
                 .mbti(mbti)
-                .image(image).build();
+                .image(image)
+                .build();
     }
 
     //      패스워드 인코딩

@@ -3,9 +3,9 @@ package com.projectsassy.sassy.user.exception;
 import com.projectsassy.sassy.exception.BusinessExceptionHandler;
 import com.projectsassy.sassy.exception.code.ErrorCode;
 
-public class DuplicateLoginIdException extends BusinessExceptionHandler {
+public class DuplicatedException extends BusinessExceptionHandler {
 
-    public DuplicateLoginIdException(ErrorCode errorCode) {
+    public DuplicatedException(ErrorCode errorCode) {
         super(errorCode);
     }
 
