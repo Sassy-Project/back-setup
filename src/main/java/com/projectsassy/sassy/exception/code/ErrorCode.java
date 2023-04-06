@@ -5,9 +5,13 @@ import lombok.Getter;
 @Getter
 public enum ErrorCode {
 
-    //user
+    // User
     DUPLICATE_EMAIL(400, "U001", "중복된 이메일입니다."),
-    DUPLICATE_LOGIN_ID(400, "U002", "중복된 아이디입니다.");
+    DUPLICATE_LOGIN_ID(400, "U002", "중복된 아이디입니다."),
+
+    // Common
+    INTERNAL_SERVER_ERROR(500, "C001", "서버 내부 오류입니다.");
+
 
     //에러의 코드 상태 반환
     private final int status;
