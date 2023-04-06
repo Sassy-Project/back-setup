@@ -1,9 +1,12 @@
 package com.projectsassy.sassy.user.service;
 
+import com.projectsassy.sassy.exception.code.ErrorCode;
 import com.projectsassy.sassy.user.domain.User;
 import com.projectsassy.sassy.user.dto.DuplicateEmailDto;
 import com.projectsassy.sassy.user.dto.DuplicateLoginIdDto;
 import com.projectsassy.sassy.user.dto.UserJoinDto;
+import com.projectsassy.sassy.user.exception.DuplicateEmailException;
+import com.projectsassy.sassy.user.exception.DuplicateLoginIdException;
 import com.projectsassy.sassy.user.repository.UserRepository;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
@@ -42,7 +45,7 @@ public class UserService {
     public void duplicateLoginId(DuplicateLoginIdDto duplicateLoginIdDto) {
         userRepository.findByLoginId(duplicateLoginIdDto.getLoginId())
                 .ifPresent(d -> {
-                        throw new IllegalArgumentException("중복된 아이디 입니다.");
+                        throw new DuplicateLoginIdException(ErrorCode.DUPLICATE_LOGIN_ID);
                 });
     }
 
@@ -52,7 +55,7 @@ public class UserService {
     public void duplicateEmail(DuplicateEmailDto duplicateEmailDto) {
         userRepository.findByEmail(duplicateEmailDto.getEmail())
                 .ifPresent(d -> {
-                    throw new IllegalArgumentException("중복된 이메일 입니다.");
+                    throw new DuplicateEmailException(ErrorCode.DUPLICATE_EMAIL);
                 });
     }
 }
