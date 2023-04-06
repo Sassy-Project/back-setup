@@ -6,17 +6,32 @@ import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
 
+import javax.validation.constraints.NotNull;
+
 @Getter
 @AllArgsConstructor
 @NoArgsConstructor
 public class UserJoinDto {
 
+    @NotNull
     private String loginId;
+
+    @NotNull
     private String password;
+
+    @NotNull
     private String nickname;
+
+    @NotNull
     private String email;
+
+    @NotNull
     private String gender;
+
+    @NotNull
     private String mbti;
+
+    @NotNull
     private String image;
 
     public User toEntity() {
