@@ -1,12 +1,8 @@
 package com.projectsassy.sassy.user.domain;
 
 import lombok.*;
-import org.springframework.data.annotation.Id;
 
-import javax.persistence.Entity;
-import javax.persistence.GeneratedValue;
-import javax.persistence.Table;
-
+import javax.persistence.*;
 
 
 @Entity @Getter
@@ -15,8 +11,10 @@ import javax.persistence.Table;
 @Table(name = "USERS")
 public class User {
 
-    @Id @GeneratedValue
-    private Long userId;
+    @Id
+    @GeneratedValue
+    @Column(name = "user_id")
+    private Long id;
 
     private String loginId;
     private String password;

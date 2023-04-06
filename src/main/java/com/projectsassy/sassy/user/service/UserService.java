@@ -34,7 +34,7 @@ public class UserService {
                     .image(joinDto.getImage()) // 이미지 인코딩 여부 확인 필요
                     .build();
             userRepository.save(user);
-            return user.getUserId();
+            return user.getId();
         }
         throw new IllegalArgumentException("비밀번호가 일치하지 않습니다.");
     }

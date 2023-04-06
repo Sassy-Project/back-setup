@@ -4,6 +4,14 @@ import lombok.Getter;
 
 @Getter
 public enum ErrorCode {
+    /**
+     * HTTP Status Code
+     * 400 : Bad Request
+     * 401 : Unauthorized
+     * 403 : Forbidden
+     * 404 : Not Found
+     * 500 : Internal Server Error
+     */
 
     // User
     DUPLICATE_EMAIL(400, "U001", "중복된 이메일입니다."),
