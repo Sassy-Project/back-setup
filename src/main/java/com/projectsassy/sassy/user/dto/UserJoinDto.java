@@ -1,5 +1,6 @@
 package com.projectsassy.sassy.user.dto;
 
+import com.projectsassy.sassy.user.domain.User;
 import lombok.Getter;
 import lombok.Setter;
 
@@ -15,4 +16,16 @@ public class UserJoinDto {
     private String gender;
     private String mbti;
     private String image;
+
+    public User toEntity() {
+        return User.builder()
+                .loginId(loginId)
+                .password(password)
+                .nickname(nickname)
+                .email(email)
+                .gender(gender)
+                .mbti(mbti)
+                .image(image)
+                .build();
+    }
 }

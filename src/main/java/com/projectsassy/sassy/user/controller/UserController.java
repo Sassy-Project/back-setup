@@ -21,13 +21,13 @@ public class UserController {
     @PostMapping("/join")
     public ResponseEntity join(@RequestBody UserJoinDto joinDto) {
         userService.join(joinDto);
-        return ResponseEntity.ok().body("회가입에 성공하였습니다.");
+        return ResponseEntity.ok().body("회원가입에 성공하였습니다.");
     }
 
     /**
      * 아이디 중복검사
      */
-    @GetMapping("/join/id")
+    @PostMapping("/join/id")
     public ResponseEntity duplicateLoginId(@RequestBody DuplicateLoginIdDto duplicateLoginIdDto) {
         userService.duplicateLoginId(duplicateLoginIdDto);
         // false 값이 넘어오기 때문에 api 테스트 필요
@@ -37,7 +37,7 @@ public class UserController {
     /**
      * 이메일 중복검사
      */
-    @GetMapping("/join/email")
+    @PostMapping("/join/email")
     public ResponseEntity duplicateEmail(@RequestBody DuplicateEmailDto duplicateEmailDto) {
         userService.duplicateEmail(duplicateEmailDto);
 

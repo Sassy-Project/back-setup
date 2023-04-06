@@ -24,4 +24,10 @@ public class User {
     private String mbti;
     private String image;
 
+    /**
+     * 패스워드 인코딩
+     */
+    public void encodingPassword(String password) {
+        this.password = password;
+    }
 }
