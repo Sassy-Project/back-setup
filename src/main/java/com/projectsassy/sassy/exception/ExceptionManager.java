@@ -1,5 +1,7 @@
 package com.projectsassy.sassy.exception;
 
+import com.projectsassy.sassy.exception.code.ErrorCode;
+import com.projectsassy.sassy.exception.response.ErrorResponse;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -13,11 +15,13 @@ public class ExceptionManager {
     /**
      * 비즈니스 오류
      */
-    @ExceptionHandler(IllegalArgumentException.class)
-    public ResponseEntity<?> IllegalStateExceptionHandler(BusinessExceptionHandler e) {
+    @ExceptionHandler(BusinessExceptionHandler.class)
+    public ResponseEntity<ErrorResponse> businessExceptionHandler(BusinessExceptionHandler e) {
         log.error("BusinessExceptionHandler", e);
 
-        return ResponseEntity.status(HttpStatus.UNAUTHORIZED)// 미승인 오류
-                .body(e.getMessage());
+        ErrorCode errorCode = e.getErrorCode();
+        ErrorResponse response = ErrorResponse.of(errorCode);
+
+        return new ResponseEntity<>(response, HttpStatus.valueOf(errorCode.getStatus()));
     }
 }

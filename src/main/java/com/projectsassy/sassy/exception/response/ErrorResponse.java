@@ -13,9 +13,13 @@ public class ErrorResponse {
     private String divisionCode;
     private String message;
 
-    public ErrorResponse(ErrorCode errorCode) {
+    private ErrorResponse(ErrorCode errorCode) {
         this.status = errorCode.getStatus();
         this.divisionCode = errorCode.getDivisionCode();
         this.message = errorCode.getMessage();
+    }
+
+    public static ErrorResponse of(ErrorCode errorCode) {
+        return new ErrorResponse(errorCode);
     }
 }
