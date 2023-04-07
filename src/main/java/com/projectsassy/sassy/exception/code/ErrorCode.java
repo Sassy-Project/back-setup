@@ -12,13 +12,15 @@ public enum ErrorCode {
      * 404 : Not Found
      * 500 : Internal Server Error
      */
+    // Common
+    INTERNAL_SERVER_ERROR(500, "C001", "서버 내부 오류입니다."),
+    INVALID_INPUT_VALUE(400, "C002", "잘못된 입력입니다."),
 
     // User
     DUPLICATE_EMAIL(400, "U001", "중복된 이메일입니다."),
-    DUPLICATE_LOGIN_ID(400, "U002", "중복된 아이디입니다."),
+    DUPLICATE_LOGIN_ID(400, "U002", "중복된 아이디입니다.");
 
-    // Common
-    INTERNAL_SERVER_ERROR(500, "C001", "서버 내부 오류입니다.");
+
 
 
     //에러의 코드 상태 반환

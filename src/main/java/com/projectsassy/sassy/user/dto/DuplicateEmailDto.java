@@ -12,6 +12,6 @@ import javax.validation.constraints.NotNull;
 @NoArgsConstructor
 public class DuplicateEmailDto {
 
-    @NotNull
+    @NotNull(message = "이메일은 Null 일 수 없습니다.")
     private String email;
 }
