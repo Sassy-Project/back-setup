@@ -1,20 +1,37 @@
 package com.projectsassy.sassy.user.dto;
 
 import com.projectsassy.sassy.user.domain.User;
+import lombok.AllArgsConstructor;
 import lombok.Getter;
+import lombok.NoArgsConstructor;
 import lombok.Setter;
 
+import javax.validation.constraints.NotNull;
+
 @Getter
-@Setter
+@AllArgsConstructor
+@NoArgsConstructor
 public class UserJoinDto {
 
+    @NotNull
     private String loginId;
+
+    @NotNull
     private String password;
-    private String passwordCheck;
+
+    @NotNull
     private String nickname;
+
+    @NotNull
     private String email;
+
+    @NotNull
     private String gender;
+
+    @NotNull
     private String mbti;
+
+    @NotNull
     private String image;
 
     public User toEntity() {

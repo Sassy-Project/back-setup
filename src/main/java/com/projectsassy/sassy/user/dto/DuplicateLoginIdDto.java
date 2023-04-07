@@ -1,10 +1,16 @@
 package com.projectsassy.sassy.user.dto;
 
+import lombok.AllArgsConstructor;
 import lombok.Getter;
-import lombok.Setter;
+import lombok.NoArgsConstructor;
 
-@Getter @Setter
+import javax.validation.constraints.NotNull;
+
+@Getter
+@AllArgsConstructor
+@NoArgsConstructor
 public class DuplicateLoginIdDto {
 
+    @NotNull
     private String loginId;
 }

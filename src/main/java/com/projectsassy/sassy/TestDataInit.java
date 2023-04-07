@@ -27,25 +27,9 @@ public class TestDataInit {
 
         @Transactional
         public void init() {
-            User user1 = User.builder()
-                .loginId("qwer1234")
-                .password("1q2w3e")
-                .email("qwer@naver.com")
-                .nickname("haha")
-                .gender("man")
-                .mbti("enfp")
-                .image("image")
-                .build();
 
-            User user2 = User.builder()
-                .loginId("sassy0401")
-                .password("123456")
-                .email("sassy@naver.com")
-                .nickname("sassy")
-                .gender("woman")
-                .mbti("intp")
-                .image("image2")
-                .build();
+            User user1 = User.of("qwer1234", "1q2w3e", "haha", "qwer@naver.com", "man", "enfp", "image");
+            User user2 = User.of("sassy0401", "123456", "sassy", "sassy@naver.com",  "woman", "intp", "image2");
 
             userRepository.save(user1);
             userRepository.save(user2);
