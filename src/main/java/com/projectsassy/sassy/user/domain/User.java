@@ -20,17 +20,19 @@ public class User {
     private String loginId;
     private String password;
     private String nickname;
-    private String email;
     private String gender;
     private String mbti;
     private String image;
+
+    @Embedded
+    private Email email;
 
     @Builder
     private User(String loginId, String password, String nickname, String email, String gender, String mbti, String image) {
         this.loginId = loginId;
         this.password = password;
         this.nickname = nickname;
-        this.email = email;
+        this.email = new Email(email);
         this.gender = gender;
         this.mbti = mbti;
         this.image = image;

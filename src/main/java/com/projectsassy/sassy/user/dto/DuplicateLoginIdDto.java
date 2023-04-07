@@ -11,6 +11,6 @@ import javax.validation.constraints.NotNull;
 @NoArgsConstructor
 public class DuplicateLoginIdDto {
 
-    @NotNull
+    @NotNull(message = "로그인 아이디는 Null 일 수 없습니다.")
     private String loginId;
 }

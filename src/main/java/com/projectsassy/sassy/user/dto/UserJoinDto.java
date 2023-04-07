@@ -13,25 +13,25 @@ import javax.validation.constraints.NotNull;
 @NoArgsConstructor
 public class UserJoinDto {
 
-    @NotNull
+    @NotNull(message = "로그인 아이디는 Null 일 수 없습니다.")
     private String loginId;
 
-    @NotNull
+    @NotNull(message = "비밀번호는 Null 일 수 없습니다.")
     private String password;
 
-    @NotNull
+    @NotNull(message = "닉네임은 Null 일 수 없습니다.")
     private String nickname;
 
-    @NotNull
+    @NotNull(message = "이메일은 Null 일 수 없습니다.")
     private String email;
 
-    @NotNull
+    @NotNull(message = "성별은 Null 일 수 없습니다.")
     private String gender;
 
-    @NotNull
+    @NotNull(message = "MBTI는 Null 일 수 없습니다.")
     private String mbti;
 
-    @NotNull
+    @NotNull(message = "이미지는 Null 일 수 없습니다.")
     private String image;
 
     public User toEntity() {

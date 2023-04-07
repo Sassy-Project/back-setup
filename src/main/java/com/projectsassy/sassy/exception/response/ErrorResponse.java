@@ -12,14 +12,26 @@ public class ErrorResponse {
     private int status;
     private String divisionCode;
     private String message;
+    private String reason;
 
-    private ErrorResponse(ErrorCode errorCode) {
+    protected ErrorResponse(ErrorCode errorCode) {
         this.status = errorCode.getStatus();
         this.divisionCode = errorCode.getDivisionCode();
         this.message = errorCode.getMessage();
     }
 
-    public static ErrorResponse of(ErrorCode errorCode) {
+    protected ErrorResponse(ErrorCode errorCode, String reason) {
+        this.status = errorCode.getStatus();
+        this.divisionCode = errorCode.getDivisionCode();
+        this.message = errorCode.getMessage();
+        this.reason = reason;
+    }
+
+    public static ErrorResponse from(ErrorCode errorCode) {
         return new ErrorResponse(errorCode);
+    }
+
+    public static ErrorResponse of(ErrorCode errorCode, String reason) {
+        return new ErrorResponse(errorCode, reason);
     }
 }
