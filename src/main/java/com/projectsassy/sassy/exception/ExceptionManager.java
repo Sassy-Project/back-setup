@@ -11,6 +11,8 @@ import org.springframework.web.bind.MethodArgumentNotValidException;
 import org.springframework.web.bind.annotation.ExceptionHandler;
 import org.springframework.web.bind.annotation.RestControllerAdvice;
 
+import javax.validation.ConstraintViolation;
+import javax.validation.ConstraintViolationException;
 import java.util.stream.Collectors;
 
 @Slf4j
@@ -35,6 +37,16 @@ public class ExceptionManager {
         ErrorResponse response = ErrorResponse.of(ErrorCode.INVALID_INPUT_VALUE, extractErrorReason(e));
 
         return new ResponseEntity<>(response, HttpStatus.valueOf(response.getStatus()));
+    }
+
+    @ExceptionHandler(CustomIllegalArgumentException.class)
+    protected ResponseEntity<ErrorResponse> handleCustomIllegalArgumentException(CustomIllegalArgumentException e) {
+        log.error("CustomIllegalArgumentException", e);
+
+        ErrorCode errorCode = e.getErrorCode();
+        ErrorResponse response = ErrorResponse.from(errorCode);
+
+        return new ResponseEntity<>(response, HttpStatus.valueOf(errorCode.getStatus()));
     }
 
     private static String extractErrorReason(MethodArgumentNotValidException e) {
