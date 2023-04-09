@@ -1,6 +1,7 @@
 package com.projectsassy.sassy.user.service;
 
 import com.projectsassy.sassy.exception.code.ErrorCode;
+import com.projectsassy.sassy.user.domain.Email;
 import com.projectsassy.sassy.user.domain.User;
 import com.projectsassy.sassy.user.dto.DuplicateEmailDto;
 import com.projectsassy.sassy.user.dto.DuplicateLoginIdDto;
@@ -40,9 +41,10 @@ public class UserService {
 
     //이메일 중복검사
     public void duplicateEmail(DuplicateEmailDto duplicateEmailDto) {
-        userRepository.findByEmail(duplicateEmailDto.getEmail())
-                .ifPresent(d -> {
-                    throw new DuplicatedException(ErrorCode.DUPLICATE_EMAIL);
-                });
+        String email = duplicateEmailDto.getEmail();
+        userRepository.findByEmail(new Email(email))
+            .ifPresent(d -> {
+                throw new DuplicatedException(ErrorCode.DUPLICATE_EMAIL);
+            });
     }
 }

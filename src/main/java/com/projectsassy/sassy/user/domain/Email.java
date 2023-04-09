@@ -19,7 +19,7 @@ public class Email {
 
     private String email;
 
-    Email(String email) {
+    public Email(String email) {
         validateEmail(email);
         this.email = email;
     }
