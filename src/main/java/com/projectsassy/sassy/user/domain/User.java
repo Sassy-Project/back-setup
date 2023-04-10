@@ -60,4 +60,8 @@ public class User {
         this.email = new Email(updatedEmail);
         this.mbti = updatedMbti;
     }
+
+    public void changePassword(String updatePassword) {
+        this.password = updatePassword;
+    }
 }

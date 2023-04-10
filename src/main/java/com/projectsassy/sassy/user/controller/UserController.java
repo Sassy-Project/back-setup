@@ -7,6 +7,7 @@ import com.projectsassy.sassy.common.response.ApiResponse;
 import com.projectsassy.sassy.user.domain.User;
 import com.projectsassy.sassy.user.dto.*;
 import com.projectsassy.sassy.user.service.UserService;
+import io.swagger.annotations.Api;
 import io.swagger.annotations.ApiOperation;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpStatus;
@@ -84,6 +85,20 @@ public class UserController {
         UpdateProfileResponse updateProfileResponse = userService.updateProfile(userId, updateProfileRequest);
 
         return new ResponseEntity<>(updateProfileResponse, HttpStatus.OK);
+    }
+
+    @ApiOperation(value = "비밀번호 수정")
+    @PatchMapping("/{userId}/password")
+    public ResponseEntity updatePassword(
+        @PathVariable(value = ("userId")) Long userId,
+        @SessionAttribute(name = "userId", required = false) Long loginUserId,
+        @RequestBody UpdatePasswordRequest updatePasswordRequest
+    ) {
+        validateUser(userId, loginUserId);
+
+        userService.updatePassword(userId, updatePasswordRequest);
+
+        return new ResponseEntity<>(new ApiResponse(SuccessCode.UPDATE_PASSWORD), HttpStatus.OK);
     }
 
     private static void validateUser(Long userId, Long loginUserId) {

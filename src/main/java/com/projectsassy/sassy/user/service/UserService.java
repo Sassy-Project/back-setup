@@ -89,4 +89,19 @@ public class UserService {
 
         return new UpdateProfileResponse(findUser.getNickname());
     }
+
+    @Transactional
+    public void updatePassword(Long userId, UpdatePasswordRequest updatePasswordRequest) {
+        User findUser = userRepository.findById(userId)
+            .orElseThrow(() -> {
+                throw new CustomIllegalStateException(NOT_FOUND_USER);
+            });
+
+        if (!encoder.matches(updatePasswordRequest.getPassword(), findUser.getPassword())) {
+            throw new CustomIllegalStateException(WRONG_PASSWORD);
+        }
+
+        String updatePassword = updatePasswordRequest.getUpdatePassword();
+        findUser.changePassword(encoder.encode(updatePassword));
+    }
 }
