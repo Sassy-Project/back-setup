@@ -8,18 +8,22 @@ import com.projectsassy.sassy.user.dto.DuplicateLoginIdDto;
 import com.projectsassy.sassy.user.dto.UserJoinDto;
 import com.projectsassy.sassy.exception.user.DuplicatedException;
 import com.projectsassy.sassy.user.repository.UserRepository;
-import lombok.RequiredArgsConstructor;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 @Service
 @Transactional(readOnly = true)
-@RequiredArgsConstructor
 public class UserService {
 
     private final UserRepository userRepository;
     private final BCryptPasswordEncoder encoder;
+
+    public UserService(UserRepository userRepository, BCryptPasswordEncoder encoder) {
+        this.userRepository = userRepository;
+        this.encoder = encoder;
+    }
+
 
     @Transactional
     public void join(UserJoinDto joinDto) {
