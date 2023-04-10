@@ -161,5 +161,19 @@ public class UserServiceTest {
         assertThat(findUser.getEmail().getEmail()).isEqualTo(updateProfileRequest.getEmail());
     }
 
+    @Test
+    @DisplayName("비밀번호 변경")
+    public void updatePassword() throws Exception {
+        //given
+        UpdatePasswordRequest updatePasswordRequest = new UpdatePasswordRequest("yhyhh", "updatePassword");
+        User findUser = userRepository.findByLoginId("loginId1").orElseThrow();
+        Long findId = findUser.getId();
+        String password = findUser.getPassword();
 
+        //when
+        userService.updatePassword(findId, updatePasswordRequest);
+
+        //then
+        assertThat(findUser.getPassword()).isNotEqualTo(password);
+    }
 }
