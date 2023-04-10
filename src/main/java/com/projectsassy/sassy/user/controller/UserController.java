@@ -45,7 +45,6 @@ public class UserController {
     @PostMapping("/signUp/email")
     public ResponseEntity<ApiResponse> duplicateEmail(@Validated @RequestBody DuplicateEmailDto duplicateEmailDto) {
         userService.duplicateEmail(duplicateEmailDto);
-
         return ResponseEntity.ok().body(new ApiResponse(SuccessCode.CAN_USE_EMAIL));
     }
 
@@ -56,7 +55,6 @@ public class UserController {
 
         HttpSession session = request.getSession();
         session.setAttribute("userId", findUser.getId());
-
         return new ResponseEntity<>(new LoginResponse(findUser.getId(), findUser.getNickname()), HttpStatus.OK);
     }
 
@@ -67,9 +65,7 @@ public class UserController {
         @SessionAttribute(name = "userId", required = false) Long loginUserId
     ) {
         validateUser(userId, loginUserId);
-
         UserProfileResponse userProfileResponse = userService.getProfile(userId);
-
         return new ResponseEntity<>(userProfileResponse, HttpStatus.OK);
     }
 
@@ -81,9 +77,7 @@ public class UserController {
         @Validated @RequestBody UpdateProfileRequest updateProfileRequest
     ) {
         validateUser(userId, loginUserId);
-
         UpdateProfileResponse updateProfileResponse = userService.updateProfile(userId, updateProfileRequest);
-
         return new ResponseEntity<>(updateProfileResponse, HttpStatus.OK);
     }
 
@@ -95,10 +89,19 @@ public class UserController {
         @RequestBody UpdatePasswordRequest updatePasswordRequest
     ) {
         validateUser(userId, loginUserId);
-
         userService.updatePassword(userId, updatePasswordRequest);
-
         return new ResponseEntity<>(new ApiResponse(SuccessCode.UPDATE_PASSWORD), HttpStatus.OK);
+    }
+
+    @ApiOperation(value = "회원 삭제")
+    @DeleteMapping("/{userId}")
+    public ResponseEntity deleteUser(
+        @PathVariable(value = ("userId")) Long userId,
+        @SessionAttribute(name = "userId", required = false) Long loginUserId
+    ) {
+        validateUser(userId, loginUserId);
+        userService.delete(userId);
+        return new ResponseEntity<>(new ApiResponse(SuccessCode.DELETE_USER), HttpStatus.OK);
     }
 
     private static void validateUser(Long userId, Long loginUserId) {

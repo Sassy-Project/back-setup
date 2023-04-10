@@ -104,4 +104,14 @@ public class UserService {
         String updatePassword = updatePasswordRequest.getUpdatePassword();
         findUser.changePassword(encoder.encode(updatePassword));
     }
+
+    @Transactional
+    public void delete(Long userId) {
+        User findUser = userRepository.findById(userId)
+            .orElseThrow(() -> {
+                throw new CustomIllegalStateException(NOT_FOUND_USER);
+            });
+
+        userRepository.delete(findUser);
+    }
 }
