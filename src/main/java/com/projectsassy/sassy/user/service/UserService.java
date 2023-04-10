@@ -3,10 +3,7 @@ package com.projectsassy.sassy.user.service;
 import com.projectsassy.sassy.common.exception.CustomIllegalStateException;
 import com.projectsassy.sassy.user.domain.Email;
 import com.projectsassy.sassy.user.domain.User;
-import com.projectsassy.sassy.user.dto.DuplicateEmailDto;
-import com.projectsassy.sassy.user.dto.DuplicateLoginIdDto;
-import com.projectsassy.sassy.user.dto.LoginDto;
-import com.projectsassy.sassy.user.dto.UserJoinDto;
+import com.projectsassy.sassy.user.dto.*;
 import com.projectsassy.sassy.common.exception.user.DuplicatedException;
 import com.projectsassy.sassy.user.repository.UserRepository;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
@@ -55,16 +52,25 @@ public class UserService {
             });
     }
 
-    public User login(LoginDto loginDto) {
-        User findUser = userRepository.findByLoginId(loginDto.getLoginId())
+    public User login(LoginRequest loginRequest) {
+        User findUser = userRepository.findByLoginId(loginRequest.getLoginId())
             .orElseThrow(() -> {
                 throw new CustomIllegalStateException(NOT_REGISTERED_USER);
             });
 
-        if (!encoder.matches(loginDto.getPassword(), findUser.getPassword())) {
+        if (!encoder.matches(loginRequest.getPassword(), findUser.getPassword())) {
             throw new CustomIllegalStateException(WRONG_PASSWORD);
         }
 
         return findUser;
+    }
+
+    public UserProfileResponse getProfile(Long userId) {
+        User findUser = userRepository.findById(userId)
+            .orElseThrow(() -> {
+                throw new CustomIllegalStateException(NOT_FOUND_USER);
+            });
+
+        return new UserProfileResponse(findUser);
     }
 }
