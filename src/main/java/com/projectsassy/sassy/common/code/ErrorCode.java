@@ -19,7 +19,8 @@ public enum ErrorCode {
     // User
     DUPLICATE_EMAIL(400, "U001", "중복된 이메일입니다."),
     DUPLICATE_LOGIN_ID(400, "U002", "중복된 아이디입니다."),
-    INVALID_EMAIL(400, "U003", "유효하지 않은 이메일입니다.");
+    INVALID_EMAIL(400, "U003", "유효하지 않은 이메일입니다."),
+    INVALID_TOKEN(400,"noToken" ,"유효하지 않은 인증번호입니다." );
 
 
     //에러의 코드 상태 반환
