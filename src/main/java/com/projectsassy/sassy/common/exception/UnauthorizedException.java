@@ -4,11 +4,11 @@ import com.projectsassy.sassy.common.code.ErrorCode;
 import lombok.Getter;
 
 @Getter
-public class CustomIllegalArgumentException extends IllegalArgumentException{
+public class UnauthorizedException extends RuntimeException{
 
     private final ErrorCode errorCode;
 
-    public CustomIllegalArgumentException(ErrorCode errorCode) {
+    public UnauthorizedException(ErrorCode errorCode) {
         super(errorCode.getMessage());
         this.errorCode = errorCode;
     }
