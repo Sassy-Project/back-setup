@@ -23,6 +23,7 @@ public enum ErrorCode {
     INVALID_EMAIL(400, "U003", "유효하지 않은 이메일입니다."),
     NOT_REGISTERED_USER(404, "U004", "등록되지 않은 사용자입니다."),
     WRONG_PASSWORD(400, "U005", "비밀번호가 틀렸습니다.");
+    INVALID_TOKEN(400,"noToken" ,"유효하지 않은 인증번호입니다." );
 
 
     //에러의 코드 상태 반환
