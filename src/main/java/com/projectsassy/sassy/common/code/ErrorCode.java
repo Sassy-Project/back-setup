@@ -15,6 +15,7 @@ public enum ErrorCode {
     // Common
     INTERNAL_SERVER_ERROR(500, "C001", "서버 내부 오류입니다."),
     INVALID_INPUT_VALUE(400, "C002", "잘못된 입력입니다."),
+    UNAUTHORIZED(401, "C003", "인증되지 않은 사용자입니다."),
 
     // User
     DUPLICATE_EMAIL(400, "U001", "중복된 이메일입니다."),
