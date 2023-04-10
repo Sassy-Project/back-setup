@@ -1,5 +1,7 @@
 package com.projectsassy.sassy.user.controller;
 
+import com.projectsassy.sassy.common.code.SuccessCode;
+import com.projectsassy.sassy.common.response.ApiResponse;
 import com.projectsassy.sassy.user.dto.DuplicateEmailDto;
 import com.projectsassy.sassy.user.dto.DuplicateLoginIdDto;
 import com.projectsassy.sassy.user.dto.UserJoinDto;
@@ -16,33 +18,28 @@ public class UserController {
 
     private final UserService userService;
 
-    /**
-     * 회원가입
-     */
-    @PostMapping("/join")
-    public ResponseEntity join(@Validated @RequestBody UserJoinDto joinDto) {
+    //회원가입
+    @PostMapping("/signUp")
+    public ResponseEntity<ApiResponse> signUp(@Validated @RequestBody UserJoinDto joinDto) {
         userService.join(joinDto);
-        return ResponseEntity.ok().body("회원가입에 성공하였습니다.");
+        return ResponseEntity.ok().body(new ApiResponse(SuccessCode.SIGNUP_SUCCESS));
     }
 
-    /**
-     * 아이디 중복검사
-     */
-    @PostMapping("/join/id")
-    public ResponseEntity duplicateLoginId(@Validated @RequestBody DuplicateLoginIdDto duplicateLoginIdDto) {
+
+    //아이디 중복검사
+    @PostMapping("/signUp/id")
+    public ResponseEntity<ApiResponse> duplicateLoginId(@Validated @RequestBody DuplicateLoginIdDto duplicateLoginIdDto) {
         userService.duplicateLoginId(duplicateLoginIdDto);
-        // false 값이 넘어오기 때문에 api 테스트 필요
-        return ResponseEntity.ok().body("사용 가능한 아이디입니다.");
+        return ResponseEntity.ok().body(new ApiResponse(SuccessCode.CAN_USE_ID));
     }
 
-    /**
-     * 이메일 중복검사
-     */
-    @PostMapping("/join/email")
-    public ResponseEntity duplicateEmail(@Validated @RequestBody DuplicateEmailDto duplicateEmailDto) {
+
+    //이메일 중복검사
+    @PostMapping("/signUp/email")
+    public ResponseEntity<ApiResponse> duplicateEmail(@Validated @RequestBody DuplicateEmailDto duplicateEmailDto) {
         userService.duplicateEmail(duplicateEmailDto);
 
-        return ResponseEntity.ok().body("사용 가능한 이메일 입니다.");
+        return ResponseEntity.ok().body(new ApiResponse(SuccessCode.CAN_USE_EMAIL));
     }
 
 }

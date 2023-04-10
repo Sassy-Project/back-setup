@@ -1,12 +1,12 @@
 package com.projectsassy.sassy.user.service;
 
-import com.projectsassy.sassy.exception.code.ErrorCode;
+import com.projectsassy.sassy.common.code.ErrorCode;
 import com.projectsassy.sassy.user.domain.Email;
 import com.projectsassy.sassy.user.domain.User;
 import com.projectsassy.sassy.user.dto.DuplicateEmailDto;
 import com.projectsassy.sassy.user.dto.DuplicateLoginIdDto;
 import com.projectsassy.sassy.user.dto.UserJoinDto;
-import com.projectsassy.sassy.exception.user.DuplicatedException;
+import com.projectsassy.sassy.common.exception.user.DuplicatedException;
 import com.projectsassy.sassy.user.repository.UserRepository;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.stereotype.Service;

@@ -1,12 +1,11 @@
 package com.projectsassy.sassy.user.domain;
 
-import com.projectsassy.sassy.exception.CustomIllegalArgumentException;
-import com.projectsassy.sassy.exception.code.ErrorCode;
+import com.projectsassy.sassy.common.exception.CustomIllegalArgumentException;
+import com.projectsassy.sassy.common.code.ErrorCode;
 import lombok.AccessLevel;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 
-import javax.persistence.Column;
 import javax.persistence.Embeddable;
 import java.util.regex.Pattern;
 
