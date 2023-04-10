@@ -3,13 +3,11 @@ package com.projectsassy.sassy.user.dto;
 import lombok.Getter;
 
 @Getter
-public class LoginResponse {
+public class UpdateProfileResponse {
 
-    private Long id;
     private String nickname;
 
-    public LoginResponse(Long id, String nickname) {
-        this.id = id;
+    public UpdateProfileResponse(String nickname) {
         this.nickname = nickname;
     }
 }

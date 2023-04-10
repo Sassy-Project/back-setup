@@ -54,4 +54,10 @@ public class User {
     public void encodingPassword(String password) {
         this.password = password;
     }
+
+    public void updateProfile(String updatedNickname, String updatedEmail, String updatedMbti) {
+        this.nickname = updatedNickname;
+        this.email = new Email(updatedEmail);
+        this.mbti = updatedMbti;
+    }
 }

@@ -73,4 +73,20 @@ public class UserService {
 
         return new UserProfileResponse(findUser);
     }
+
+    @Transactional
+    public UpdateProfileResponse updateProfile(Long userId, UpdateProfileRequest updateProfileRequest) {
+        User findUser = userRepository.findById(userId)
+            .orElseThrow(() -> {
+                throw new CustomIllegalStateException(NOT_FOUND_USER);
+            });
+
+        String updatedNickname = updateProfileRequest.getNickname();
+        String updatedEmail = updateProfileRequest.getEmail();
+        String updatedMbti = updateProfileRequest.getMbti();
+
+        findUser.updateProfile(updatedNickname, updatedEmail, updatedMbti);
+
+        return new UpdateProfileResponse(findUser.getNickname());
+    }
 }

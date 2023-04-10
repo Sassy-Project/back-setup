@@ -50,24 +50,40 @@ public class UserController {
 
     @ApiOperation(value = "로그인")
     @PostMapping("/login")
-    public ResponseEntity<LoginResponse> login(@RequestBody LoginRequest loginRequest, HttpServletRequest request) {
+    public ResponseEntity<LoginResponse> login(@Validated @RequestBody LoginRequest loginRequest, HttpServletRequest request) {
         User findUser = userService.login(loginRequest);
 
         HttpSession session = request.getSession();
         session.setAttribute("userId", findUser.getId());
 
-        return new ResponseEntity<>(new LoginResponse(findUser.getNickname()), HttpStatus.OK);
+        return new ResponseEntity<>(new LoginResponse(findUser.getId(), findUser.getNickname()), HttpStatus.OK);
     }
 
     @ApiOperation(value = "마이페이지 조회")
     @GetMapping("/{userId}")
-    public ResponseEntity getProfile(@PathVariable(value = ("userId")) Long userId,
-                                     @SessionAttribute(name = "userId", required = false) Long loginUserId) {
+    public ResponseEntity<UserProfileResponse> getProfile(
+        @PathVariable(value = ("userId")) Long userId,
+        @SessionAttribute(name = "userId", required = false) Long loginUserId
+    ) {
         validateUser(userId, loginUserId);
 
         UserProfileResponse userProfileResponse = userService.getProfile(userId);
 
         return new ResponseEntity<>(userProfileResponse, HttpStatus.OK);
+    }
+
+    @ApiOperation(value = "마이페이지 수정")
+    @PatchMapping("/{userId}")
+    public ResponseEntity<UpdateProfileResponse> updateProfile(
+        @PathVariable(value = ("userId")) Long userId,
+        @SessionAttribute(name = "userId", required = false) Long loginUserId,
+        @Validated @RequestBody UpdateProfileRequest updateProfileRequest
+    ) {
+        validateUser(userId, loginUserId);
+
+        UpdateProfileResponse updateProfileResponse = userService.updateProfile(userId, updateProfileRequest);
+
+        return new ResponseEntity<>(updateProfileResponse, HttpStatus.OK);
     }
 
     private static void validateUser(Long userId, Long loginUserId) {
