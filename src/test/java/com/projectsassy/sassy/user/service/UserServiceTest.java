@@ -2,6 +2,7 @@ package com.projectsassy.sassy.user.service;
 
 import com.projectsassy.sassy.exception.BusinessExceptionHandler;
 import com.projectsassy.sassy.exception.user.DuplicatedException;
+import com.projectsassy.sassy.user.domain.Email;
 import com.projectsassy.sassy.user.domain.User;
 import com.projectsassy.sassy.user.dto.DuplicateEmailDto;
 import com.projectsassy.sassy.user.dto.DuplicateLoginIdDto;
@@ -36,7 +37,7 @@ public class UserServiceTest {
     @DisplayName("회원가입")
     public void save() throws Exception {
         //given
-        UserJoinDto userJoinDto = new UserJoinDto("asdf1234", "1q2w3e", "asdf133@naver.com", "haha", "man", "enfp", "image");
+        UserJoinDto userJoinDto = new UserJoinDto("asdf1234", "1q2w3e", "haha", "asdf133@naver.com",  "man", "enfp", "image");
 
         //when
         userService.join(userJoinDto);

@@ -1,5 +1,6 @@
 package com.projectsassy.sassy.user.repository;
 
+import com.projectsassy.sassy.user.domain.Email;
 import com.projectsassy.sassy.user.domain.User;
 import org.springframework.data.jpa.repository.JpaRepository;
 
@@ -9,5 +10,5 @@ public interface UserRepository extends JpaRepository<User, Long> {
 
     Optional<User> findByLoginId(String loginId);
 
-    Optional<User> findByEmail(String email);
+    Optional<User> findByEmail(Email email);
 }
