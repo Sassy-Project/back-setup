@@ -1,16 +1,19 @@
 package com.projectsassy.sassy.user.service;
 
-import com.projectsassy.sassy.common.code.ErrorCode;
+import com.projectsassy.sassy.common.exception.CustomIllegalStateException;
 import com.projectsassy.sassy.user.domain.Email;
 import com.projectsassy.sassy.user.domain.User;
 import com.projectsassy.sassy.user.dto.DuplicateEmailDto;
 import com.projectsassy.sassy.user.dto.DuplicateLoginIdDto;
+import com.projectsassy.sassy.user.dto.LoginDto;
 import com.projectsassy.sassy.user.dto.UserJoinDto;
 import com.projectsassy.sassy.common.exception.user.DuplicatedException;
 import com.projectsassy.sassy.user.repository.UserRepository;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
+
+import static com.projectsassy.sassy.common.code.ErrorCode.*;
 
 @Service
 @Transactional(readOnly = true)
@@ -39,7 +42,7 @@ public class UserService {
     public void duplicateLoginId(DuplicateLoginIdDto duplicateLoginIdDto) {
         userRepository.findByLoginId(duplicateLoginIdDto.getLoginId())
                 .ifPresent(d -> {
-                        throw new DuplicatedException(ErrorCode.DUPLICATE_LOGIN_ID);
+                        throw new DuplicatedException(DUPLICATE_LOGIN_ID);
                 });
     }
 
@@ -48,7 +51,20 @@ public class UserService {
         String email = duplicateEmailDto.getEmail();
         userRepository.findByEmail(new Email(email))
             .ifPresent(d -> {
-                throw new DuplicatedException(ErrorCode.DUPLICATE_EMAIL);
+                throw new DuplicatedException(DUPLICATE_EMAIL);
             });
+    }
+
+    public User login(LoginDto loginDto) {
+        User findUser = userRepository.findByLoginId(loginDto.getLoginId())
+            .orElseThrow(() -> {
+                throw new CustomIllegalStateException(NOT_REGISTERED_USER);
+            });
+
+        if (!encoder.matches(loginDto.getPassword(), findUser.getPassword())) {
+            throw new CustomIllegalStateException(WRONG_PASSWORD);
+        }
+
+        return findUser;
     }
 }

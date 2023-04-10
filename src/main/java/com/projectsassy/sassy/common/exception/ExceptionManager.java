@@ -46,6 +46,16 @@ public class ExceptionManager {
         return new ResponseEntity<>(response, HttpStatus.valueOf(errorCode.getStatus()));
     }
 
+    @ExceptionHandler(CustomIllegalStateException.class)
+    protected ResponseEntity<ErrorResponse> handleCustomIllegalStateException(CustomIllegalStateException e) {
+        log.error("CustomIllegalStateException", e);
+
+        ErrorCode errorCode = e.getErrorCode();
+        ErrorResponse response = ErrorResponse.from(errorCode);
+
+        return new ResponseEntity<>(response, HttpStatus.valueOf(errorCode.getStatus()));
+    }
+
     private static String extractErrorReason(MethodArgumentNotValidException e) {
         return e.getBindingResult()
             .getAllErrors()

@@ -3,6 +3,7 @@ package com.projectsassy.sassy;
 import com.projectsassy.sassy.user.domain.User;
 import com.projectsassy.sassy.user.repository.UserRepository;
 import lombok.RequiredArgsConstructor;
+import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.stereotype.Component;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -24,12 +25,13 @@ public class TestDataInit {
     static class InitService {
 
         private final UserRepository userRepository;
+        private final BCryptPasswordEncoder encoder;
 
         @Transactional
         public void init() {
 
-            User user1 = User.of("qwer1234", "1q2w3e", "haha", "qwer@naver.com", "man", "enfp", "image");
-            User user2 = User.of("sassy0401", "123456", "sassy", "sassy@naver.com",  "woman", "intp", "image2");
+            User user1 = User.of("qwer1234", encoder.encode("1q2w3e"), "haha", "qwer@naver.com", "man", "enfp", "image");
+            User user2 = User.of("sassy0401", encoder.encode("123456"), "sassy", "sassy@naver.com",  "woman", "intp", "image2");
 
             userRepository.save(user1);
             userRepository.save(user2);
