@@ -3,10 +3,7 @@ package com.projectsassy.sassy.user.service;
 import com.projectsassy.sassy.common.exception.CustomIllegalStateException;
 import com.projectsassy.sassy.common.exception.user.DuplicatedException;
 import com.projectsassy.sassy.user.domain.User;
-import com.projectsassy.sassy.user.dto.DuplicateEmailDto;
-import com.projectsassy.sassy.user.dto.DuplicateLoginIdDto;
-import com.projectsassy.sassy.user.dto.LoginRequest;
-import com.projectsassy.sassy.user.dto.UserJoinDto;
+import com.projectsassy.sassy.user.dto.*;
 import com.projectsassy.sassy.user.repository.UserRepository;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
@@ -98,5 +95,42 @@ public class UserServiceTest {
             .hasMessage("비밀번호가 틀렸습니다.");
     }
 
-    
+    @Test
+    @DisplayName("마이페이지 호출 성공")
+    public void userProfile_success() throws Exception {
+        //given
+        UserJoinDto userJoinDto = new UserJoinDto("asdf1234", "1q2w3e", "haha", "asdf133@naver.com",  "man", "enfp", "image");
+        userService.join(userJoinDto);
+
+        User findUser = userRepository.findByLoginId("asdf1234").orElseThrow();
+        Long id = findUser.getId();
+
+        //when
+        UserProfileResponse profile = userService.getProfile(id);
+
+        //then
+        assertThat(profile.getLoginId()).isEqualTo(findUser.getLoginId());
+        assertThat(profile.getMbti()).isEqualTo(findUser.getMbti());
+        assertThat(profile.getNickname()).isEqualTo(findUser.getNickname());
+        assertThat(profile.getEmail()).isEqualTo(findUser.getEmail().getEmail());
+    }
+
+    @Test
+    @DisplayName("마이페이지 호출 실패")
+    public void userProfile_fail() throws Exception {
+        //given
+        UserJoinDto userJoinDto = new UserJoinDto("asdf1234", "1q2w3e", "haha", "asdf133@naver.com",  "man", "enfp", "image");
+        userService.join(userJoinDto);
+
+        User findUser = userRepository.findByLoginId("asdf1234").orElseThrow();
+        Long id = findUser.getId();
+
+        //when
+        Long wrongId = id + 1;
+
+        //then
+        assertThatThrownBy(() -> userService.getProfile(wrongId))
+            .isInstanceOf(CustomIllegalStateException.class)
+            .hasMessage("유저를 찾을 수 없습니다.");
+    }
 }
