@@ -1,6 +1,7 @@
 package com.projectsassy.sassy.user.service;
 
 import com.projectsassy.sassy.common.code.ErrorCode;
+import com.projectsassy.sassy.common.exception.BusinessExceptionHandler;
 import com.projectsassy.sassy.user.domain.Email;
 import com.projectsassy.sassy.user.dto.EmailRequest;
 import com.projectsassy.sassy.user.domain.User;
@@ -15,6 +16,7 @@ import org.springframework.transaction.annotation.Transactional;
 
 import javax.mail.MessagingException;
 import javax.mail.internet.MimeMessage;
+import java.util.Optional;
 import java.util.Random;
 
 @Service
@@ -63,17 +65,31 @@ public class UserService {
 
     //아이디 찾기
     public ResponseFindIdDto findMyId(FindIdDto findIdDto) {
+        String redisEmail = redisUtil.getData(findIdDto.getCode());
         String email = findIdDto.getEmail();
+        if (!redisEmail.equals(email)){
+            throw new BusinessExceptionHandler(ErrorCode.INVALID_TOKEN);
+        }
         User findUser = userRepository.findByEmail(new Email(email))
-                .orElseThrow(() -> {throw new IllegalArgumentException("없는회원");}); //로그인 exception 적용하기
+                .orElseThrow(() -> {throw new BusinessExceptionHandler(ErrorCode.INVALID_EMAIL);});
 
         ResponseFindIdDto responseFindIdDto = new ResponseFindIdDto();
         responseFindIdDto.setLoginId(findUser.getLoginId());
 
         return responseFindIdDto;
     }
+
     //비밀번호 찾기
     public void findMyPassword(FindPasswordDto findPasswordDto) {
+        String redisEmail = redisUtil.getData(findPasswordDto.getCode());
+        String email = findPasswordDto.getEmail();
+        String loginId = findPasswordDto.getLoginId();
+
+        if (!redisEmail.equals(email)) {
+            throw new BusinessExceptionHandler(ErrorCode.INVALID_TOKEN);
+        }
+        userRepository.findByEmailAndLoginId(new Email(email), loginId)
+                .orElseThrow(() -> {throw new BusinessExceptionHandler(ErrorCode.DUPLICATE_LOGIN_ID);}); //notfound로 변경
 
     }
 

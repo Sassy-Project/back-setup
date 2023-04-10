@@ -7,7 +7,7 @@ public enum SuccessCode {
     SIGNUP_SUCCESS("SignUp", "회원가입에 성공하였습니다."),
     CAN_USE_ID("CanUseId", "사용 가능한 아이디 입니다."),
     CAN_USE_EMAIL("CanUseEmail", "사용 가능한 이메일 입니다."),
-    SEND_NEW_PASSWORD("sendNewPassword", "랜덤 비밀번호가 이메일로 발송되었습니다."),
+    CERTIFI_CODE("Coincide", "인증되었습니다. 새로운 비밀번호를 등록해 주세요."),
     SEND_EMAIL("sendEmail", "인증 코드가 이메일로 발송되었습니다.");
 
     private final String code;

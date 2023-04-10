@@ -54,7 +54,7 @@ public class UserController {
     public ResponseEntity findPassword(@Validated @RequestBody FindPasswordDto findPasswordDto) {
         userService.findMyPassword(findPasswordDto);
 
-        return ResponseEntity.ok().body(new ApiResponse(SuccessCode.SEND_NEW_PASSWORD));
+        return ResponseEntity.ok().body(new ApiResponse(SuccessCode.CERTIFI_CODE));
     }
 
     //이메일 전송

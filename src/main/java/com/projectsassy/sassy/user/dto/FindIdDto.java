@@ -7,4 +7,5 @@ import lombok.Setter;
 public class FindIdDto {
 
     private String email;
+    private String code;
 }

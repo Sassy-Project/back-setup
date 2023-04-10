@@ -22,7 +22,6 @@ public enum ErrorCode {
     INVALID_EMAIL(400, "U003", "유효하지 않은 이메일입니다."),
     INVALID_TOKEN(400,"noToken" ,"유효하지 않은 인증번호입니다." );
 
-
     //에러의 코드 상태 반환
     private final int status;
 
