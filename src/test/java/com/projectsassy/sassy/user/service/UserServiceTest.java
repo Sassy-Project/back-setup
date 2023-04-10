@@ -1,8 +1,6 @@
 package com.projectsassy.sassy.user.service;
 
-import com.projectsassy.sassy.exception.BusinessExceptionHandler;
-import com.projectsassy.sassy.exception.user.DuplicatedException;
-import com.projectsassy.sassy.user.domain.Email;
+import com.projectsassy.sassy.common.exception.user.DuplicatedException;
 import com.projectsassy.sassy.user.domain.User;
 import com.projectsassy.sassy.user.dto.DuplicateEmailDto;
 import com.projectsassy.sassy.user.dto.DuplicateLoginIdDto;
@@ -16,8 +14,6 @@ import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.test.context.junit.jupiter.SpringExtension;
 import org.springframework.transaction.annotation.Transactional;
-
-import java.util.Optional;
 
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.assertj.core.api.Assertions.assertThatThrownBy;

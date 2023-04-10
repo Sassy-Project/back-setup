@@ -1,6 +1,6 @@
-package com.projectsassy.sassy.exception.response;
+package com.projectsassy.sassy.common.response;
 
-import com.projectsassy.sassy.exception.code.ErrorCode;
+import com.projectsassy.sassy.common.code.ErrorCode;
 import lombok.AccessLevel;
 import lombok.Getter;
 import lombok.NoArgsConstructor;

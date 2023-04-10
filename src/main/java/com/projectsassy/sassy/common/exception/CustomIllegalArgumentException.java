@@ -1,6 +1,6 @@
-package com.projectsassy.sassy.exception;
+package com.projectsassy.sassy.common.exception;
 
-import com.projectsassy.sassy.exception.code.ErrorCode;
+import com.projectsassy.sassy.common.code.ErrorCode;
 import lombok.Getter;
 
 @Getter

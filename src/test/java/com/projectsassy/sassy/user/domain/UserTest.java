@@ -1,6 +1,6 @@
 package com.projectsassy.sassy.user.domain;
 
-import com.projectsassy.sassy.exception.CustomIllegalArgumentException;
+import com.projectsassy.sassy.common.exception.CustomIllegalArgumentException;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.springframework.context.annotation.Bean;

@@ -1,4 +1,4 @@
-package com.projectsassy.sassy.exception.code;
+package com.projectsassy.sassy.common.code;
 
 import lombok.Getter;
 
