@@ -22,6 +22,7 @@ public enum ErrorCode {
     DUPLICATE_LOGIN_ID(400, "U002", "중복된 아이디입니다."),
     INVALID_EMAIL(400, "U003", "유효하지 않은 이메일입니다."),
     NOT_REGISTERED_USER(404, "U004", "등록되지 않은 사용자입니다."),
+
     WRONG_PASSWORD(400, "U005", "비밀번호가 틀렸습니다."),
     NOT_FOUND_USER(404, "U006", "유저를 찾을 수 없습니다.");
 

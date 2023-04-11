@@ -2,10 +2,14 @@ package com.projectsassy.sassy.user.controller;
 
 import com.projectsassy.sassy.common.code.ErrorCode;
 import com.projectsassy.sassy.common.code.SuccessCode;
+import com.projectsassy.sassy.user.domain.User;
+
 import com.projectsassy.sassy.common.exception.UnauthorizedException;
 import com.projectsassy.sassy.common.response.ApiResponse;
-import com.projectsassy.sassy.user.domain.User;
+import com.projectsassy.sassy.user.dto.EmailRequest;
 import com.projectsassy.sassy.user.dto.*;
+import com.projectsassy.sassy.user.dto.*;
+
 import com.projectsassy.sassy.user.service.UserService;
 import io.swagger.annotations.Api;
 import io.swagger.annotations.ApiOperation;
@@ -46,6 +50,29 @@ public class UserController {
     public ResponseEntity<ApiResponse> duplicateEmail(@Validated @RequestBody DuplicateEmailDto duplicateEmailDto) {
         userService.duplicateEmail(duplicateEmailDto);
         return ResponseEntity.ok().body(new ApiResponse(SuccessCode.CAN_USE_EMAIL));
+    }
+
+    //아이디 찾기
+    @PostMapping("/find/id")
+    public ResponseEntity findMyId(@Validated @RequestBody FindIdDto findIdDto) {
+        ResponseFindIdDto myId = userService.findMyId(findIdDto);
+
+        return ResponseEntity.ok().body(myId);
+    }
+
+    //비밀번호 찾기
+    @PostMapping("/find/password")
+    public ResponseEntity findPassword(@Validated @RequestBody FindPasswordDto findPasswordDto) {
+        userService.findMyPassword(findPasswordDto);
+
+        return ResponseEntity.ok().body(new ApiResponse(SuccessCode.CERTIFI_CODE));
+    }
+
+    //이메일 전송
+    @PostMapping("/email")
+    public ResponseEntity authEmail(@Validated @RequestBody EmailRequest request) {
+        userService.authEmail(request);
+        return ResponseEntity.ok().body(new ApiResponse(SuccessCode.SEND_EMAIL));
     }
 
     @ApiOperation(value = "로그인")
