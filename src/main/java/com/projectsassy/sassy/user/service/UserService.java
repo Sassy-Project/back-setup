@@ -4,7 +4,6 @@ import com.projectsassy.sassy.common.code.ErrorCode;
 import com.projectsassy.sassy.common.exception.BusinessExceptionHandler;
 import com.projectsassy.sassy.common.exception.CustomIllegalStateException;
 import com.projectsassy.sassy.user.domain.Email;
-import com.projectsassy.sassy.user.dto.EmailRequest;
 import com.projectsassy.sassy.user.domain.User;
 import com.projectsassy.sassy.user.dto.*;
 import com.projectsassy.sassy.common.exception.user.DuplicatedException;
@@ -17,7 +16,6 @@ import org.springframework.transaction.annotation.Transactional;
 
 import javax.mail.MessagingException;
 import javax.mail.internet.MimeMessage;
-import java.util.Optional;
 import java.util.Random;
 
 import static com.projectsassy.sassy.common.code.ErrorCode.*;
@@ -128,7 +126,8 @@ public class UserService {
 
         userRepository.delete(findUser);
 
-    //아이디 찾기
+    }
+
     public ResponseFindIdDto findMyId(FindIdDto findIdDto) {
         String redisEmail = redisUtil.getData(findIdDto.getCode());
         String email = findIdDto.getEmail();
@@ -136,7 +135,9 @@ public class UserService {
             throw new BusinessExceptionHandler(ErrorCode.INVALID_TOKEN);
         }
         User findUser = userRepository.findByEmail(new Email(email))
-                .orElseThrow(() -> {throw new BusinessExceptionHandler(ErrorCode.INVALID_EMAIL);});
+                .orElseThrow(() -> {
+                    throw new CustomIllegalStateException(NOT_FOUND_USER);
+                });
 
         ResponseFindIdDto responseFindIdDto = new ResponseFindIdDto();
         responseFindIdDto.setLoginId(findUser.getLoginId());
@@ -154,7 +155,9 @@ public class UserService {
             throw new BusinessExceptionHandler(ErrorCode.INVALID_TOKEN);
         }
         userRepository.findByEmailAndLoginId(new Email(email), loginId)
-                .orElseThrow(() -> {throw new BusinessExceptionHandler(ErrorCode.DUPLICATE_LOGIN_ID);}); //notfound로 변경
+                .orElseThrow(() -> {
+                    throw new CustomIllegalStateException(NOT_FOUND_USER);
+                }); //notfound로 변경
 
     }
 
