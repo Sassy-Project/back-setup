@@ -24,7 +24,7 @@ public class WebSecurityConfig {
                 .and()
                     .authorizeRequests()
                     .antMatchers("/swagger-resources/**").permitAll()
-                    .antMatchers("/users/signUp", "/users/signUp/id", "/users/signUp/email", "users/login").permitAll() // user 권한 허용 // 이거 다시
+                    .antMatchers("/users/**").permitAll() // user 권한 허용 // 이거 다시
                 .and()
 //                .sessionManagement()
 //                .sessionCreationPolicy(SessionCreationPolicy.STATELESS) // jwt 사용할 경우 세션을 사용하지 않는다.
