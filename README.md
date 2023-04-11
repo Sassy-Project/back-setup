@@ -12,6 +12,12 @@
   
 - pull request 
   - 한글로 작성
+  
+## Git Branch 전략
+- release : 배포를 위한 branch
+- develop(dev) : 개발 branch
+  - dev의 상태에서 feature branch 생성
+- feature : 개인 작업 branch
 
 ## CI/CD 구축
 ![image](https://user-images.githubusercontent.com/111469930/229506681-aa8ec884-ce90-43f4-b8e4-c418db1842da.png)

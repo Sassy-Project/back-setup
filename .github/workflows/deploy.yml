@@ -3,7 +3,7 @@ name: Java CI-CD
 on:
   push:
     branches:
-      - main
+      - release
      
 env:
   S3_BUCKET_NAME: projectsassy.net
@@ -23,6 +23,17 @@ jobs:
         uses: actions/setup-java@v1
         with:
           java-version: 11
+          
+      # yml 파일을 담을 디렉토리 생성
+      - name: Make Directory for yml files
+        run: mkdir -p ./src/main/resources
+        
+      - name: Make application.yml
+        run: |
+          cd ./src/main/resources
+          touch ./application.yml
+          echo "${{ secrets.APPLICATION_YML }}" > ./application.yml
+        shell: bash
           
       # gradlew 실행 권한 부여
       - name: Grant execute permission for gradlew
