@@ -7,5 +7,7 @@ import lombok.Setter;
 @Setter
 public class FindPasswordDto {
 
-    private String newPassword;
+    private String email;
+    private String loginId;
+    private String code;
 }

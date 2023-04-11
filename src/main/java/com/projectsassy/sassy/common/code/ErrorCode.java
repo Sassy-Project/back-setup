@@ -25,7 +25,6 @@ public enum ErrorCode {
     WRONG_PASSWORD(400, "U005", "비밀번호가 틀렸습니다.");
     INVALID_TOKEN(400,"noToken" ,"유효하지 않은 인증번호입니다." );
 
-
     //에러의 코드 상태 반환
     private final int status;
 
