@@ -9,7 +9,9 @@ public enum SuccessCode {
     CAN_USE_EMAIL("CanUseEmail", "사용 가능한 이메일 입니다."),
 
     UPDATE_PASSWORD("UpdatePassword", "비밀번호가 변경되었습니다."),
-    DELETE_USER("DeleteUser", "회원이 삭제되었습니다.");
+    DELETE_USER("DeleteUser", "회원이 삭제되었습니다."),
+    SEND_EMAIL("SendEmail", "이메일 전송이 완료되었습니다."),
+    CERTIFY_CODE("CertifyCode", "인증이 완료되었습니다.");
 
 
     private final String code;

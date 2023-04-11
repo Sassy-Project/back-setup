@@ -8,10 +8,8 @@ import com.projectsassy.sassy.common.exception.UnauthorizedException;
 import com.projectsassy.sassy.common.response.ApiResponse;
 import com.projectsassy.sassy.user.dto.EmailRequest;
 import com.projectsassy.sassy.user.dto.*;
-import com.projectsassy.sassy.user.dto.*;
 
 import com.projectsassy.sassy.user.service.UserService;
-import io.swagger.annotations.Api;
 import io.swagger.annotations.ApiOperation;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpStatus;
@@ -65,7 +63,7 @@ public class UserController {
     public ResponseEntity findPassword(@Validated @RequestBody FindPasswordDto findPasswordDto) {
         userService.findMyPassword(findPasswordDto);
 
-        return ResponseEntity.ok().body(new ApiResponse(SuccessCode.CERTIFI_CODE));
+        return ResponseEntity.ok().body(new ApiResponse(SuccessCode.CERTIFY_CODE));
     }
 
     //이메일 전송
