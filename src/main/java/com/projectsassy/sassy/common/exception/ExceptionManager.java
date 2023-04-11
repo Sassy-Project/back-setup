@@ -74,14 +74,5 @@ public class ExceptionManager {
             .collect(Collectors.toList())
             .get(0);
     }
-
-    //모든 Exception
-    @ExceptionHandler(Exception.class)
-    protected ResponseEntity<ErrorResponse> handleAllException(Exception e) {
-        log.error("Exception", e);
-
-        ErrorResponse response = ErrorResponse.from(ErrorCode.INTERNAL_SERVER_ERROR);
-
-        return new ResponseEntity<>(response, HttpStatus.INTERNAL_SERVER_ERROR);
-    }
+    
 }
