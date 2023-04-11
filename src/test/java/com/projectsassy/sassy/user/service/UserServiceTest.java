@@ -31,8 +31,8 @@ public class UserServiceTest {
 
     @BeforeEach
     public void user_save() {
-        UserJoinDto userJoinDto = new UserJoinDto("loginId1", "yhyhh", "sung", "sung1335@naver.com",  "man", "esfp", "image5");
-        UserJoinDto userJoinDto2 = new UserJoinDto("loginId2", "password", "pulznd", "px66@naver.com",  "woman", "intp", "image4");
+        UserJoinDto userJoinDto = new UserJoinDto("loginId1", "yhyhh", "sung", "sung1335@naver.com",  "man", "esfp");
+        UserJoinDto userJoinDto2 = new UserJoinDto("loginId2", "password", "pulznd", "px66@naver.com",  "woman", "intp");
         userService.join(userJoinDto);
         userService.join(userJoinDto2);
     }
@@ -41,7 +41,7 @@ public class UserServiceTest {
     @DisplayName("회원가입")
     public void save() throws Exception {
         //given
-        UserJoinDto userJoinDto = new UserJoinDto("asdf1234", "1q2w3e", "haha", "asdf133@naver.com",  "man", "enfp", "image");
+        UserJoinDto userJoinDto = new UserJoinDto("asdf1234", "1q2w3e", "haha", "asdf133@naver.com",  "man", "enfp");
 
         //when
         userService.join(userJoinDto);
@@ -108,7 +108,7 @@ public class UserServiceTest {
     @DisplayName("마이페이지 호출 성공")
     public void userProfile_success() throws Exception {
         //given
-        UserJoinDto userJoinDto = new UserJoinDto("asdf1234", "1q2w3e", "haha", "asdf133@naver.com",  "man", "enfp", "image");
+        UserJoinDto userJoinDto = new UserJoinDto("asdf1234", "1q2w3e", "haha", "asdf133@naver.com",  "man", "enfp");
         userService.join(userJoinDto);
 
         User findUser = userRepository.findByLoginId("asdf1234").orElseThrow();
@@ -128,7 +128,7 @@ public class UserServiceTest {
     @DisplayName("마이페이지 호출 실패")
     public void userProfile_fail() throws Exception {
         //given
-        UserJoinDto userJoinDto = new UserJoinDto("asdf1234", "1q2w3e", "haha", "asdf133@naver.com",  "man", "enfp", "image");
+        UserJoinDto userJoinDto = new UserJoinDto("asdf1234", "1q2w3e", "haha", "asdf133@naver.com",  "man", "enfp");
         userService.join(userJoinDto);
 
         User findUser = userRepository.findByLoginId("asdf1234").orElseThrow();
