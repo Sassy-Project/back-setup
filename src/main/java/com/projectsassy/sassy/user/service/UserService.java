@@ -66,18 +66,67 @@ public class UserService {
             });
     }
 
-    public User login(LoginDto loginDto) {
-        User findUser = userRepository.findByLoginId(loginDto.getLoginId())
+    public User login(LoginRequest loginRequest) {
+        User findUser = userRepository.findByLoginId(loginRequest.getLoginId())
             .orElseThrow(() -> {
                 throw new CustomIllegalStateException(NOT_REGISTERED_USER);
             });
 
-        if (!encoder.matches(loginDto.getPassword(), findUser.getPassword())) {
+        if (!encoder.matches(loginRequest.getPassword(), findUser.getPassword())) {
             throw new CustomIllegalStateException(WRONG_PASSWORD);
         }
 
         return findUser;
     }
+
+    public UserProfileResponse getProfile(Long userId) {
+        User findUser = userRepository.findById(userId)
+            .orElseThrow(() -> {
+                throw new CustomIllegalStateException(NOT_FOUND_USER);
+            });
+
+        return new UserProfileResponse(findUser);
+    }
+
+    @Transactional
+    public UpdateProfileResponse updateProfile(Long userId, UpdateProfileRequest updateProfileRequest) {
+        User findUser = userRepository.findById(userId)
+            .orElseThrow(() -> {
+                throw new CustomIllegalStateException(NOT_FOUND_USER);
+            });
+
+        String updatedNickname = updateProfileRequest.getNickname();
+        String updatedEmail = updateProfileRequest.getEmail();
+        String updatedMbti = updateProfileRequest.getMbti();
+
+        findUser.updateProfile(updatedNickname, updatedEmail, updatedMbti);
+
+        return new UpdateProfileResponse(findUser.getNickname());
+    }
+
+    @Transactional
+    public void updatePassword(Long userId, UpdatePasswordRequest updatePasswordRequest) {
+        User findUser = userRepository.findById(userId)
+            .orElseThrow(() -> {
+                throw new CustomIllegalStateException(NOT_FOUND_USER);
+            });
+
+        if (!encoder.matches(updatePasswordRequest.getPassword(), findUser.getPassword())) {
+            throw new CustomIllegalStateException(WRONG_PASSWORD);
+        }
+
+        String updatePassword = updatePasswordRequest.getUpdatePassword();
+        findUser.changePassword(encoder.encode(updatePassword));
+    }
+
+    @Transactional
+    public void delete(Long userId) {
+        User findUser = userRepository.findById(userId)
+            .orElseThrow(() -> {
+                throw new CustomIllegalStateException(NOT_FOUND_USER);
+            });
+
+        userRepository.delete(findUser);
 
     //아이디 찾기
     public ResponseFindIdDto findMyId(FindIdDto findIdDto) {
@@ -140,5 +189,6 @@ public class UserService {
 
         //유효시간
         redisUtil.setDataExpire(authKey, email, 60*5L);
+
     }
 }

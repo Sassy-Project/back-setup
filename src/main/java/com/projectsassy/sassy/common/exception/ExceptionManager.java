@@ -56,6 +56,16 @@ public class ExceptionManager {
         return new ResponseEntity<>(response, HttpStatus.valueOf(errorCode.getStatus()));
     }
 
+    @ExceptionHandler(UnauthorizedException.class)
+    protected ResponseEntity<ErrorResponse> handleUnauthorizedException(UnauthorizedException e) {
+        log.error("UnauthorizedException", e);
+
+        ErrorCode errorCode = e.getErrorCode();
+        ErrorResponse response = ErrorResponse.from(errorCode);
+
+        return new ResponseEntity<>(response, HttpStatus.UNAUTHORIZED);
+    }
+
     private static String extractErrorReason(MethodArgumentNotValidException e) {
         return e.getBindingResult()
             .getAllErrors()
