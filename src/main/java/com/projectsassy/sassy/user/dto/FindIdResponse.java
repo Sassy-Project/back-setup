@@ -4,8 +4,6 @@ import lombok.Getter;
 import lombok.Setter;
 
 @Getter @Setter
-public class FindIdDto {
-
-    private String email;
-    private String code;
+public class FindIdResponse {
+    private String loginId;
 }

@@ -20,6 +20,8 @@ import org.springframework.web.bind.annotation.*;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpSession;
 
+import static com.projectsassy.sassy.user.domain.UserConst.USER_ID;
+
 @RestController
 @RequiredArgsConstructor
 @RequestMapping("/users")
@@ -31,7 +33,7 @@ public class UserController {
     @PostMapping("/signUp")
     public ResponseEntity<ApiResponse> signUp(@Validated @RequestBody UserJoinDto joinDto) {
         userService.join(joinDto);
-        return ResponseEntity.ok().body(new ApiResponse(SuccessCode.SIGNUP_SUCCESS));
+        return new ResponseEntity<>(new ApiResponse(SuccessCode.SIGNUP_SUCCESS), HttpStatus.OK);
     }
 
 
@@ -39,7 +41,7 @@ public class UserController {
     @PostMapping("/signUp/id")
     public ResponseEntity<ApiResponse> duplicateLoginId(@Validated @RequestBody DuplicateLoginIdDto duplicateLoginIdDto) {
         userService.duplicateLoginId(duplicateLoginIdDto);
-        return ResponseEntity.ok().body(new ApiResponse(SuccessCode.CAN_USE_ID));
+        return new ResponseEntity<>(new ApiResponse(SuccessCode.CAN_USE_ID), HttpStatus.OK);
     }
 
 
@@ -47,30 +49,30 @@ public class UserController {
     @PostMapping("/signUp/email")
     public ResponseEntity<ApiResponse> duplicateEmail(@Validated @RequestBody DuplicateEmailDto duplicateEmailDto) {
         userService.duplicateEmail(duplicateEmailDto);
-        return ResponseEntity.ok().body(new ApiResponse(SuccessCode.CAN_USE_EMAIL));
+        return new ResponseEntity<>(new ApiResponse(SuccessCode.CAN_USE_EMAIL), HttpStatus.OK);
     }
 
-    //아이디 찾기
+    @ApiOperation(value = "아이디 찾기")
     @PostMapping("/find/id")
-    public ResponseEntity findMyId(@Validated @RequestBody FindIdDto findIdDto) {
-        ResponseFindIdDto myId = userService.findMyId(findIdDto);
+    public ResponseEntity<FindIdResponse> findId(@Validated @RequestBody FindIdRequest findIdRequest) {
+        FindIdResponse findIdResponse = userService.findMyId(findIdRequest);
 
-        return ResponseEntity.ok().body(myId);
+        return new ResponseEntity<>(findIdResponse, HttpStatus.OK);
     }
 
-    //비밀번호 찾기
+    @ApiOperation(value = "비밀번호 찾기")
     @PostMapping("/find/password")
-    public ResponseEntity findPassword(@Validated @RequestBody FindPasswordDto findPasswordDto) {
-        userService.findMyPassword(findPasswordDto);
+    public ResponseEntity<ApiResponse> findPassword(@Validated @RequestBody FindPasswordRequest findPasswordRequest) {
+        userService.findMyPassword(findPasswordRequest);
 
-        return ResponseEntity.ok().body(new ApiResponse(SuccessCode.CERTIFY_CODE));
+        return new ResponseEntity<>(new ApiResponse(SuccessCode.CERTIFY_CODE), HttpStatus.OK);
     }
 
-    //이메일 전송
+    @ApiOperation(value = "인증 코드 이메일 전송")
     @PostMapping("/email")
-    public ResponseEntity authEmail(@Validated @RequestBody EmailRequest request) {
+    public ResponseEntity<ApiResponse> authEmail(@Validated @RequestBody EmailRequest request) {
         userService.authEmail(request);
-        return ResponseEntity.ok().body(new ApiResponse(SuccessCode.SEND_EMAIL));
+        return new ResponseEntity<>(new ApiResponse(SuccessCode.SEND_EMAIL), HttpStatus.OK);
     }
 
     @ApiOperation(value = "로그인")
@@ -79,7 +81,7 @@ public class UserController {
         User findUser = userService.login(loginRequest);
 
         HttpSession session = request.getSession();
-        session.setAttribute("userId", findUser.getId());
+        session.setAttribute(USER_ID, findUser.getId());
         return new ResponseEntity<>(new LoginResponse(findUser.getId(), findUser.getNickname()), HttpStatus.OK);
     }
 

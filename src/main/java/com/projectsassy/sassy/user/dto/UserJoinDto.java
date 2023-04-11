@@ -31,9 +31,6 @@ public class UserJoinDto {
     @NotNull(message = "MBTI는 Null 일 수 없습니다.")
     private String mbti;
 
-    @NotNull(message = "이미지는 Null 일 수 없습니다.")
-    private String image;
-
     public User toEntity() {
         return User.builder()
                 .loginId(loginId)
@@ -42,7 +39,7 @@ public class UserJoinDto {
                 .email(email)
                 .gender(gender)
                 .mbti(mbti)
-                .image(image)
+                .image("defaultImage")
                 .build();
     }
 }
