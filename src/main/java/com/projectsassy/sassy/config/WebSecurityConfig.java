@@ -17,13 +17,14 @@ public class WebSecurityConfig {
     public SecurityFilterChain filterChain(HttpSecurity httpSecurity) throws Exception {
         return httpSecurity
                 .httpBasic().disable() // ui에서 들어오는 것. auth 기반의 로그인창이 안뜨도록 설정.(security 사용하면 기본 로그인 창이있음)
-                .csrf().disable() // crosssite 기능. csrf 보안 기능이 rest api 에서 안쓰이므로 disable.
-                .cors()
+                    .csrf().disable() // crosssite 기능. csrf 보안 기능이 rest api 에서 안쓰이므로 disable.
+                    .cors()
                 .and()// crosssite 다른 domain 허용
-                .exceptionHandling()
+                    .exceptionHandling()
                 .and()
-                .authorizeRequests()
-                .antMatchers("/users/**").permitAll() // user 권한 허용 // 이거 다시
+                    .authorizeRequests()
+                    .antMatchers("/swagger-resources/**").permitAll()
+                    .antMatchers("/users/**").permitAll() // user 권한 허용 // 이거 다시
                 .and()
 //                .sessionManagement()
 //                .sessionCreationPolicy(SessionCreationPolicy.STATELESS) // jwt 사용할 경우 세션을 사용하지 않는다.

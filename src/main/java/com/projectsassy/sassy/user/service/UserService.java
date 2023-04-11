@@ -2,6 +2,7 @@ package com.projectsassy.sassy.user.service;
 
 import com.projectsassy.sassy.common.code.ErrorCode;
 import com.projectsassy.sassy.common.exception.BusinessExceptionHandler;
+import com.projectsassy.sassy.common.exception.CustomIllegalStateException;
 import com.projectsassy.sassy.user.domain.Email;
 import com.projectsassy.sassy.user.dto.EmailRequest;
 import com.projectsassy.sassy.user.domain.User;
@@ -18,6 +19,8 @@ import javax.mail.MessagingException;
 import javax.mail.internet.MimeMessage;
 import java.util.Optional;
 import java.util.Random;
+
+import static com.projectsassy.sassy.common.code.ErrorCode.*;
 
 @Service
 @Transactional(readOnly = true)
@@ -50,7 +53,7 @@ public class UserService {
     public void duplicateLoginId(DuplicateLoginIdDto duplicateLoginIdDto) {
         userRepository.findByLoginId(duplicateLoginIdDto.getLoginId())
                 .ifPresent(d -> {
-                        throw new DuplicatedException(ErrorCode.DUPLICATE_LOGIN_ID);
+                        throw new DuplicatedException(DUPLICATE_LOGIN_ID);
                 });
     }
 
@@ -59,8 +62,21 @@ public class UserService {
         String email = duplicateEmailDto.getEmail();
         userRepository.findByEmail(new Email(email))
             .ifPresent(d -> {
-                throw new DuplicatedException(ErrorCode.DUPLICATE_EMAIL);
+                throw new DuplicatedException(DUPLICATE_EMAIL);
             });
+    }
+
+    public User login(LoginDto loginDto) {
+        User findUser = userRepository.findByLoginId(loginDto.getLoginId())
+            .orElseThrow(() -> {
+                throw new CustomIllegalStateException(NOT_REGISTERED_USER);
+            });
+
+        if (!encoder.matches(loginDto.getPassword(), findUser.getPassword())) {
+            throw new CustomIllegalStateException(WRONG_PASSWORD);
+        }
+
+        return findUser;
     }
 
     //아이디 찾기
