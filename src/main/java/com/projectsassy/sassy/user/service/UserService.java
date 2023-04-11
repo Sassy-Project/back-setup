@@ -41,37 +41,33 @@ public class UserService {
     public void join(UserJoinDto joinDto) {
         User user = joinDto.toEntity();
 
-        // 패스워드 인코딩
         user.encodingPassword(encoder.encode(joinDto.getPassword()));
         userRepository.save(user);
-
     }
 
-    //아이디 중복검사
     public void duplicateLoginId(DuplicateLoginIdDto duplicateLoginIdDto) {
         userRepository.findByLoginId(duplicateLoginIdDto.getLoginId())
                 .ifPresent(d -> {
-                        throw new DuplicatedException(DUPLICATE_LOGIN_ID);
+                        throw new DuplicatedException(ErrorCode.DUPLICATE_LOGIN_ID);
                 });
     }
 
-    //이메일 중복검사
     public void duplicateEmail(DuplicateEmailDto duplicateEmailDto) {
         String email = duplicateEmailDto.getEmail();
         userRepository.findByEmail(new Email(email))
             .ifPresent(d -> {
-                throw new DuplicatedException(DUPLICATE_EMAIL);
+                throw new DuplicatedException(ErrorCode.DUPLICATE_EMAIL);
             });
     }
 
     public User login(LoginRequest loginRequest) {
         User findUser = userRepository.findByLoginId(loginRequest.getLoginId())
             .orElseThrow(() -> {
-                throw new CustomIllegalStateException(NOT_REGISTERED_USER);
+                throw new CustomIllegalStateException(ErrorCode.NOT_REGISTERED_USER);
             });
 
         if (!encoder.matches(loginRequest.getPassword(), findUser.getPassword())) {
-            throw new CustomIllegalStateException(WRONG_PASSWORD);
+            throw new CustomIllegalStateException(ErrorCode.WRONG_PASSWORD);
         }
 
         return findUser;
@@ -80,7 +76,7 @@ public class UserService {
     public UserProfileResponse getProfile(Long userId) {
         User findUser = userRepository.findById(userId)
             .orElseThrow(() -> {
-                throw new CustomIllegalStateException(NOT_FOUND_USER);
+                throw new CustomIllegalStateException(ErrorCode.NOT_FOUND_USER);
             });
 
         return new UserProfileResponse(findUser);
@@ -90,7 +86,7 @@ public class UserService {
     public UpdateProfileResponse updateProfile(Long userId, UpdateProfileRequest updateProfileRequest) {
         User findUser = userRepository.findById(userId)
             .orElseThrow(() -> {
-                throw new CustomIllegalStateException(NOT_FOUND_USER);
+                throw new CustomIllegalStateException(ErrorCode.NOT_FOUND_USER);
             });
 
         String updatedNickname = updateProfileRequest.getNickname();
@@ -106,11 +102,11 @@ public class UserService {
     public void updatePassword(Long userId, UpdatePasswordRequest updatePasswordRequest) {
         User findUser = userRepository.findById(userId)
             .orElseThrow(() -> {
-                throw new CustomIllegalStateException(NOT_FOUND_USER);
+                throw new CustomIllegalStateException(ErrorCode.NOT_FOUND_USER);
             });
 
         if (!encoder.matches(updatePasswordRequest.getPassword(), findUser.getPassword())) {
-            throw new CustomIllegalStateException(WRONG_PASSWORD);
+            throw new CustomIllegalStateException(ErrorCode.WRONG_PASSWORD);
         }
 
         String updatePassword = updatePasswordRequest.getUpdatePassword();
@@ -121,50 +117,49 @@ public class UserService {
     public void delete(Long userId) {
         User findUser = userRepository.findById(userId)
             .orElseThrow(() -> {
-                throw new CustomIllegalStateException(NOT_FOUND_USER);
+                throw new CustomIllegalStateException(ErrorCode.NOT_FOUND_USER);
             });
 
         userRepository.delete(findUser);
-
     }
 
-    public ResponseFindIdDto findMyId(FindIdDto findIdDto) {
-        String redisEmail = redisUtil.getData(findIdDto.getCode());
-        String email = findIdDto.getEmail();
+    public FindIdResponse findMyId(FindIdRequest findIdRequest) {
+        String redisEmail = redisUtil.getData(findIdRequest.getCode());
+        String email = findIdRequest.getEmail();
         if (!redisEmail.equals(email)){
             throw new BusinessExceptionHandler(ErrorCode.INVALID_TOKEN);
         }
+
         User findUser = userRepository.findByEmail(new Email(email))
                 .orElseThrow(() -> {
-                    throw new CustomIllegalStateException(NOT_FOUND_USER);
+                    throw new CustomIllegalStateException(ErrorCode.NOT_FOUND_USER);
                 });
 
-        ResponseFindIdDto responseFindIdDto = new ResponseFindIdDto();
-        responseFindIdDto.setLoginId(findUser.getLoginId());
+        FindIdResponse findIdResponse = new FindIdResponse();
+        findIdResponse.setLoginId(findUser.getLoginId());
 
-        return responseFindIdDto;
+        return findIdResponse;
     }
 
     //비밀번호 찾기
-    public void findMyPassword(FindPasswordDto findPasswordDto) {
-        String redisEmail = redisUtil.getData(findPasswordDto.getCode());
-        String email = findPasswordDto.getEmail();
-        String loginId = findPasswordDto.getLoginId();
+    public void findMyPassword(FindPasswordRequest findPasswordRequest) {
+        String redisEmail = redisUtil.getData(findPasswordRequest.getCode());
+        String email = findPasswordRequest.getEmail();
+        String loginId = findPasswordRequest.getLoginId();
 
         if (!redisEmail.equals(email)) {
             throw new BusinessExceptionHandler(ErrorCode.INVALID_TOKEN);
         }
         userRepository.findByEmailAndLoginId(new Email(email), loginId)
                 .orElseThrow(() -> {
-                    throw new CustomIllegalStateException(NOT_FOUND_USER);
-                }); //notfound로 변경
+                    throw new CustomIllegalStateException(ErrorCode.NOT_FOUND_USER);
+                });
 
     }
 
     //이메일 발송
     @Transactional
     public void authEmail(EmailRequest request) {
-
         //인증번호 생성
         Random random = new Random();
         String authKey = String.valueOf(random.nextInt(888888) + 111111); // 범위
