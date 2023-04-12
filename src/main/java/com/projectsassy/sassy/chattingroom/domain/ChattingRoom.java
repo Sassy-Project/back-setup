@@ -10,19 +10,19 @@ import javax.persistence.*;
 @Getter
 @NoArgsConstructor(access = AccessLevel.PROTECTED)
 @Entity
-@Table(name = "CHATTINGROOM")
+@Table(name = "room")
 public class ChattingRoom {
 
     @Id @GeneratedValue
-    @Column(name = "chattingroom_id")
+    @Column(name = "room_id")
     private Long id;
 
-    @ManyToOne
+    @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "send_user_id")
     private User sendUser;
 
-    @ManyToOne
+    @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "receive_user_id")
     private User receiveUser;
-    
+
 }
