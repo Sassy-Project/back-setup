@@ -24,6 +24,9 @@ dependencies {
 	implementation 'org.springframework.boot:spring-boot-starter-web'
 	implementation 'mysql:mysql-connector-java:8.0.32'
 
+	//web socket
+	implementation 'org.springframework.boot:spring-boot-starter-websocket'
+
 	//email 전송
 	implementation 'org.springframework.boot:spring-boot-starter-mail'
 
