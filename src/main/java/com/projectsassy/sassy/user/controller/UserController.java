@@ -2,6 +2,7 @@ package com.projectsassy.sassy.user.controller;
 
 import com.projectsassy.sassy.common.code.ErrorCode;
 import com.projectsassy.sassy.common.code.SuccessCode;
+import com.projectsassy.sassy.user.domain.SessionConst;
 import com.projectsassy.sassy.user.domain.User;
 
 import com.projectsassy.sassy.common.exception.UnauthorizedException;
@@ -20,7 +21,7 @@ import org.springframework.web.bind.annotation.*;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpSession;
 
-import static com.projectsassy.sassy.user.domain.UserConst.USER_ID;
+import static com.projectsassy.sassy.user.domain.SessionConst.USER_ID;
 
 @RestController
 @RequiredArgsConstructor
@@ -81,7 +82,7 @@ public class UserController {
         User findUser = userService.login(loginRequest);
 
         HttpSession session = request.getSession();
-        session.setAttribute(USER_ID, findUser.getId());
+        session.setAttribute(SessionConst.USER_ID, findUser.getId());
         return new ResponseEntity<>(new LoginResponse(findUser.getId(), findUser.getNickname()), HttpStatus.OK);
     }
 
@@ -89,7 +90,7 @@ public class UserController {
     @GetMapping("/{userId}")
     public ResponseEntity<UserProfileResponse> getProfile(
         @PathVariable(value = ("userId")) Long userId,
-        @SessionAttribute(name = "userId", required = false) Long loginUserId
+        @SessionAttribute(name = SessionConst.USER_ID, required = false) Long loginUserId
     ) {
         validateUser(userId, loginUserId);
         UserProfileResponse userProfileResponse = userService.getProfile(userId);
@@ -100,7 +101,7 @@ public class UserController {
     @PatchMapping("/{userId}")
     public ResponseEntity<UpdateProfileResponse> updateProfile(
         @PathVariable(value = ("userId")) Long userId,
-        @SessionAttribute(name = "userId", required = false) Long loginUserId,
+        @SessionAttribute(name = SessionConst.USER_ID, required = false) Long loginUserId,
         @Validated @RequestBody UpdateProfileRequest updateProfileRequest
     ) {
         validateUser(userId, loginUserId);
@@ -112,7 +113,7 @@ public class UserController {
     @PatchMapping("/{userId}/password")
     public ResponseEntity updatePassword(
         @PathVariable(value = ("userId")) Long userId,
-        @SessionAttribute(name = "userId", required = false) Long loginUserId,
+        @SessionAttribute(name = SessionConst.USER_ID, required = false) Long loginUserId,
         @RequestBody UpdatePasswordRequest updatePasswordRequest
     ) {
         validateUser(userId, loginUserId);
@@ -124,7 +125,7 @@ public class UserController {
     @DeleteMapping("/{userId}")
     public ResponseEntity deleteUser(
         @PathVariable(value = ("userId")) Long userId,
-        @SessionAttribute(name = "userId", required = false) Long loginUserId
+        @SessionAttribute(name = SessionConst.USER_ID, required = false) Long loginUserId
     ) {
         validateUser(userId, loginUserId);
         userService.delete(userId);
