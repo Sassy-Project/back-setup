@@ -18,7 +18,6 @@ import javax.mail.MessagingException;
 import javax.mail.internet.MimeMessage;
 import java.util.Random;
 
-import static com.projectsassy.sassy.common.code.ErrorCode.*;
 
 @Service
 @Transactional(readOnly = true)

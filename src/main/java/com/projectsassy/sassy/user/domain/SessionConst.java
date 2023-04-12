@@ -1,6 +1,6 @@
 package com.projectsassy.sassy.user.domain;
 
-public class UserConst {
+public class SessionConst {
 
     public static final String USER_ID = "userId";
 
