@@ -3,6 +3,7 @@ package com.projectsassy.sassy.message.domain;
 import com.projectsassy.sassy.chattingroom.domain.ChattingRoom;
 import com.projectsassy.sassy.user.domain.User;
 import lombok.AccessLevel;
+import lombok.Builder;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import org.springframework.data.annotation.CreatedDate;
@@ -32,4 +33,19 @@ public class Message {
 
     @CreatedDate
     private LocalDateTime createdAt;
+
+    @Builder
+    private Message(ChattingRoom room, User sendUser, String content) {
+        this.room = room;
+        this.sendUser = sendUser;
+        this.content = content;
+    }
+
+    public static Message of(ChattingRoom room, User sendUser, String content) {
+        return Message.builder()
+            .room(room)
+            .sendUser(sendUser)
+            .content(content)
+            .build();
+    }
 }

@@ -73,20 +73,20 @@ public class UserService {
     }
 
     public UserProfileResponse getProfile(Long userId) {
-        User findUser = userRepository.findById(userId)
+        User findUser = findById(userId);
+        return new UserProfileResponse(findUser);
+    }
+
+    public User findById(Long userId) {
+        return userRepository.findById(userId)
             .orElseThrow(() -> {
                 throw new CustomIllegalStateException(ErrorCode.NOT_FOUND_USER);
             });
-
-        return new UserProfileResponse(findUser);
     }
 
     @Transactional
     public UpdateProfileResponse updateProfile(Long userId, UpdateProfileRequest updateProfileRequest) {
-        User findUser = userRepository.findById(userId)
-            .orElseThrow(() -> {
-                throw new CustomIllegalStateException(ErrorCode.NOT_FOUND_USER);
-            });
+        User findUser = findById(userId);
 
         String updatedNickname = updateProfileRequest.getNickname();
         String updatedEmail = updateProfileRequest.getEmail();
@@ -99,10 +99,7 @@ public class UserService {
 
     @Transactional
     public void updatePassword(Long userId, UpdatePasswordRequest updatePasswordRequest) {
-        User findUser = userRepository.findById(userId)
-            .orElseThrow(() -> {
-                throw new CustomIllegalStateException(ErrorCode.NOT_FOUND_USER);
-            });
+        User findUser = findById(userId);
 
         if (!encoder.matches(updatePasswordRequest.getPassword(), findUser.getPassword())) {
             throw new CustomIllegalStateException(ErrorCode.WRONG_PASSWORD);
@@ -114,11 +111,7 @@ public class UserService {
 
     @Transactional
     public void delete(Long userId) {
-        User findUser = userRepository.findById(userId)
-            .orElseThrow(() -> {
-                throw new CustomIllegalStateException(ErrorCode.NOT_FOUND_USER);
-            });
-
+        User findUser = findById(userId);
         userRepository.delete(findUser);
     }
 
@@ -153,7 +146,6 @@ public class UserService {
                 .orElseThrow(() -> {
                     throw new CustomIllegalStateException(ErrorCode.NOT_FOUND_USER);
                 });
-
     }
 
     //이메일 발송
