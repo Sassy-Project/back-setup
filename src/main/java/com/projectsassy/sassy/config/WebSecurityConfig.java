@@ -19,6 +19,8 @@ public class WebSecurityConfig {
                 .httpBasic().disable() // ui에서 들어오는 것. auth 기반의 로그인창이 안뜨도록 설정.(security 사용하면 기본 로그인 창이있음)
                     .csrf().disable() // crosssite 기능. csrf 보안 기능이 rest api 에서 안쓰이므로 disable.
                     .cors()
+                .and()
+                    .headers().frameOptions().sameOrigin()
                 .and()// crosssite 다른 domain 허용
                     .exceptionHandling()
                 .and()
