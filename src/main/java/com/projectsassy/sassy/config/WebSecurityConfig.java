@@ -23,13 +23,12 @@ public class WebSecurityConfig {
                     .cors()
                 .and()
                     .headers().frameOptions().disable()
-                    .addHeaderWriter(new XFrameOptionsHeaderWriter(
-                        XFrameOptionsHeaderWriter.XFrameOptionsMode.DENY
-                    ))
+                    .addHeaderWriter(new StaticHeadersWriter("X-FRAME-OPTIONS", "ALLOW-FROM https://www.16personalities.com/"))
                 .and()// crosssite 다른 domain 허용
                     .exceptionHandling()
                 .and()
                     .authorizeRequests()
+                    .antMatchers("/").permitAll()
                     .antMatchers("/swagger-resources/**").permitAll()
                     .antMatchers("/users/**").permitAll() // user 권한 허용 // 이거 다시
                 .and()
