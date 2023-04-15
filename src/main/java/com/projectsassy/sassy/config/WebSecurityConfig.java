@@ -22,7 +22,7 @@ public class WebSecurityConfig {
                     .cors()
                 .and()
                     .headers().frameOptions().disable()
-                    .addHeaderWriter(new StaticHeadersWriter("X-FRAME-OPTIONS", "ALLOW-FROM projectsassy.net"))
+                    .addHeaderWriter(new StaticHeadersWriter("X-FRAME-OPTIONS", "ALLOW-FROM https://www.16personalities.com/"))
                 .and()// crosssite 다른 domain 허용
                     .exceptionHandling()
                 .and()
