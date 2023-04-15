@@ -63,4 +63,11 @@ public class ChattingRoomService {
             });
         return chattingRoom;
     }
+
+    @Transactional
+    public Long createChattingRoom(User sendUser, Long waitingUserId) {
+        User receiveUser = userService.findById(waitingUserId);
+        ChattingRoom chattingRoom = chattingRoomRepository.save(new ChattingRoom(sendUser, receiveUser));
+        return chattingRoom.getId();
+    }
 }

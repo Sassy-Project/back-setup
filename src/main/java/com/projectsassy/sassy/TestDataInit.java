@@ -32,9 +32,11 @@ public class TestDataInit {
 
             User user1 = User.of("qwer1234", encoder.encode("1q2w3e"), "haha", "qwer@naver.com", "man", "enfp", "image");
             User user2 = User.of("sassy0401", encoder.encode("123456"), "sassy", "sassy@naver.com",  "woman", "intp", "image2");
+            User user3 = User.of("ghdb132", encoder.encode("123456"), "hobin", "ghdb132@naver.com",  "woman", "istp", "image3");
 
             userRepository.save(user1);
             userRepository.save(user2);
+            userRepository.save(user3);
         }
 
     }

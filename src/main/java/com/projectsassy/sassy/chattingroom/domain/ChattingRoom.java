@@ -41,6 +41,11 @@ public class ChattingRoom {
             .build();
     }
 
+    public ChattingRoom (User sendUser, User receiveUser) {
+        this.sendUser = sendUser;
+        this.receiveUser = receiveUser;
+    }
+
     public void enterUser(User receiveUser) {
         this.receiveUser = receiveUser;
     }
