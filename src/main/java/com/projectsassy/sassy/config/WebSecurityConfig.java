@@ -20,7 +20,8 @@ public class WebSecurityConfig {
                     .csrf().disable() // crosssite 기능. csrf 보안 기능이 rest api 에서 안쓰이므로 disable.
                     .cors()
                 .and()
-                    .headers().frameOptions().sameOrigin()
+                    .headers().frameOptions().disable()
+                    .addHeaderWriter(new StaticHeadersWriter("X-FRAME-OPTIONS", "ALLOW-FROM projectsassy.net"))
                 .and()// crosssite 다른 domain 허용
                     .exceptionHandling()
                 .and()
