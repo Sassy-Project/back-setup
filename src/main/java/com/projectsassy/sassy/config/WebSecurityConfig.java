@@ -6,6 +6,7 @@ import org.springframework.context.annotation.Configuration;
 import org.springframework.security.config.annotation.web.builders.HttpSecurity;
 import org.springframework.security.config.annotation.web.configuration.EnableWebSecurity;
 import org.springframework.security.web.SecurityFilterChain;
+import org.springframework.security.web.header.writers.StaticHeadersWriter;
 
 @EnableWebSecurity
 @Configuration
@@ -20,7 +21,8 @@ public class WebSecurityConfig {
                     .csrf().disable() // crosssite 기능. csrf 보안 기능이 rest api 에서 안쓰이므로 disable.
                     .cors()
                 .and()
-                    .headers().frameOptions().sameOrigin()
+                    .headers().frameOptions().disable()
+                    .addHeaderWriter(new StaticHeadersWriter("X-FRAME-OPTIONS", "ALLOW-FROM projectsassy.net"))
                 .and()// crosssite 다른 domain 허용
                     .exceptionHandling()
                 .and()
