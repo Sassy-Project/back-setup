@@ -7,6 +7,7 @@ import org.springframework.security.config.annotation.web.builders.HttpSecurity;
 import org.springframework.security.config.annotation.web.configuration.EnableWebSecurity;
 import org.springframework.security.web.SecurityFilterChain;
 import org.springframework.security.web.header.writers.StaticHeadersWriter;
+import org.springframework.security.web.header.writers.frameoptions.XFrameOptionsHeaderWriter;
 
 @EnableWebSecurity
 @Configuration
@@ -22,7 +23,9 @@ public class WebSecurityConfig {
                     .cors()
                 .and()
                     .headers().frameOptions().disable()
-                    .addHeaderWriter(new StaticHeadersWriter("X-FRAME-OPTIONS", "ALLOW-FROM https://www.16personalities.com/"))
+                    .addHeaderWriter(new XFrameOptionsHeaderWriter(
+                        XFrameOptionsHeaderWriter.XFrameOptionsMode.SAMEORIGIN
+                    ))
                 .and()// crosssite 다른 domain 허용
                     .exceptionHandling()
                 .and()
