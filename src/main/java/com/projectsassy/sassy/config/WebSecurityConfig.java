@@ -24,7 +24,7 @@ public class WebSecurityConfig {
                 .and()
                     .headers().frameOptions().disable()
                     .addHeaderWriter(new XFrameOptionsHeaderWriter(
-                        XFrameOptionsHeaderWriter.XFrameOptionsMode.SAMEORIGIN
+                        XFrameOptionsHeaderWriter.XFrameOptionsMode.DENY
                     ))
                 .and()// crosssite 다른 domain 허용
                     .exceptionHandling()
