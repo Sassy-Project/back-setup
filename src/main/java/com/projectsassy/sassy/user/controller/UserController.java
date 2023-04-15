@@ -31,7 +31,7 @@ public class UserController {
     private final UserService userService;
 
     @ApiOperation(value = "회원가입")
-    @PostMapping("/signUp")
+    @PostMapping("/signup")
     public ResponseEntity<ApiResponse> signUp(@Validated @RequestBody UserJoinDto joinDto) {
         userService.join(joinDto);
         return new ResponseEntity<>(new ApiResponse(SuccessCode.SIGNUP_SUCCESS), HttpStatus.OK);
