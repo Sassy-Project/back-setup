@@ -18,10 +18,11 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.*;
 
+import javax.servlet.http.Cookie;
 import javax.servlet.http.HttpServletRequest;
+import javax.servlet.http.HttpServletResponse;
 import javax.servlet.http.HttpSession;
 
-import static com.projectsassy.sassy.user.domain.SessionConst.USER_ID;
 
 @RestController
 @RequiredArgsConstructor
@@ -78,11 +79,12 @@ public class UserController {
 
     @ApiOperation(value = "로그인")
     @PostMapping("/login")
-    public ResponseEntity<LoginResponse> login(@Validated @RequestBody LoginRequest loginRequest, HttpServletRequest request) {
+    public ResponseEntity<LoginResponse> login(@Validated @RequestBody LoginRequest loginRequest, HttpServletRequest request, HttpServletResponse response) {
         User findUser = userService.login(loginRequest);
 
         HttpSession session = request.getSession();
         session.setAttribute(SessionConst.USER_ID, findUser.getId());
+        response.addCookie(new Cookie("JSESSIONID", session.getId()));
         return new ResponseEntity<>(new LoginResponse(findUser.getId(), findUser.getNickname()), HttpStatus.OK);
     }
 
