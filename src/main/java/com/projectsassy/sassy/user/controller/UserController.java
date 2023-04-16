@@ -87,8 +87,6 @@ public class UserController {
         
         ResponseCookie cookie = ResponseCookie.from("cookie", "1234677")
            .path("/")
-           .sameSite("None")
-           .secure(true)
            .httpOnly(true)
            .domain(".projectsassy.net")
            .maxAge(3000)
