@@ -17,7 +17,9 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.*;
 
+import javax.servlet.http.Cookie;
 import javax.servlet.http.HttpServletRequest;
+import javax.servlet.http.HttpServletResponse;
 import javax.servlet.http.HttpSession;
 
 import static com.projectsassy.sassy.user.domain.UserConst.USER_ID;
@@ -81,7 +83,12 @@ public class UserController {
         User findUser = userService.login(loginRequest);
 
         HttpSession session = request.getSession();
-        session.setAttribute(USER_ID, findUser.getId());
+        session.setAttribute(SessionConst.USER_ID, findUser.getId());
+        Cookie cookie = new Cookie("SESSION_ID", session.getId());
+        cookie.setSecure(true); // https로만 전송 가능
+        cookie.setHttpOnly(true); // JavaScript에서 접근 불가
+        cookie.setPath("/"); // 모든 경로에서 접근 가능
+        response.addCookie(cookie); // 응답 헤더에 쿠키 추가
         return new ResponseEntity<>(new LoginResponse(findUser.getId(), findUser.getNickname()), HttpStatus.OK);
     }
 
