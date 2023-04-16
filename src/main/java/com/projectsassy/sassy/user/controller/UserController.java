@@ -84,8 +84,8 @@ public class UserController {
     public ResponseEntity login(@Validated @RequestBody LoginRequest loginRequest, HttpServletRequest request, HttpServletResponse response) {
         User findUser = userService.login(loginRequest);
 
-        //HttpSession session = request.getSession();
-        //session.setAttribute(USER_ID, findUser.getId());
+        HttpSession session = request.getSession();
+        session.setAttribute(USER_ID, findUser.getId());
         
         ResponseCookie cookie = ResponseCookie.from("cookie", "cookieasdf")
            .path("/")
@@ -94,9 +94,9 @@ public class UserController {
            .domain(".projectsassy.net")
            .build();
         response.addCookie(new Cookie("cookie", "cookieasdf"));
-        //response.setHeader("Set-Cookie", cookie.toString());
-//         HttpHeaders httpHeaders = new HttpHeaders();
-//         httpHeaders.set("set-cookie", "cookie");
+        response.setHeader("Set-Cookie", cookie.toString());
+        HttpHeaders httpHeaders = new HttpHeaders();
+        httpHeaders.set("set-cookie", "cookie");
         return ResponseEntity.status(HttpStatus.OK).build();
     }
 
