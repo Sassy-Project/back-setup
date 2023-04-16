@@ -84,20 +84,18 @@ public class UserController {
     public ResponseEntity login(@Validated @RequestBody LoginRequest loginRequest, HttpServletRequest request, HttpServletResponse response) {
         User findUser = userService.login(loginRequest);
 
-        HttpSession session = request.getSession();
-        session.setAttribute(USER_ID, findUser.getId());
         
-        ResponseCookie cookie = ResponseCookie.from("cookie", "cookieasdf")
+        ResponseCookie cookie = ResponseCookie.from("cookie", "1234677")
            .path("/")
            .sameSite("None")
            .secure(true)
-           .domain(".projectsassy.net")
+           .httpOnly(true)
+           .domain("projectsassy.net")
+           .maxAge(3000)
            .build();
-        response.addCookie(new Cookie("cookie", "cookieasdf"));
-        response.setHeader("Set-Cookie", cookie.toString());
-        HttpHeaders httpHeaders = new HttpHeaders();
-        httpHeaders.set("set-cookie", "cookie");
-        return ResponseEntity.status(HttpStatus.OK).build();
+        
+        response.addHeader("Set-Cookie", cookie.toString());
+        return new ResponseEntity<>(new LoginResponse(findUser.getId(), findUser.getNickname()), HttpStatus.OK);
     }
 
     @ApiOperation(value = "마이페이지 조회")
