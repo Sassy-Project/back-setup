@@ -12,6 +12,7 @@ import com.projectsassy.sassy.user.dto.*;
 import com.projectsassy.sassy.user.service.UserService;
 import io.swagger.annotations.ApiOperation;
 import lombok.RequiredArgsConstructor;
+import org.springframework.http.HttpHeaders;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseCookie;
 import org.springframework.http.ResponseEntity;
@@ -86,15 +87,17 @@ public class UserController {
         //HttpSession session = request.getSession();
         //session.setAttribute(USER_ID, findUser.getId());
         
-        ResponseCookie cookie = ResponseCookie.from("cookie", "cookieasdf")
-            .path("/")
-            .sameSite("None")
-            .secure(true)
-            .domain("http://test.projectsassy.net/")
-            .build();
-        response.addCookie(new Cookie("cookie", "cookieasdf"));
-        response.setHeader("Set-Cookie", cookie.toString());
-        return new ResponseEntity<>(new LoginResponse(findUser.getId(), findUser.getNickname()), HttpStatus.OK);
+        //ResponseCookie cookie = ResponseCookie.from("cookie", "cookieasdf")
+        //    .path("/")
+        //    .sameSite("None")
+        //    .secure(true)
+       //     .domain("http://test.projectsassy.net/")
+       //     .build();
+        //response.addCookie(new Cookie("cookie", "cookieasdf"));
+        //response.setHeader("Set-Cookie", cookie.toString());
+        HttpHeaders httpHeaders = new HttpHeaders();
+        httpHeaders.set("set-cookie", "cookie");
+        return new ResponseEntity<>(new LoginResponse(findUser.getId(), findUser.getNickname()), httpHeaders,HttpStatus.OK);
     }
 
     @ApiOperation(value = "마이페이지 조회")
