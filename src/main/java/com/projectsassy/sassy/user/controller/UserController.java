@@ -22,6 +22,7 @@ import javax.servlet.http.Cookie;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import javax.servlet.http.HttpSession;
+import java.util.UUID;
 
 
 @RestController
@@ -79,13 +80,13 @@ public class UserController {
 
     @ApiOperation(value = "로그인")
     @PostMapping("/login")
-    public ResponseEntity<LoginResponse> login(@Validated @RequestBody LoginRequest loginRequest, HttpServletRequest request, HttpServletResponse response) {
+    public ResponseEntity<LoginResponse> login(@Validated @RequestBody LoginRequest loginRequest, HttpServletResponse response) {
         User findUser = userService.login(loginRequest);
 
-        HttpSession session = request.getSession();
-        session.setAttribute(SessionConst.USER_ID, findUser.getId());
-        response.addCookie(new Cookie("JSESSIONID", session.getId()));
-        return new ResponseEntity<>(new LoginResponse(findUser.getId(), findUser.getNickname()), HttpStatus.OK);
+        Cookie authCookie = new Cookie("authCookie", String.valueOf(findUser.getId()));
+        response.addCookie(authCookie);
+
+        return ResponseEntity.status(HttpStatus.OK).build();
     }
 
     @ApiOperation(value = "마이페이지 조회")
