@@ -83,15 +83,15 @@ public class UserController {
     public ResponseEntity<LoginResponse> login(@Validated @RequestBody LoginRequest loginRequest, HttpServletRequest request, HttpServletResponse response) {
         User findUser = userService.login(loginRequest);
 
-        HttpSession session = request.getSession();
-        session.setAttribute(USER_ID, findUser.getId());
+        //HttpSession session = request.getSession();
+        //session.setAttribute(USER_ID, findUser.getId());
         
-        ResponseCookie cookie = ResponseCookie.from("JSESSIONID", session.getId())
+        ResponseCookie cookie = ResponseCookie.from("cookie", "cookieasdf")
             .path("/")
             .sameSite("None")
             .secure(true)
             .build();
-        response.addCookie(new Cookie("JSESSIONID", session.getId()));
+        response.addCookie(new Cookie("cookie", "cookieasdf"));
         response.setHeader("Set-Cookie", cookie.toString());
         return new ResponseEntity<>(new LoginResponse(findUser.getId(), findUser.getNickname()), HttpStatus.OK);
     }
