@@ -81,23 +81,23 @@ public class UserController {
 
     @ApiOperation(value = "로그인")
     @PostMapping("/login")
-    public ResponseEntity<LoginResponse> login(@Validated @RequestBody LoginRequest loginRequest, HttpServletRequest request, HttpServletResponse response) {
+    public ResponseEntity login(@Validated @RequestBody LoginRequest loginRequest, HttpServletRequest request, HttpServletResponse response) {
         User findUser = userService.login(loginRequest);
 
         //HttpSession session = request.getSession();
         //session.setAttribute(USER_ID, findUser.getId());
         
-        //ResponseCookie cookie = ResponseCookie.from("cookie", "cookieasdf")
-        //    .path("/")
-        //    .sameSite("None")
-        //    .secure(true)
-       //     .domain("http://test.projectsassy.net/")
-       //     .build();
-        //response.addCookie(new Cookie("cookie", "cookieasdf"));
+        ResponseCookie cookie = ResponseCookie.from("cookie", "cookieasdf")
+           .path("/")
+           .sameSite("None")
+           .secure(true)
+           .domain("http://test.projectsassy.net/")
+           .build();
+        response.addCookie(new Cookie("cookie", "cookieasdf"));
         //response.setHeader("Set-Cookie", cookie.toString());
-        HttpHeaders httpHeaders = new HttpHeaders();
-        httpHeaders.set("set-cookie", "cookie");
-        return new ResponseEntity<>(new LoginResponse(findUser.getId(), findUser.getNickname()), httpHeaders,HttpStatus.OK);
+//         HttpHeaders httpHeaders = new HttpHeaders();
+//         httpHeaders.set("set-cookie", "cookie");
+        return ResponseEntity.status(HttpStatus.OK).build();
     }
 
     @ApiOperation(value = "마이페이지 조회")
