@@ -91,7 +91,7 @@ public class UserController {
            .path("/")
            .sameSite("None")
            .secure(true)
-           .domain("localhost")
+           .domain(".projectsassy.net")
            .build();
         response.addCookie(new Cookie("cookie", "cookieasdf"));
         //response.setHeader("Set-Cookie", cookie.toString());
