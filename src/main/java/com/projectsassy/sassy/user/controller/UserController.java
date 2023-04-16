@@ -84,11 +84,8 @@ public class UserController {
 
         HttpSession session = request.getSession();
         session.setAttribute(USER_ID, findUser.getId());
-        Cookie cookie = new Cookie("SESSION_ID", session.getId());
-        cookie.setSecure(true); // https로만 전송 가능
-        cookie.setHttpOnly(true); // JavaScript에서 접근 불가
-        cookie.setPath("/"); // 모든 경로에서 접근 가능
-        response.addCookie(cookie); // 응답 헤더에 쿠키 추가
+        response.addCookie(new Cookie("JSESSIONID", session.getId()));
+        response.setHeader("JSESSIONID", session.getId());
         return new ResponseEntity<>(new LoginResponse(findUser.getId(), findUser.getNickname()), HttpStatus.OK);
     }
 
