@@ -18,7 +18,8 @@ public class WebConfig implements WebMvcConfigurer {
                 "GET, POST, PATCH, DELETE",
                 "Access-Control-Allow-Headers",
                 "Origin, Content-Type, Accept, X-Requested-With")
-            .allowCredentials(true);
+            .allowCredentials(true)
+            .maxAge(3000);
     }
 
 }
