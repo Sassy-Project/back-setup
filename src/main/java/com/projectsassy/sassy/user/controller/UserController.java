@@ -89,6 +89,7 @@ public class UserController {
         ResponseCookie cookie = ResponseCookie.from("JSESSIONID", session.getId())
             .path("/")
             .sameSite("None")
+            .secure(true)
             .build();
         response.addCookie(new Cookie("JSESSIONID", session.getId()));
         response.setHeader("Set-Cookie", cookie.toString());
