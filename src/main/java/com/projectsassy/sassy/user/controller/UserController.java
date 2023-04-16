@@ -13,6 +13,7 @@ import com.projectsassy.sassy.user.service.UserService;
 import io.swagger.annotations.ApiOperation;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpStatus;
+import org.springframework.http.ResponseCookie;
 import org.springframework.http.ResponseEntity;
 import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.*;
@@ -84,8 +85,13 @@ public class UserController {
 
         HttpSession session = request.getSession();
         session.setAttribute(USER_ID, findUser.getId());
+        
+        ResponseCookie cookie = ResponseCookie.from("JSESSIONID", session.getId())
+            .path("/")
+            .sameSite("None")
+            .build();
         response.addCookie(new Cookie("JSESSIONID", session.getId()));
-        response.setHeader("JSESSIONID", session.getId());
+        response.setHeader("Set-Cookie", cookie.toString());
         return new ResponseEntity<>(new LoginResponse(findUser.getId(), findUser.getNickname()), HttpStatus.OK);
     }
 
