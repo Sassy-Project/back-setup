@@ -90,7 +90,7 @@ public class UserController {
            .sameSite("None")
            .secure(true)
            .httpOnly(true)
-           .domain("projectsassy.net")
+           .domain(".projectsassy.net")
            .maxAge(3000)
            .build();
         
