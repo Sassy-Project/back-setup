@@ -8,6 +8,7 @@ import com.projectsassy.sassy.user.domain.User;
 import com.projectsassy.sassy.user.service.UserService;
 import com.projectsassy.sassy.websoket.second.MatchRequest;
 import com.projectsassy.sassy.websoket.second.MbtiCondition;
+import com.projectsassy.sassy.websoket.second.MessageRequest2;
 import com.projectsassy.sassy.websoket.second.WaitingRequest;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.ResponseEntity;
@@ -83,7 +84,7 @@ public class ChatController {
         //나의 mbti와 내가 원하는 mbti로 대기 줄 waiting에 mbti 조건으로 추가. -> 이 조건을 이용하여 매칭.
         MbtiCondition mbtiCondition = new MbtiCondition(myMbti, selectMbti);
         waiting.put(userId, mbtiCondition);
-        
+
 //        로그
 //        System.out.println(waiting.size());
 //        System.out.println(waiting.get(userId).getMyMbti());
@@ -92,7 +93,7 @@ public class ChatController {
         //waiting에 2명 이상이 있을때
         if (waiting.size() > 1) {
             for (Long waitingUserId : waiting.keySet()) {
-                
+
                 //waiting map에서 for 문을 이용해 탐색할 때 탐색하는 값이 '나' 라면 스킵.
                 if (userId == waitingUserId) continue;
 
@@ -115,8 +116,11 @@ public class ChatController {
 
             }
         }
-
     }
 
-    
+    @MessageMapping("/chat/match/{roomId}")
+    public void sendMessage(@DestinationVariable("roomId") Long roomId, MessageRequest2 messageRequest) {//type:여기도 2가지?, roomId, sendUserId, content
+        simpMessageSendingOperations.convertAndSend("/sub/chat/match/" + roomId, messageRequest);
+        messageService.saveMessage2(roomId, messageRequest);
+    }
 }
