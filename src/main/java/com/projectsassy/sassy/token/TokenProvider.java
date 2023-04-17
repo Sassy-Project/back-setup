@@ -74,8 +74,9 @@ public class TokenProvider {
 
     public Authentication getAuthentication(String accessToken) {
         // 토큰 복호화
+        log.info("accessToken={}", accessToken);
         Claims claims = parseClaims(accessToken);
-
+        log.info("claims={}", claims);
         if (claims.get(AUTHORITIES_KEY) == null) {
             throw new CustomIllegalStateException(ErrorCode.NO_INFORMATION);
         }

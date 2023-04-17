@@ -9,5 +9,5 @@ public class TokenRequest {
 
     private String refreshToken;
 
-    private String AccessToken;
+    private String accessToken;
 }

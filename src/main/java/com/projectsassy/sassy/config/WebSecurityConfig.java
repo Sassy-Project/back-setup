@@ -46,7 +46,11 @@ public class WebSecurityConfig {
                 .and()
                     .authorizeRequests()
                     .antMatchers("/swagger-resources/**").permitAll()
-                    .antMatchers("/users/**").permitAll() // user 권한 허용 // 이거 다시
+                    .antMatchers(
+                            "/users/signup", "/users/login", "/users/signup/id", "/users/signup/email",
+                            "/users/find/id", "/users/find/password", "/users/email"
+                    )
+                    .permitAll() // user 권한 허용 // 이거 다시
                     .anyRequest().authenticated()   // 나머지 API 는 전부 인증 필요
                 .and()
                     .sessionManagement()

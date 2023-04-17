@@ -213,11 +213,9 @@ public class UserService {
         if (!tokenProvider.validateToken(tokenRequest.getRefreshToken())) {
             throw new CustomIllegalStateException(ErrorCode.INVALID_TOKEN);
         }
-
         // 2. Access Token 에서 User ID 가져오기
         Authentication authentication = tokenProvider.getAuthentication(tokenRequest.getAccessToken());
         String loginId = authentication.getName();
-
         // 3. 저장소에서 User ID 를 기반으로 Refresh Token 값 가져오기
         String refreshToken = redisUtil.getData(loginId);
         if (refreshToken == null) {
