@@ -55,10 +55,11 @@ public class User {
         this.password = password;
     }
 
-    public void updateProfile(String updatedNickname, String updatedEmail, String updatedMbti) {
+    public void updateProfile(String updatedNickname, String updatedEmail, String updatedMbti, String updateGender) {
         this.nickname = updatedNickname;
         this.email = new Email(updatedEmail);
         this.mbti = updatedMbti;
+        this.gender = updateGender;
     }
 
     public void changePassword(String updatePassword) {

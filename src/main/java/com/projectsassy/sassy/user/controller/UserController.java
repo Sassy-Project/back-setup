@@ -1,10 +1,8 @@
 package com.projectsassy.sassy.user.controller;
 
-import com.projectsassy.sassy.common.code.ErrorCode;
 import com.projectsassy.sassy.common.code.SuccessCode;
 import com.projectsassy.sassy.user.domain.User;
 
-import com.projectsassy.sassy.common.exception.UnauthorizedException;
 import com.projectsassy.sassy.common.response.ApiResponse;
 import com.projectsassy.sassy.user.dto.EmailRequest;
 import com.projectsassy.sassy.user.dto.*;
@@ -24,7 +22,6 @@ import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import javax.servlet.http.HttpSession;
 
-import static com.projectsassy.sassy.user.domain.UserConst.USER_ID;
 
 @RestController
 @RequiredArgsConstructor
@@ -34,7 +31,7 @@ public class UserController {
     private final UserService userService;
 
     @ApiOperation(value = "회원가입")
-    @PostMapping("/signUp")
+    @PostMapping("/signup")
     public ResponseEntity<ApiResponse> signUp(@Validated @RequestBody UserJoinDto joinDto) {
         userService.join(joinDto);
         return new ResponseEntity<>(new ApiResponse(SuccessCode.SIGNUP_SUCCESS), HttpStatus.OK);
@@ -42,7 +39,7 @@ public class UserController {
 
 
     @ApiOperation(value = "회원가입 시 아이디 중복 검사")
-    @PostMapping("/signUp/id")
+    @PostMapping("/signup/id")
     public ResponseEntity<ApiResponse> duplicateLoginId(@Validated @RequestBody DuplicateLoginIdDto duplicateLoginIdDto) {
         userService.duplicateLoginId(duplicateLoginIdDto);
         return new ResponseEntity<>(new ApiResponse(SuccessCode.CAN_USE_ID), HttpStatus.OK);
@@ -50,7 +47,7 @@ public class UserController {
 
 
     @ApiOperation(value = "회원가입 시 이메일 중복 검사")
-    @PostMapping("/signUp/email")
+    @PostMapping("/signup/email")
     public ResponseEntity<ApiResponse> duplicateEmail(@Validated @RequestBody DuplicateEmailDto duplicateEmailDto) {
         userService.duplicateEmail(duplicateEmailDto);
         return new ResponseEntity<>(new ApiResponse(SuccessCode.CAN_USE_EMAIL), HttpStatus.OK);
@@ -81,7 +78,7 @@ public class UserController {
 
     @ApiOperation(value = "로그인")
     @PostMapping("/login")
-    public ResponseEntity login(@Validated @RequestBody LoginRequest loginRequest, HttpServletRequest request, HttpServletResponse response) {
+    public ResponseEntity<LoginResponse> login(@Validated @RequestBody LoginRequest loginRequest, HttpServletResponse response) {
         User findUser = userService.login(loginRequest);
 
         ResponseCookie cookie1 = ResponseCookie.from("userCookie1", "userAuth1")
@@ -105,54 +102,32 @@ public class UserController {
 
     @ApiOperation(value = "마이페이지 조회")
     @GetMapping("/{userId}")
-    public ResponseEntity<UserProfileResponse> getProfile(
-        @PathVariable(value = ("userId")) Long userId,
-        @SessionAttribute(name = "userId", required = false) Long loginUserId
-    ) {
-        validateUser(userId, loginUserId);
+    public ResponseEntity<UserProfileResponse> getProfile(@PathVariable(value = ("userId")) Long userId) {
         UserProfileResponse userProfileResponse = userService.getProfile(userId);
         return new ResponseEntity<>(userProfileResponse, HttpStatus.OK);
     }
 
     @ApiOperation(value = "마이페이지 수정")
     @PatchMapping("/{userId}")
-    public ResponseEntity<UpdateProfileResponse> updateProfile(
-        @PathVariable(value = ("userId")) Long userId,
-        @SessionAttribute(name = "userId", required = false) Long loginUserId,
-        @Validated @RequestBody UpdateProfileRequest updateProfileRequest
-    ) {
-        validateUser(userId, loginUserId);
+    public ResponseEntity<UpdateProfileResponse> updateProfile(@PathVariable(value = ("userId")) Long userId,
+                                                               @Validated @RequestBody UpdateProfileRequest updateProfileRequest) {
         UpdateProfileResponse updateProfileResponse = userService.updateProfile(userId, updateProfileRequest);
         return new ResponseEntity<>(updateProfileResponse, HttpStatus.OK);
     }
 
     @ApiOperation(value = "비밀번호 수정")
     @PatchMapping("/{userId}/password")
-    public ResponseEntity updatePassword(
-        @PathVariable(value = ("userId")) Long userId,
-        @SessionAttribute(name = "userId", required = false) Long loginUserId,
-        @RequestBody UpdatePasswordRequest updatePasswordRequest
-    ) {
-        validateUser(userId, loginUserId);
+    public ResponseEntity updatePassword(@PathVariable(value = ("userId")) Long userId,
+                                         @RequestBody UpdatePasswordRequest updatePasswordRequest) {
         userService.updatePassword(userId, updatePasswordRequest);
         return new ResponseEntity<>(new ApiResponse(SuccessCode.UPDATE_PASSWORD), HttpStatus.OK);
     }
 
     @ApiOperation(value = "회원 삭제")
     @DeleteMapping("/{userId}")
-    public ResponseEntity deleteUser(
-        @PathVariable(value = ("userId")) Long userId,
-        @SessionAttribute(name = "userId", required = false) Long loginUserId
-    ) {
-        validateUser(userId, loginUserId);
+    public ResponseEntity deleteUser(@PathVariable(value = ("userId")) Long userId) {
         userService.delete(userId);
         return new ResponseEntity<>(new ApiResponse(SuccessCode.DELETE_USER), HttpStatus.OK);
-    }
-
-    private static void validateUser(Long userId, Long loginUserId) {
-        if (loginUserId == null || userId != loginUserId) {
-            throw new UnauthorizedException(ErrorCode.UNAUTHORIZED);
-        }
     }
 
 }

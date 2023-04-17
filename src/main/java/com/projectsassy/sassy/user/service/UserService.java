@@ -18,7 +18,6 @@ import javax.mail.MessagingException;
 import javax.mail.internet.MimeMessage;
 import java.util.Random;
 
-import static com.projectsassy.sassy.common.code.ErrorCode.*;
 
 @Service
 @Transactional(readOnly = true)
@@ -74,36 +73,39 @@ public class UserService {
     }
 
     public UserProfileResponse getProfile(Long userId) {
-        User findUser = userRepository.findById(userId)
+        User findUser = findById(userId);
+
+        return new UserProfileResponse(findUser.getLoginId(),
+            findUser.getNickname(),
+            findUser.getEmail().getEmail(),
+            findUser.getMbti(),
+            findUser.getGender());
+    }
+
+    public User findById(Long userId) {
+        return userRepository.findById(userId)
             .orElseThrow(() -> {
                 throw new CustomIllegalStateException(ErrorCode.NOT_FOUND_USER);
             });
-
-        return new UserProfileResponse(findUser);
     }
 
     @Transactional
     public UpdateProfileResponse updateProfile(Long userId, UpdateProfileRequest updateProfileRequest) {
-        User findUser = userRepository.findById(userId)
-            .orElseThrow(() -> {
-                throw new CustomIllegalStateException(ErrorCode.NOT_FOUND_USER);
-            });
+        User findUser = findById(userId);
 
         String updatedNickname = updateProfileRequest.getNickname();
         String updatedEmail = updateProfileRequest.getEmail();
         String updatedMbti = updateProfileRequest.getMbti();
+        String updateGender = updateProfileRequest.getGender();
 
-        findUser.updateProfile(updatedNickname, updatedEmail, updatedMbti);
+        findUser.updateProfile(updatedNickname, updatedEmail, updatedMbti, updateGender);
 
-        return new UpdateProfileResponse(findUser.getNickname());
+        return new UpdateProfileResponse(updatedNickname, updatedEmail, updatedMbti, updateGender);
     }
 
     @Transactional
     public void updatePassword(Long userId, UpdatePasswordRequest updatePasswordRequest) {
-        User findUser = userRepository.findById(userId)
-            .orElseThrow(() -> {
-                throw new CustomIllegalStateException(ErrorCode.NOT_FOUND_USER);
-            });
+        User findUser = findById(userId);
 
         if (!encoder.matches(updatePasswordRequest.getPassword(), findUser.getPassword())) {
             throw new CustomIllegalStateException(ErrorCode.WRONG_PASSWORD);
@@ -115,11 +117,7 @@ public class UserService {
 
     @Transactional
     public void delete(Long userId) {
-        User findUser = userRepository.findById(userId)
-            .orElseThrow(() -> {
-                throw new CustomIllegalStateException(ErrorCode.NOT_FOUND_USER);
-            });
-
+        User findUser = findById(userId);
         userRepository.delete(findUser);
     }
 
@@ -141,7 +139,6 @@ public class UserService {
         return findIdResponse;
     }
 
-    //비밀번호 찾기
     public void findMyPassword(FindPasswordRequest findPasswordRequest) {
         String redisEmail = redisUtil.getData(findPasswordRequest.getCode());
         String email = findPasswordRequest.getEmail();
