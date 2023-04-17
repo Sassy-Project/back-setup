@@ -38,21 +38,13 @@ public class WebSecurityConfig {
                     .cors()// crosssite 다른 domain 허용. webconfig에서 설정.
                 .and()
                     .headers().frameOptions().sameOrigin()
-                .and()
-
-                    .headers().frameOptions().disable()
                 .and()// exception handling 할 때 우리가 만든 클래스를 추가
 
                     .exceptionHandling()
                     .authenticationEntryPoint(jwtAuthenticationEntryPoint)
                     .accessDeniedHandler(jwtAccessDeniedHandler)
                 .and()
-                    .headers()
-                    .frameOptions()
-                    .sameOrigin()
-                .and()
                     .authorizeRequests()
-//                    .antMatchers("/auth/**").permitAll()
                     .antMatchers("/swagger-resources/**").permitAll()
                     .antMatchers("/users/**").permitAll() // user 권한 허용 // 이거 다시
                     .anyRequest().authenticated()   // 나머지 API 는 전부 인증 필요

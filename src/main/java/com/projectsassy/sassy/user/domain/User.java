@@ -27,6 +27,9 @@ public class User {
     @Embedded
     private Email email;
 
+    @Enumerated(EnumType.STRING)
+    private Role role;
+
     @Builder
     private User(String loginId, String password, String nickname, String email, String gender, String mbti, String image) {
         this.loginId = loginId;
@@ -36,6 +39,7 @@ public class User {
         this.gender = gender;
         this.mbti = mbti;
         this.image = image;
+        this.role = Role.ROLE_USER;
     }
 
     public static User of(String loginId, String password, String nickname, String email, String gender, String mbti, String image) {
