@@ -24,7 +24,9 @@ public enum ErrorCode {
     NOT_REGISTERED_USER(404, "U004", "등록되지 않은 사용자입니다."),
     WRONG_PASSWORD(400, "U005", "비밀번호가 틀렸습니다."),
     NOT_FOUND_USER(404, "U006", "유저를 찾을 수 없습니다."),
-    INVALID_TOKEN(400, "U007", "유효하지 않은 인증번호 입니다.");
+    INVALID_TOKEN(400, "U007", "유효하지 않은 인증번호 입니다."),
+    NO_INFORMATION(400, "U008", "권한 정보가 없는 토큰입니다."),
+    NOT_FOUND_INFORMATION(404, "U009", "Security Context 에 인증 정보가 없습니다.");
 
 
     //에러의 코드 상태 반환
