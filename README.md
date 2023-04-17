@@ -26,3 +26,5 @@
 2. deploy.yml에 따라 빌드된 jar는 AWS의 S3에 저장
 3. AWS Code Deploy에게 S3에 저장된 jar 파일을 EC2 배포 명령
 4. AWS EC2 서버에 배포
+
+돼라 된다 됐다 이번에 진짜 찐막 다시

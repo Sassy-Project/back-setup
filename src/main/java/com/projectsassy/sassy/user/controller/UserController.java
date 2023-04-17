@@ -10,13 +10,17 @@ import com.projectsassy.sassy.user.dto.*;
 import com.projectsassy.sassy.user.service.UserService;
 import io.swagger.annotations.ApiOperation;
 import lombok.RequiredArgsConstructor;
+import org.springframework.http.HttpHeaders;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseCookie;
 import org.springframework.http.ResponseEntity;
 import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.*;
 
+import javax.servlet.http.Cookie;
+import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
+import javax.servlet.http.HttpSession;
 
 
 @RestController
@@ -87,7 +91,7 @@ public class UserController {
         ResponseCookie cookie2 = ResponseCookie.from("userCookie2", "userAuth2")
             .path("/")
             .httpOnly(true)
-            .domain(".localhost")
+            .domain("localhost")
             .maxAge(3000)
             .build();
 
