@@ -2,6 +2,7 @@ package com.projectsassy.sassy.user.controller;
 
 import com.projectsassy.sassy.common.code.SuccessCode;
 import com.projectsassy.sassy.token.dto.TokenDto;
+import com.projectsassy.sassy.token.dto.TokenRequest;
 import com.projectsassy.sassy.user.domain.User;
 
 import com.projectsassy.sassy.common.response.ApiResponse;
@@ -101,6 +102,13 @@ public class UserController {
         return new ResponseEntity<>(tokenDto, HttpStatus.OK);
     }
 
+    @ApiOperation(value = "토큰 재발급")
+    @PostMapping("/reissue")
+    public ResponseEntity<TokenDto> reissue(@RequestBody TokenRequest tokenRequest) {
+        TokenDto responseToken = userService.reissue(tokenRequest);
+        return new ResponseEntity<>(responseToken, HttpStatus.OK);
+    }
+
     @ApiOperation(value = "마이페이지 조회")
     @GetMapping("/{userId}")
     public ResponseEntity<UserProfileResponse> getProfile(@PathVariable(value = ("userId")) Long userId) {
@@ -130,5 +138,6 @@ public class UserController {
         userService.delete(userId);
         return new ResponseEntity<>(new ApiResponse(SuccessCode.DELETE_USER), HttpStatus.OK);
     }
+
 
 }

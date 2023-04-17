@@ -6,7 +6,7 @@ import com.projectsassy.sassy.common.exception.CustomIllegalStateException;
 import com.projectsassy.sassy.token.TokenProvider;
 import com.projectsassy.sassy.token.domain.RefreshToken;
 import com.projectsassy.sassy.token.dto.TokenDto;
-import com.projectsassy.sassy.token.repository.RefreshTokenRepository;
+import com.projectsassy.sassy.token.dto.TokenRequest;
 import com.projectsassy.sassy.user.domain.Email;
 import com.projectsassy.sassy.user.domain.User;
 import com.projectsassy.sassy.user.dto.*;
@@ -34,7 +34,6 @@ public class UserService {
 
     private final AuthenticationManagerBuilder authenticationManagerBuilder;
     private final UserRepository userRepository;
-    private final RefreshTokenRepository refreshTokenRepository;
     private final BCryptPasswordEncoder encoder;
     private final JavaMailSender javaMailSender;
     private final RedisUtil redisUtil;
@@ -42,12 +41,10 @@ public class UserService {
 
 
     public UserService(AuthenticationManagerBuilder authenticationManagerBuilder, UserRepository userRepository,
-                       RefreshTokenRepository refreshTokenRepository, BCryptPasswordEncoder encoder,
-                       JavaMailSender javaMailSender, RedisUtil redisUtil, TokenProvider tokenProvider
+                       BCryptPasswordEncoder encoder, JavaMailSender javaMailSender, RedisUtil redisUtil, TokenProvider tokenProvider
     ) {
         this.authenticationManagerBuilder = authenticationManagerBuilder;
         this.userRepository = userRepository;
-        this.refreshTokenRepository = refreshTokenRepository;
         this.encoder = encoder;
         this.javaMailSender = javaMailSender;
         this.redisUtil = redisUtil;
@@ -92,8 +89,7 @@ public class UserService {
                 .value(tokenDto.getRefreshToken())
                 .build();
 
-        refreshTokenRepository.save(refreshToken);
-
+          redisUtil.setDataExpire(loginRequest.getLoginId(), tokenDto.getRefreshToken(), 1000 * 60 * 60 * 24 * 7);
         return tokenDto;
     }
 
@@ -150,7 +146,7 @@ public class UserService {
         String redisEmail = redisUtil.getData(findIdRequest.getCode());
         String email = findIdRequest.getEmail();
         if (!redisEmail.equals(email)){
-            throw new BusinessExceptionHandler(ErrorCode.INVALID_TOKEN);
+            throw new BusinessExceptionHandler(ErrorCode.INVALID_NUMBER);
         }
 
         User findUser = userRepository.findByEmail(new Email(email))
@@ -170,7 +166,7 @@ public class UserService {
         String loginId = findPasswordRequest.getLoginId();
 
         if (!redisEmail.equals(email)) {
-            throw new BusinessExceptionHandler(ErrorCode.INVALID_TOKEN);
+            throw new BusinessExceptionHandler(ErrorCode.INVALID_NUMBER);
         }
         userRepository.findByEmailAndLoginId(new Email(email), loginId)
                 .orElseThrow(() -> {
@@ -210,5 +206,35 @@ public class UserService {
         //유효시간
         redisUtil.setDataExpire(authKey, email, 60*5L);
 
+    }
+
+    public TokenDto reissue(TokenRequest tokenRequest) {
+        // 1. 검증
+        if (!tokenProvider.validateToken(tokenRequest.getRefreshToken())) {
+            throw new CustomIllegalStateException(ErrorCode.INVALID_TOKEN);
+        }
+
+        // 2. Access Token 에서 User ID 가져오기
+        Authentication authentication = tokenProvider.getAuthentication(tokenRequest.getAccessToken());
+        String loginId = authentication.getName();
+
+        // 3. 저장소에서 User ID 를 기반으로 Refresh Token 값 가져오기
+        String refreshToken = redisUtil.getData(loginId);
+        if (refreshToken == null) {
+            throw new CustomIllegalStateException(ErrorCode.INVALID_TOKEN);
+        }
+
+        // 4. Refresh Token 일치하는지 검사
+        if (!refreshToken.equals(tokenRequest.getRefreshToken())) {
+            throw new CustomIllegalStateException(ErrorCode.NO_MATCHES_INFO);
+        }
+
+        // 5. 새로운 토큰 생성
+        TokenDto tokenDto = tokenProvider.generateTokenDto(authentication);
+
+        // 6. 저장소 정보 업데이트
+        redisUtil.setDataExpire(loginId, tokenDto.getRefreshToken(), 1000 * 60 * 60 * 24 * 7);
+
+        return tokenDto;
     }
 }
