@@ -84,15 +84,22 @@ public class UserController {
     public ResponseEntity login(@Validated @RequestBody LoginRequest loginRequest, HttpServletRequest request, HttpServletResponse response) {
         User findUser = userService.login(loginRequest);
 
-        
         ResponseCookie cookie1 = ResponseCookie.from("userCookie1", "userAuth1")
             .path("/")
             .httpOnly(true)
-            .domain(".projectsassy.net, .localhost")
+            .domain(".projectsassy.net")
+            .maxAge(3000)
+            .build();
+
+        ResponseCookie cookie2 = ResponseCookie.from("userCookie2", "userAuth2")
+            .path("/")
+            .httpOnly(true)
+            .domain(".localhost")
             .maxAge(3000)
             .build();
 
         response.addHeader("Set-Cookie", cookie1.toString());
+        response.addHeader("Set-Cookie", cookie2.toString());
         return new ResponseEntity<>(new LoginResponse(findUser.getId(), findUser.getNickname()), HttpStatus.OK);
     }
 
