@@ -12,6 +12,7 @@ import com.projectsassy.sassy.user.domain.User;
 import com.projectsassy.sassy.user.dto.*;
 import com.projectsassy.sassy.common.exception.user.DuplicatedException;
 import com.projectsassy.sassy.user.repository.UserRepository;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.mail.javamail.JavaMailSender;
 import org.springframework.mail.javamail.MimeMessageHelper;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
@@ -28,6 +29,7 @@ import java.util.Random;
 
 @Service
 @Transactional(readOnly = true)
+@Slf4j
 public class UserService {
 
     private final AuthenticationManagerBuilder authenticationManagerBuilder;
@@ -78,16 +80,8 @@ public class UserService {
 
     public TokenDto login(LoginRequest loginRequest) {
 
-        User findUser = userRepository.findByLoginId(loginRequest.getLoginId())
-            .orElseThrow(() -> {
-                throw new CustomIllegalStateException(ErrorCode.NOT_REGISTERED_USER);
-            });
-
-        if (!encoder.matches(loginRequest.getPassword(), findUser.getPassword())) {
-            throw new CustomIllegalStateException(ErrorCode.WRONG_PASSWORD);
-        }
         UsernamePasswordAuthenticationToken authenticationToken =
-                new UsernamePasswordAuthenticationToken(findUser, loginRequest.getPassword());
+                new UsernamePasswordAuthenticationToken(loginRequest.getLoginId(), loginRequest.getPassword());
 
         Authentication authenticate = authenticationManagerBuilder.getObject().authenticate(authenticationToken);
 
