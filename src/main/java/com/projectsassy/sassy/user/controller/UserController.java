@@ -85,14 +85,14 @@ public class UserController {
         User findUser = userService.login(loginRequest);
 
         
-        ResponseCookie cookie = ResponseCookie.from("cookie", "1234677")
-           .path("/")
-           .httpOnly(true)
-           .domain(".projectsassy.net")
-           .maxAge(3000)
-           .build();
-        
-        response.addHeader("Set-Cookie", cookie.toString());
+        ResponseCookie cookie1 = ResponseCookie.from("userCookie1", "userAuth1")
+            .path("/")
+            .httpOnly(true)
+            .domain(".projectsassy.net, .localhost")
+            .maxAge(3000)
+            .build();
+
+        response.addHeader("Set-Cookie", cookie1.toString());
         return new ResponseEntity<>(new LoginResponse(findUser.getId(), findUser.getNickname()), HttpStatus.OK);
     }
 
