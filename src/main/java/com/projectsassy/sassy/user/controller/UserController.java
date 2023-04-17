@@ -1,6 +1,7 @@
 package com.projectsassy.sassy.user.controller;
 
 import com.projectsassy.sassy.common.code.SuccessCode;
+import com.projectsassy.sassy.token.dto.TokenDto;
 import com.projectsassy.sassy.user.domain.User;
 
 import com.projectsassy.sassy.common.response.ApiResponse;
@@ -78,8 +79,8 @@ public class UserController {
 
     @ApiOperation(value = "로그인")
     @PostMapping("/login")
-    public ResponseEntity<LoginResponse> login(@Validated @RequestBody LoginRequest loginRequest, HttpServletResponse response) {
-        User findUser = userService.login(loginRequest);
+    public ResponseEntity<TokenDto> login(@Validated @RequestBody LoginRequest loginRequest, HttpServletResponse response) {
+        TokenDto tokenDto = userService.login(loginRequest);
 
         ResponseCookie cookie1 = ResponseCookie.from("userCookie1", "userAuth1")
             .path("/")
@@ -97,7 +98,7 @@ public class UserController {
 
         response.addHeader("Set-Cookie", cookie1.toString());
         response.addHeader("Set-Cookie", cookie2.toString());
-        return new ResponseEntity<>(new LoginResponse(findUser.getId(), findUser.getNickname()), HttpStatus.OK);
+        return new ResponseEntity<>(tokenDto, HttpStatus.OK);
     }
 
     @ApiOperation(value = "마이페이지 조회")

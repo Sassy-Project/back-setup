@@ -41,7 +41,6 @@ public class WebSecurityConfig {
                 .and()
 
                     .headers().frameOptions().disable()
-                    .addHeaderWriter(new StaticHeadersWriter("X-FRAME-OPTIONS", "ALLOW-FROM https://www.16personalities.com/"))
                 .and()// exception handling 할 때 우리가 만든 클래스를 추가
 
                     .exceptionHandling()

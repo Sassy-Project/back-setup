@@ -3,6 +3,10 @@ package com.projectsassy.sassy.user.service;
 import com.projectsassy.sassy.common.code.ErrorCode;
 import com.projectsassy.sassy.common.exception.BusinessExceptionHandler;
 import com.projectsassy.sassy.common.exception.CustomIllegalStateException;
+import com.projectsassy.sassy.token.TokenProvider;
+import com.projectsassy.sassy.token.domain.RefreshToken;
+import com.projectsassy.sassy.token.dto.TokenDto;
+import com.projectsassy.sassy.token.repository.RefreshTokenRepository;
 import com.projectsassy.sassy.user.domain.Email;
 import com.projectsassy.sassy.user.domain.User;
 import com.projectsassy.sassy.user.dto.*;
@@ -10,6 +14,9 @@ import com.projectsassy.sassy.common.exception.user.DuplicatedException;
 import com.projectsassy.sassy.user.repository.UserRepository;
 import org.springframework.mail.javamail.JavaMailSender;
 import org.springframework.mail.javamail.MimeMessageHelper;
+import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
+import org.springframework.security.config.annotation.authentication.builders.AuthenticationManagerBuilder;
+import org.springframework.security.core.Authentication;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -23,16 +30,26 @@ import java.util.Random;
 @Transactional(readOnly = true)
 public class UserService {
 
+    private final AuthenticationManagerBuilder authenticationManagerBuilder;
     private final UserRepository userRepository;
+    private final RefreshTokenRepository refreshTokenRepository;
     private final BCryptPasswordEncoder encoder;
     private final JavaMailSender javaMailSender;
     private final RedisUtil redisUtil;
+    private final TokenProvider tokenProvider;
 
-    public UserService(UserRepository userRepository, BCryptPasswordEncoder encoder, JavaMailSender javaMailSender, RedisUtil redisUtil) {
+
+    public UserService(AuthenticationManagerBuilder authenticationManagerBuilder, UserRepository userRepository,
+                       RefreshTokenRepository refreshTokenRepository, BCryptPasswordEncoder encoder,
+                       JavaMailSender javaMailSender, RedisUtil redisUtil, TokenProvider tokenProvider
+    ) {
+        this.authenticationManagerBuilder = authenticationManagerBuilder;
         this.userRepository = userRepository;
+        this.refreshTokenRepository = refreshTokenRepository;
         this.encoder = encoder;
         this.javaMailSender = javaMailSender;
         this.redisUtil = redisUtil;
+        this.tokenProvider = tokenProvider;
     }
 
 
@@ -59,7 +76,8 @@ public class UserService {
             });
     }
 
-    public User login(LoginRequest loginRequest) {
+    public TokenDto login(LoginRequest loginRequest) {
+
         User findUser = userRepository.findByLoginId(loginRequest.getLoginId())
             .orElseThrow(() -> {
                 throw new CustomIllegalStateException(ErrorCode.NOT_REGISTERED_USER);
@@ -68,8 +86,21 @@ public class UserService {
         if (!encoder.matches(loginRequest.getPassword(), findUser.getPassword())) {
             throw new CustomIllegalStateException(ErrorCode.WRONG_PASSWORD);
         }
+        UsernamePasswordAuthenticationToken authenticationToken =
+                new UsernamePasswordAuthenticationToken(findUser, loginRequest.getPassword());
 
-        return findUser;
+        Authentication authenticate = authenticationManagerBuilder.getObject().authenticate(authenticationToken);
+
+        TokenDto tokenDto = tokenProvider.generateTokenDto(authenticate);
+
+        RefreshToken refreshToken = RefreshToken.builder()
+                .key(authenticate.getName())
+                .value(tokenDto.getRefreshToken())
+                .build();
+
+        refreshTokenRepository.save(refreshToken);
+
+        return tokenDto;
     }
 
     public UserProfileResponse getProfile(Long userId) {
