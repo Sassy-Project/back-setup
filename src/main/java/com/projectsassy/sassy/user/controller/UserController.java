@@ -94,7 +94,7 @@ public class UserController {
         ResponseCookie cookie2 = ResponseCookie.from("userCookie2", "userAuth2")
             .path("/")
             .httpOnly(true)
-            .domain(".localhost")
+            .domain("localhost")
             .maxAge(3000)
             .build();
 
