@@ -1,6 +1,5 @@
 package com.projectsassy.sassy.common.response;
 
-import com.projectsassy.sassy.common.code.ErrorCode;
 import com.projectsassy.sassy.common.code.SuccessCode;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
