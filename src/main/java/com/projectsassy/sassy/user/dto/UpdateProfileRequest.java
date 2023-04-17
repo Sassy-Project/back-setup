@@ -21,4 +21,7 @@ public class UpdateProfileRequest {
     @NotNull(message = "MBTI는 Null 일 수 없습니다.")
     private String mbti;
 
+    @NotNull(message = "성별은 Null 일 수 없습니다.")
+    private String gender;
+
 }

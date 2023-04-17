@@ -10,12 +10,13 @@ public class UserProfileResponse {
     private String nickname;
     private String email;
     private String mbti;
+    private String gender;
 
-    public UserProfileResponse(User user) {
-        this.loginId = user.getLoginId();
-        this.nickname = user.getNickname();
-        this.email = user.getEmail().getEmail();
-        this.mbti = user.getMbti();
+    public UserProfileResponse(String loginId, String nickname, String email, String mbti, String gender) {
+        this.loginId = loginId;
+        this.nickname = nickname;
+        this.email = email;
+        this.mbti = mbti;
+        this.gender = gender;
     }
-
 }

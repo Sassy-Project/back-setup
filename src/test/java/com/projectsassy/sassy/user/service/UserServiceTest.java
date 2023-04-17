@@ -147,7 +147,7 @@ public class UserServiceTest {
     @DisplayName("마이페이지 내 정보 변경")
     public void updateProfile() throws Exception {
         //given
-        UpdateProfileRequest updateProfileRequest = new UpdateProfileRequest("updateNickname", "hhh@gmail.com", "istp");
+        UpdateProfileRequest updateProfileRequest = new UpdateProfileRequest("updateNickname", "hhh@gmail.com", "istp", "male");
         User findUser = userRepository.findByLoginId("loginId1").orElseThrow();
         Long findId = findUser.getId();
 
