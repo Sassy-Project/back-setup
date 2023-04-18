@@ -86,7 +86,8 @@ public class UserController {
             .httpOnly(true)
             .domain(".projectsassy.net")
             .maxAge(3000)
-            .sameSite("")
+            .sameSite("None")
+            .secure(true)
             .build();
 
         ResponseCookie cookie2 = ResponseCookie.from("userCookie2", "userAuth2")
@@ -94,7 +95,8 @@ public class UserController {
             .httpOnly(true)
             .domain("localhost")
             .maxAge(3000)
-            .sameSite("")
+            .sameSite("None")
+            .secure(true)
             .build();
 
         response.addHeader("Set-Cookie", cookie1.toString());
