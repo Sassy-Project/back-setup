@@ -6,6 +6,7 @@ import com.projectsassy.sassy.token.accessRestriction.JwtAuthenticationEntryPoin
 import lombok.RequiredArgsConstructor;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
+import org.springframework.http.HttpMethod;
 import org.springframework.security.config.annotation.web.builders.HttpSecurity;
 import org.springframework.security.config.annotation.web.configuration.EnableWebSecurity;
 import org.springframework.security.config.annotation.web.configuration.WebSecurityCustomizer;
@@ -44,20 +45,20 @@ public class WebSecurityConfig {
                     .authenticationEntryPoint(jwtAuthenticationEntryPoint)
                     .accessDeniedHandler(jwtAccessDeniedHandler)
                 .and()
-                    .authorizeRequests()
-                    .antMatchers("/swagger-resources/**").permitAll()
-                    .antMatchers(
-                            "/users/signup", "/users/login", "/users/signup/id", "/users/signup/email",
-                            "/users/find/id", "/users/find/password", "/users/email"
-                    )
-                    .permitAll() // user 권한 허용 // 이거 다시
-                    .anyRequest().authenticated()   // 나머지 API 는 전부 인증 필요
-                .and()
                     .sessionManagement()
                     .sessionCreationPolicy(SessionCreationPolicy.STATELESS) // jwt 사용할 경우 세션을 사용하지 않는다.
                 .and()
                     // JwtFilter 를 addFilterBefore 로 등록했던 JwtSecurityConfig 클래스를 적용
                     .apply(new JwtSecurityConfig(tokenProvider))
+                .and()
+                    .formLogin().disable()  //폼로그인 안쓰겠다
+                    .httpBasic().disable()
+                    .authorizeRequests()
+                    .antMatchers("/", "/**").permitAll()
+                    .antMatchers(HttpMethod.POST,"/users/reissue").access("hasRole('ROLE_USER')") // user 권한 허용 // 이거 다시
+                    .antMatchers(HttpMethod.PATCH, "/users/**").access("hasRole('ROLE_USER')")
+                    .antMatchers(HttpMethod.DELETE, "/users/**").access("hasRole('ROLE_USER')")
+                    .anyRequest().permitAll()   // 나머지 API 는 전부 인증 필요
                 .and()
                 .build();
     }
