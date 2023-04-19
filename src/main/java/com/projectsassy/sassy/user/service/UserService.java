@@ -5,8 +5,7 @@ import com.projectsassy.sassy.common.exception.BusinessExceptionHandler;
 import com.projectsassy.sassy.common.exception.CustomIllegalStateException;
 import com.projectsassy.sassy.token.TokenProvider;
 import com.projectsassy.sassy.token.domain.RefreshToken;
-import com.projectsassy.sassy.token.dto.TokenDto;
-import com.projectsassy.sassy.token.dto.TokenRequest;
+import com.projectsassy.sassy.token.dto.TokenResponse;
 import com.projectsassy.sassy.user.domain.Email;
 import com.projectsassy.sassy.user.domain.User;
 import com.projectsassy.sassy.user.dto.*;
@@ -75,22 +74,19 @@ public class UserService {
             });
     }
 
-    public TokenDto login(LoginRequest loginRequest) {
+    public TokenResponse login(LoginRequest loginRequest) {
 
         UsernamePasswordAuthenticationToken authenticationToken =
                 new UsernamePasswordAuthenticationToken(loginRequest.getLoginId(), loginRequest.getPassword());
-
         Authentication authenticate = authenticationManagerBuilder.getObject().authenticate(authenticationToken);
 
-        TokenDto tokenDto = tokenProvider.generateTokenDto(authenticate);
-
+        TokenResponse tokenResponse = tokenProvider.generateTokenDto(authenticate);
         RefreshToken refreshToken = RefreshToken.builder()
                 .key(authenticate.getName())
-                .value(tokenDto.getRefreshToken())
+                .value(tokenResponse.getRefreshToken())
                 .build();
-
-          redisUtil.setDataExpire(loginRequest.getLoginId(), tokenDto.getRefreshToken(), 1000 * 60 * 60 * 24 * 7);
-        return tokenDto;
+          redisUtil.setDataExpire(loginRequest.getLoginId(), tokenResponse.getRefreshToken(), 1000 * 60 * 60 * 24 * 7);
+        return tokenResponse;
     }
 
     public UserProfileResponse getProfile(Long userId) {
@@ -208,31 +204,31 @@ public class UserService {
 
     }
 
-    public TokenDto reissue(TokenRequest tokenRequest) {
+    public TokenResponse reissue(String accessToken, String refreshToken) {
         // 1. 검증
-        if (!tokenProvider.validateToken(tokenRequest.getRefreshToken())) {
+        if (!tokenProvider.validateToken(refreshToken)) {
             throw new CustomIllegalStateException(ErrorCode.INVALID_TOKEN);
         }
         // 2. Access Token 에서 User ID 가져오기
-        Authentication authentication = tokenProvider.getAuthentication(tokenRequest.getAccessToken());
+        Authentication authentication = tokenProvider.getAuthentication(accessToken);
         String loginId = authentication.getName();
         // 3. 저장소에서 User ID 를 기반으로 Refresh Token 값 가져오기
-        String refreshToken = redisUtil.getData(loginId);
+        String findRefreshToken = redisUtil.getData(loginId);
         if (refreshToken == null) {
             throw new CustomIllegalStateException(ErrorCode.INVALID_TOKEN);
         }
 
         // 4. Refresh Token 일치하는지 검사
-        if (!refreshToken.equals(tokenRequest.getRefreshToken())) {
+        if (!refreshToken.equals(refreshToken)) {
             throw new CustomIllegalStateException(ErrorCode.NO_MATCHES_INFO);
         }
 
         // 5. 새로운 토큰 생성
-        TokenDto tokenDto = tokenProvider.generateTokenDto(authentication);
+        TokenResponse tokenResponse = tokenProvider.generateTokenDto(authentication);
 
         // 6. 저장소 정보 업데이트
-        redisUtil.setDataExpire(loginId, tokenDto.getRefreshToken(), 1000 * 60 * 60 * 24 * 7);
+        redisUtil.setDataExpire(loginId, tokenResponse.getRefreshToken(), 1000 * 60 * 60 * 24 * 7);
 
-        return tokenDto;
+        return tokenResponse;
     }
 }
