@@ -1,9 +1,7 @@
 package com.projectsassy.sassy.user.controller;
 
 import com.projectsassy.sassy.common.code.SuccessCode;
-import com.projectsassy.sassy.token.dto.TokenDto;
-import com.projectsassy.sassy.token.dto.TokenRequest;
-import com.projectsassy.sassy.user.domain.User;
+import com.projectsassy.sassy.token.dto.*;
 
 import com.projectsassy.sassy.common.response.ApiResponse;
 import com.projectsassy.sassy.user.dto.EmailRequest;
@@ -12,19 +10,14 @@ import com.projectsassy.sassy.user.dto.*;
 import com.projectsassy.sassy.user.service.UserService;
 import io.swagger.annotations.ApiOperation;
 import lombok.RequiredArgsConstructor;
-import org.springframework.http.HttpHeaders;
+import lombok.SneakyThrows;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.http.HttpStatus;
-import org.springframework.http.ResponseCookie;
 import org.springframework.http.ResponseEntity;
 import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.*;
 
-import javax.servlet.http.Cookie;
-import javax.servlet.http.HttpServletRequest;
-import javax.servlet.http.HttpServletResponse;
-import javax.servlet.http.HttpSession;
-
-
+@Slf4j
 @RestController
 @RequiredArgsConstructor
 @RequestMapping("/users")
@@ -78,35 +71,27 @@ public class UserController {
         return new ResponseEntity<>(new ApiResponse(SuccessCode.SEND_EMAIL), HttpStatus.OK);
     }
 
+    @SneakyThrows
     @ApiOperation(value = "로그인")
     @PostMapping("/login")
-    public ResponseEntity<TokenDto> login(@Validated @RequestBody LoginRequest loginRequest, HttpServletResponse response) {
-        TokenDto tokenDto = userService.login(loginRequest);
+    public ResponseEntity<TokenResponse> login(@Validated @RequestBody LoginRequest loginRequest) {
+        TokenResponse tokenResponse = userService.login(loginRequest);
 
-        ResponseCookie cookie1 = ResponseCookie.from("userCookie1", "userAuth1")
-            .path("/")
-            .httpOnly(true)
-            .domain(".projectsassy.net")
-            .maxAge(3000)
-            .build();
-
-        ResponseCookie cookie2 = ResponseCookie.from("userCookie2", "userAuth2")
-            .path("/")
-            .httpOnly(true)
-            .domain("localhost")
-            .maxAge(3000)
-            .build();
-
-        response.addHeader("Set-Cookie", cookie1.toString());
-        response.addHeader("Set-Cookie", cookie2.toString());
-        return new ResponseEntity<>(tokenDto, HttpStatus.OK);
+        return new ResponseEntity<>(tokenResponse, HttpStatus.OK);
     }
 
     @ApiOperation(value = "토큰 재발급")
     @PostMapping("/reissue")
-    public ResponseEntity<TokenDto> reissue(@RequestBody TokenRequest tokenRequest) {
-        TokenDto responseToken = userService.reissue(tokenRequest);
-        return new ResponseEntity<>(responseToken, HttpStatus.OK);
+    public ResponseEntity<TokenResponse> reissue(
+            @RequestHeader(value = "Authorization") String acTokenRequest,
+            @RequestHeader(value = "RefreshToken") String rfTokenRequest) {
+
+        String accessToken = acTokenRequest.substring(7);
+        String refreshToken = rfTokenRequest.substring(7);
+
+        TokenResponse tokenResponse = userService.reissue(accessToken, refreshToken);
+
+        return new ResponseEntity<>(tokenResponse, HttpStatus.OK);
     }
 
     @ApiOperation(value = "마이페이지 조회")
