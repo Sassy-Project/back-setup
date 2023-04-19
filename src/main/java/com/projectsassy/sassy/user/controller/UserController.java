@@ -1,9 +1,12 @@
 package com.projectsassy.sassy.user.controller;
 
+import com.projectsassy.sassy.common.code.ErrorCode;
 import com.projectsassy.sassy.common.code.SuccessCode;
+import com.projectsassy.sassy.common.exception.CustomIllegalStateException;
 import com.projectsassy.sassy.token.dto.*;
 
 import com.projectsassy.sassy.common.response.ApiResponse;
+import com.projectsassy.sassy.token.util.SecurityUtil;
 import com.projectsassy.sassy.user.dto.EmailRequest;
 import com.projectsassy.sassy.user.dto.*;
 
@@ -74,10 +77,9 @@ public class UserController {
     @SneakyThrows
     @ApiOperation(value = "로그인")
     @PostMapping("/login")
-    public ResponseEntity<TokenResponse> login(@Validated @RequestBody LoginRequest loginRequest) {
-        TokenResponse tokenResponse = userService.login(loginRequest);
-
-        return new ResponseEntity<>(tokenResponse, HttpStatus.OK);
+    public ResponseEntity<LoginResponse> login(@Validated @RequestBody LoginRequest loginRequest) {
+        LoginResponse loginResponse = userService.login(loginRequest);
+        return new ResponseEntity<>(loginResponse, HttpStatus.OK);
     }
 
     @ApiOperation(value = "토큰 재발급")
@@ -97,15 +99,26 @@ public class UserController {
     @ApiOperation(value = "마이페이지 조회")
     @GetMapping("/{userId}")
     public ResponseEntity<UserProfileResponse> getProfile(@PathVariable(value = ("userId")) Long userId) {
-        UserProfileResponse userProfileResponse = userService.getProfile(userId);
+        Long loginUserId = SecurityUtil.getCurrentUserId();
+        validateUserId(userId, loginUserId);
+
+        UserProfileResponse userProfileResponse = userService.getProfile(loginUserId);
         return new ResponseEntity<>(userProfileResponse, HttpStatus.OK);
+    }
+
+    private void validateUserId(Long userId, Long loginUserId) {
+        if (userId != loginUserId) {
+            throw new CustomIllegalStateException(ErrorCode.NO_MATCHES_INFO);
+        }
     }
 
     @ApiOperation(value = "마이페이지 수정")
     @PatchMapping("/{userId}")
     public ResponseEntity<UpdateProfileResponse> updateProfile(@PathVariable(value = ("userId")) Long userId,
                                                                @Validated @RequestBody UpdateProfileRequest updateProfileRequest) {
-        UpdateProfileResponse updateProfileResponse = userService.updateProfile(userId, updateProfileRequest);
+        Long loginUserId = SecurityUtil.getCurrentUserId();
+        validateUserId(userId, loginUserId);
+        UpdateProfileResponse updateProfileResponse = userService.updateProfile(loginUserId, updateProfileRequest);
         return new ResponseEntity<>(updateProfileResponse, HttpStatus.OK);
     }
 
@@ -113,14 +126,18 @@ public class UserController {
     @PatchMapping("/{userId}/password")
     public ResponseEntity updatePassword(@PathVariable(value = ("userId")) Long userId,
                                          @RequestBody UpdatePasswordRequest updatePasswordRequest) {
-        userService.updatePassword(userId, updatePasswordRequest);
+        Long loginUserId = SecurityUtil.getCurrentUserId();
+        validateUserId(userId, loginUserId);
+        userService.updatePassword(loginUserId, updatePasswordRequest);
         return new ResponseEntity<>(new ApiResponse(SuccessCode.UPDATE_PASSWORD), HttpStatus.OK);
     }
 
     @ApiOperation(value = "회원 삭제")
     @DeleteMapping("/{userId}")
     public ResponseEntity deleteUser(@PathVariable(value = ("userId")) Long userId) {
-        userService.delete(userId);
+        Long loginUserId = SecurityUtil.getCurrentUserId();
+        validateUserId(userId, loginUserId);
+        userService.delete(loginUserId);
         return new ResponseEntity<>(new ApiResponse(SuccessCode.DELETE_USER), HttpStatus.OK);
     }
 

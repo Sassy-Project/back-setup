@@ -18,7 +18,4 @@ public class LoginRequest {
     @NotNull(message = "비밀번호는 Null 일 수 없습니다.")
     private String password;
 
-    public void toAuthentication() {
-
-    }
 }
