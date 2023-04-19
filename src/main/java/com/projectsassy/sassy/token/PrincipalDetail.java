@@ -1,5 +1,6 @@
 package com.projectsassy.sassy.token;
 
+import com.projectsassy.sassy.user.domain.Role;
 import com.projectsassy.sassy.user.domain.User;
 import lombok.AccessLevel;
 import lombok.AllArgsConstructor;
@@ -19,7 +20,7 @@ public class PrincipalDetail implements UserDetails {
     @Override
     public Collection<? extends GrantedAuthority> getAuthorities() {
         Collection<GrantedAuthority> collection = new ArrayList<>();
-        collection.add(() -> user.getRole().toString());
+        collection.add(() -> "ROLE_USER");
         return collection;
     }
 
