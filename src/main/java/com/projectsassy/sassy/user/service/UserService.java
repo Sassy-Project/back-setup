@@ -3,6 +3,7 @@ package com.projectsassy.sassy.user.service;
 import com.projectsassy.sassy.common.code.ErrorCode;
 import com.projectsassy.sassy.common.exception.BusinessExceptionHandler;
 import com.projectsassy.sassy.common.exception.CustomIllegalStateException;
+import com.projectsassy.sassy.common.util.RedisUtil;
 import com.projectsassy.sassy.token.TokenProvider;
 import com.projectsassy.sassy.token.dto.TokenResponse;
 import com.projectsassy.sassy.user.domain.Email;

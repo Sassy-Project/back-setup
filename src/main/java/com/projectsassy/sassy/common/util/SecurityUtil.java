@@ -1,4 +1,4 @@
-package com.projectsassy.sassy.token.util;
+package com.projectsassy.sassy.common.util;
 
 import com.projectsassy.sassy.common.code.ErrorCode;
 import com.projectsassy.sassy.common.exception.CustomIllegalStateException;
