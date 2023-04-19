@@ -55,9 +55,6 @@ public class WebSecurityConfig {
                     .httpBasic().disable()
                     .authorizeRequests()
                     .antMatchers("/", "/**", "/users/**").permitAll()
-                    .antMatchers(HttpMethod.POST,"/users/reissue").access("hasRole('ROLE_USER')") // user 권한 허용 // 이거 다시
-                    .antMatchers(HttpMethod.PATCH, "/users/**").access("hasRole('ROLE_USER')")
-                    .antMatchers(HttpMethod.DELETE, "/users/**").access("hasRole('ROLE_USER')")
                     .anyRequest().permitAll()   // 나머지 API 는 전부 인증 필요
                 .and()
                 .build();
