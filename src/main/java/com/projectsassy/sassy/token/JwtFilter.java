@@ -1,7 +1,10 @@
 package com.projectsassy.sassy.token;
 
+import com.projectsassy.sassy.common.exception.CustomIllegalStateException;
+import com.projectsassy.sassy.common.util.RedisUtil;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
+import org.springframework.data.redis.core.RedisTemplate;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.util.StringUtils;
@@ -24,23 +27,29 @@ public class JwtFilter extends OncePerRequestFilter {
     public static final String BEARER_PREFIX = "Bearer";
 
     private final TokenProvider tokenProvider;
+    private final RedisUtil redisUtil;
 
     @Override
     protected void doFilterInternal(HttpServletRequest request, HttpServletResponse response, FilterChain filterChain) throws ServletException, IOException {
         // Request Header 에서 Access Token 을 꺼내고 여러가지 검사 후 유저 정보를 꺼내서 *SecurityContext 에 저장
         // 1. Request Header 에서 토큰 꺼내기
         String access = resolveToken(request);
+
         log.info("jwt={}", access);
 
         // 2. validateToken 으로 토큰 유효성 검사
         // 정상 토큰이면 해당 토큰으로 Authentication 을 가져와서 SecurityContext 에 저장
         if (StringUtils.hasText(access) && tokenProvider.validateToken(access)) {
-            Authentication authentication = tokenProvider.getAuthentication(access);
-            SecurityContextHolder.getContext().setAuthentication(authentication);
+            String blockLogout = redisUtil.getData(access);
+            if (!"logout".equals(blockLogout)) {
+                Authentication authentication = tokenProvider.getAuthentication(access);
+                SecurityContextHolder.getContext().setAuthentication(authentication);
+            }
         }
 
         filterChain.doFilter(request, response);
     }
+
 
     // Request Header 에서 토큰 정보를 꺼내오기
     private String resolveToken(HttpServletRequest request) {
