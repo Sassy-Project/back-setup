@@ -54,7 +54,7 @@ public class WebSecurityConfig {
                     .formLogin().disable()  //폼로그인 안쓰겠다
                     .httpBasic().disable()
                     .authorizeRequests()
-                    .antMatchers("/", "/**").permitAll()
+                    .antMatchers("/", "/**", "/users/**").permitAll()
                     .antMatchers(HttpMethod.POST,"/users/reissue").access("hasRole('ROLE_USER')") // user 권한 허용 // 이거 다시
                     .antMatchers(HttpMethod.PATCH, "/users/**").access("hasRole('ROLE_USER')")
                     .antMatchers(HttpMethod.DELETE, "/users/**").access("hasRole('ROLE_USER')")
