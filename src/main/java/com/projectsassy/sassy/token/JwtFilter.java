@@ -21,7 +21,6 @@ public class JwtFilter extends OncePerRequestFilter {
     // 탈퇴로 인해 Member ID 가 DB 에 없는 경우 등 예외 상황은 Service 단에서 고려해야 함
 
     public static final String AUTHORIZATION_HEADER = "Authorization";
-    public static final String REFRESH_TOKEN_HEADER = "RefreshToken";
     public static final String BEARER_PREFIX = "Bearer";
 
     private final TokenProvider tokenProvider;

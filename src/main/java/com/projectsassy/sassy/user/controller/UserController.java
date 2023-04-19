@@ -6,7 +6,7 @@ import com.projectsassy.sassy.common.exception.CustomIllegalStateException;
 import com.projectsassy.sassy.token.dto.*;
 
 import com.projectsassy.sassy.common.response.ApiResponse;
-import com.projectsassy.sassy.token.util.SecurityUtil;
+import com.projectsassy.sassy.common.util.SecurityUtil;
 import com.projectsassy.sassy.user.dto.EmailRequest;
 import com.projectsassy.sassy.user.dto.*;
 
