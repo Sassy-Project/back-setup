@@ -1,28 +1,26 @@
 package com.projectsassy.sassy.user.controller;
 
+import com.projectsassy.sassy.common.code.ErrorCode;
 import com.projectsassy.sassy.common.code.SuccessCode;
-import com.projectsassy.sassy.user.domain.User;
+import com.projectsassy.sassy.common.exception.CustomIllegalStateException;
+import com.projectsassy.sassy.token.dto.*;
 
 import com.projectsassy.sassy.common.response.ApiResponse;
+import com.projectsassy.sassy.common.util.SecurityUtil;
 import com.projectsassy.sassy.user.dto.EmailRequest;
 import com.projectsassy.sassy.user.dto.*;
 
 import com.projectsassy.sassy.user.service.UserService;
 import io.swagger.annotations.ApiOperation;
 import lombok.RequiredArgsConstructor;
-import org.springframework.http.HttpHeaders;
+import lombok.SneakyThrows;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.http.HttpStatus;
-import org.springframework.http.ResponseCookie;
 import org.springframework.http.ResponseEntity;
 import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.*;
 
-import javax.servlet.http.Cookie;
-import javax.servlet.http.HttpServletRequest;
-import javax.servlet.http.HttpServletResponse;
-import javax.servlet.http.HttpSession;
-
-
+@Slf4j
 @RestController
 @RequiredArgsConstructor
 @RequestMapping("/users")
@@ -76,46 +74,51 @@ public class UserController {
         return new ResponseEntity<>(new ApiResponse(SuccessCode.SEND_EMAIL), HttpStatus.OK);
     }
 
+    @SneakyThrows
     @ApiOperation(value = "로그인")
     @PostMapping("/login")
-    public ResponseEntity<LoginResponse> login(@Validated @RequestBody LoginRequest loginRequest, HttpServletResponse response) {
-        User findUser = userService.login(loginRequest);
+    public ResponseEntity<LoginResponse> login(@Validated @RequestBody LoginRequest loginRequest) {
+        LoginResponse loginResponse = userService.login(loginRequest);
+        return new ResponseEntity<>(loginResponse, HttpStatus.OK);
+    }
 
-        ResponseCookie cookie1 = ResponseCookie.from("userCookie1", "userAuth1")
-            .path("/")
-            .httpOnly(true)
-            .domain(".projectsassy.net")
-            .maxAge(3000)
-            .sameSite("None")
-            .secure(true)
-            .build();
+    @ApiOperation(value = "토큰 재발급")
+    @PostMapping("/reissue")
+    public ResponseEntity<TokenResponse> reissue(
+            @RequestHeader(value = "Authorization") String acTokenRequest,
+            @RequestHeader(value = "RefreshToken") String rfTokenRequest) {
 
-        ResponseCookie cookie2 = ResponseCookie.from("userCookie2", "userAuth2")
-            .path("/")
-            .httpOnly(true)
-            .domain("localhost")
-            .maxAge(3000)
-            .sameSite("None")
-            .secure(true)
-            .build();
+        String accessToken = acTokenRequest.substring(7);
+        String refreshToken = rfTokenRequest.substring(7);
 
-        response.addHeader("Set-Cookie", cookie1.toString());
-        response.addHeader("Set-Cookie", cookie2.toString());
-        return new ResponseEntity<>(new LoginResponse(findUser.getId(), findUser.getNickname()), HttpStatus.OK);
+        TokenResponse tokenResponse = userService.reissue(accessToken, refreshToken);
+
+        return new ResponseEntity<>(tokenResponse, HttpStatus.OK);
     }
 
     @ApiOperation(value = "마이페이지 조회")
     @GetMapping("/{userId}")
     public ResponseEntity<UserProfileResponse> getProfile(@PathVariable(value = ("userId")) Long userId) {
-        UserProfileResponse userProfileResponse = userService.getProfile(userId);
+        Long loginUserId = SecurityUtil.getCurrentUserId();
+        validateUserId(userId, loginUserId);
+
+        UserProfileResponse userProfileResponse = userService.getProfile(loginUserId);
         return new ResponseEntity<>(userProfileResponse, HttpStatus.OK);
+    }
+
+    private void validateUserId(Long userId, Long loginUserId) {
+        if (userId != loginUserId) {
+            throw new CustomIllegalStateException(ErrorCode.NO_MATCHES_INFO);
+        }
     }
 
     @ApiOperation(value = "마이페이지 수정")
     @PatchMapping("/{userId}")
     public ResponseEntity<UpdateProfileResponse> updateProfile(@PathVariable(value = ("userId")) Long userId,
                                                                @Validated @RequestBody UpdateProfileRequest updateProfileRequest) {
-        UpdateProfileResponse updateProfileResponse = userService.updateProfile(userId, updateProfileRequest);
+        Long loginUserId = SecurityUtil.getCurrentUserId();
+        validateUserId(userId, loginUserId);
+        UpdateProfileResponse updateProfileResponse = userService.updateProfile(loginUserId, updateProfileRequest);
         return new ResponseEntity<>(updateProfileResponse, HttpStatus.OK);
     }
 
@@ -123,15 +126,20 @@ public class UserController {
     @PatchMapping("/{userId}/password")
     public ResponseEntity updatePassword(@PathVariable(value = ("userId")) Long userId,
                                          @RequestBody UpdatePasswordRequest updatePasswordRequest) {
-        userService.updatePassword(userId, updatePasswordRequest);
+        Long loginUserId = SecurityUtil.getCurrentUserId();
+        validateUserId(userId, loginUserId);
+        userService.updatePassword(loginUserId, updatePasswordRequest);
         return new ResponseEntity<>(new ApiResponse(SuccessCode.UPDATE_PASSWORD), HttpStatus.OK);
     }
 
     @ApiOperation(value = "회원 삭제")
     @DeleteMapping("/{userId}")
     public ResponseEntity deleteUser(@PathVariable(value = ("userId")) Long userId) {
-        userService.delete(userId);
+        Long loginUserId = SecurityUtil.getCurrentUserId();
+        validateUserId(userId, loginUserId);
+        userService.delete(loginUserId);
         return new ResponseEntity<>(new ApiResponse(SuccessCode.DELETE_USER), HttpStatus.OK);
     }
+
 
 }

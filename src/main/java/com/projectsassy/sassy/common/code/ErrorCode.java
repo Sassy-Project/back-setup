@@ -16,6 +16,10 @@ public enum ErrorCode {
     INTERNAL_SERVER_ERROR(500, "C001", "서버 내부 오류입니다."),
     INVALID_INPUT_VALUE(400, "C002", "잘못된 입력입니다."),
     UNAUTHORIZED(401, "C003", "인증되지 않은 사용자입니다."),
+    INVALID_TOKEN(400, "C004", "유효하지 않은 토큰입니다."),
+
+    NO_INFORMATION(400, "C005", "권한 정보가 없는 토큰입니다."),
+    NOT_FOUND_INFORMATION(404, "C006", "Security Context 에 인증 정보가 없습니다."),
 
     // User
     DUPLICATE_EMAIL(400, "U001", "중복된 이메일입니다."),
@@ -24,7 +28,8 @@ public enum ErrorCode {
     NOT_REGISTERED_USER(404, "U004", "등록되지 않은 사용자입니다."),
     WRONG_PASSWORD(400, "U005", "비밀번호가 틀렸습니다."),
     NOT_FOUND_USER(404, "U006", "유저를 찾을 수 없습니다."),
-    INVALID_TOKEN(400, "U007", "유효하지 않은 인증번호 입니다.");
+    INVALID_NUMBER(400, "U007", "유효하지 않은 인증번호 입니다."),
+    NO_MATCHES_INFO(400, "U008", "토큰의 유저 정보가 일치하지 않습니다.");
 
 
     //에러의 코드 상태 반환

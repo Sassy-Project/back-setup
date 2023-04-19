@@ -3,13 +3,20 @@ package com.projectsassy.sassy.user.service;
 import com.projectsassy.sassy.common.code.ErrorCode;
 import com.projectsassy.sassy.common.exception.BusinessExceptionHandler;
 import com.projectsassy.sassy.common.exception.CustomIllegalStateException;
+import com.projectsassy.sassy.common.util.RedisUtil;
+import com.projectsassy.sassy.token.TokenProvider;
+import com.projectsassy.sassy.token.dto.TokenResponse;
 import com.projectsassy.sassy.user.domain.Email;
 import com.projectsassy.sassy.user.domain.User;
 import com.projectsassy.sassy.user.dto.*;
 import com.projectsassy.sassy.common.exception.user.DuplicatedException;
 import com.projectsassy.sassy.user.repository.UserRepository;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.mail.javamail.JavaMailSender;
 import org.springframework.mail.javamail.MimeMessageHelper;
+import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
+import org.springframework.security.config.annotation.authentication.builders.AuthenticationManagerBuilder;
+import org.springframework.security.core.Authentication;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -21,18 +28,26 @@ import java.util.Random;
 
 @Service
 @Transactional(readOnly = true)
+@Slf4j
 public class UserService {
 
+    private final AuthenticationManagerBuilder authenticationManagerBuilder;
     private final UserRepository userRepository;
     private final BCryptPasswordEncoder encoder;
     private final JavaMailSender javaMailSender;
     private final RedisUtil redisUtil;
+    private final TokenProvider tokenProvider;
 
-    public UserService(UserRepository userRepository, BCryptPasswordEncoder encoder, JavaMailSender javaMailSender, RedisUtil redisUtil) {
+
+    public UserService(AuthenticationManagerBuilder authenticationManagerBuilder, UserRepository userRepository,
+                       BCryptPasswordEncoder encoder, JavaMailSender javaMailSender, RedisUtil redisUtil, TokenProvider tokenProvider
+    ) {
+        this.authenticationManagerBuilder = authenticationManagerBuilder;
         this.userRepository = userRepository;
         this.encoder = encoder;
         this.javaMailSender = javaMailSender;
         this.redisUtil = redisUtil;
+        this.tokenProvider = tokenProvider;
     }
 
 
@@ -59,17 +74,19 @@ public class UserService {
             });
     }
 
-    public User login(LoginRequest loginRequest) {
-        User findUser = userRepository.findByLoginId(loginRequest.getLoginId())
-            .orElseThrow(() -> {
-                throw new CustomIllegalStateException(ErrorCode.NOT_REGISTERED_USER);
-            });
+    public LoginResponse login(LoginRequest loginRequest) {
 
-        if (!encoder.matches(loginRequest.getPassword(), findUser.getPassword())) {
-            throw new CustomIllegalStateException(ErrorCode.WRONG_PASSWORD);
-        }
+        UsernamePasswordAuthenticationToken authenticationToken =
+                new UsernamePasswordAuthenticationToken(loginRequest.getLoginId(), loginRequest.getPassword());
+        Authentication authenticate = authenticationManagerBuilder.getObject().authenticate(authenticationToken);
+        log.info("authenticateGetName={}", authenticate.getName());
 
-        return findUser;
+        User user = findById(Long.valueOf(authenticate.getName()));
+        TokenResponse tokenResponse = tokenProvider.generateTokenDto(authenticate);
+        redisUtil.setDataExpire(authenticate.getName(), tokenResponse.getRefreshToken(), 1000 * 60 * 60 * 24 * 7);
+
+        LoginResponse loginResponse = new LoginResponse(user.getId(), user.getNickname(), tokenResponse);
+        return loginResponse;
     }
 
     public UserProfileResponse getProfile(Long userId) {
@@ -125,7 +142,7 @@ public class UserService {
         String redisEmail = redisUtil.getData(findIdRequest.getCode());
         String email = findIdRequest.getEmail();
         if (!redisEmail.equals(email)){
-            throw new BusinessExceptionHandler(ErrorCode.INVALID_TOKEN);
+            throw new BusinessExceptionHandler(ErrorCode.INVALID_NUMBER);
         }
 
         User findUser = userRepository.findByEmail(new Email(email))
@@ -145,7 +162,7 @@ public class UserService {
         String loginId = findPasswordRequest.getLoginId();
 
         if (!redisEmail.equals(email)) {
-            throw new BusinessExceptionHandler(ErrorCode.INVALID_TOKEN);
+            throw new BusinessExceptionHandler(ErrorCode.INVALID_NUMBER);
         }
         userRepository.findByEmailAndLoginId(new Email(email), loginId)
                 .orElseThrow(() -> {
@@ -185,5 +202,33 @@ public class UserService {
         //유효시간
         redisUtil.setDataExpire(authKey, email, 60*5L);
 
+    }
+
+    public TokenResponse reissue(String accessToken, String refreshToken) {
+        // 1. 검증
+        if (!tokenProvider.validateToken(refreshToken)) {
+            throw new CustomIllegalStateException(ErrorCode.INVALID_TOKEN);
+        }
+        // 2. Access Token 에서 User ID 가져오기
+        Authentication authentication = tokenProvider.getAuthentication(accessToken);
+        String userId = authentication.getName();
+        // 3. 저장소에서 User ID 를 기반으로 Refresh Token 값 가져오기
+        String findRefreshToken = redisUtil.getData(userId);
+        if (findRefreshToken == null) {
+            throw new CustomIllegalStateException(ErrorCode.INVALID_TOKEN);
+        }
+
+        // 4. Refresh Token 일치하는지 검사
+        if (!refreshToken.equals(findRefreshToken)) {
+            throw new CustomIllegalStateException(ErrorCode.NO_MATCHES_INFO);
+        }
+
+        // 5. 새로운 토큰 생성
+        TokenResponse tokenResponse = tokenProvider.generateTokenDto(authentication);
+
+        // 6. 저장소 정보 업데이트
+        redisUtil.setDataExpire(userId, tokenResponse.getRefreshToken(), 1000 * 60 * 60 * 24 * 7);
+
+        return tokenResponse;
     }
 }
