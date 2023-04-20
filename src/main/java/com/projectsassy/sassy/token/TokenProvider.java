@@ -121,4 +121,14 @@ public class TokenProvider {
             return e.getClaims();
         }
     }
+
+    //accessToken 남은 유효시간
+    public Long getExpiration(String accessToken) {
+        Date expiration = Jwts.parserBuilder().setSigningKey(key)
+                .build().parseClaimsJws(accessToken).getBody().getExpiration();
+
+        long now = new Date().getTime();
+
+        return (expiration.getTime() - now);
+    }
 }

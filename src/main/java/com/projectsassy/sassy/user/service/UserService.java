@@ -209,9 +209,11 @@ public class UserService {
         if (!tokenProvider.validateToken(refreshToken)) {
             throw new CustomIllegalStateException(ErrorCode.INVALID_TOKEN);
         }
+
         // 2. Access Token 에서 User ID 가져오기
         Authentication authentication = tokenProvider.getAuthentication(accessToken);
         String userId = authentication.getName();
+
         // 3. 저장소에서 User ID 를 기반으로 Refresh Token 값 가져오기
         String findRefreshToken = redisUtil.getData(userId);
         if (findRefreshToken == null) {
@@ -231,4 +233,27 @@ public class UserService {
 
         return tokenResponse;
     }
+
+    public void logout(String accessToken, String refreshToken) {
+        // 1. 검증
+        if (!tokenProvider.validateToken(refreshToken)) {
+            throw new CustomIllegalStateException(ErrorCode.INVALID_TOKEN);
+        }
+
+        // 2. Access Token 에서 User ID 가져오기
+        Authentication authentication = tokenProvider.getAuthentication(accessToken);
+        String userId = authentication.getName();
+
+        // 3. Redis 에서 해당 ID 로 저장된 Refresh Token 이 있는지 여부 확인 후 삭제
+        String findRefreshToken = redisUtil.getData(userId);
+        if (findRefreshToken != null) {
+            redisUtil.deleteData(userId);
+        }
+        // 남은 유효시간
+        Long expiration = tokenProvider.getExpiration(accessToken);
+
+        // 4. 해당 Access Token 저장
+        redisUtil.setDataExpire(accessToken, "logout", expiration);
+    }
+
 }

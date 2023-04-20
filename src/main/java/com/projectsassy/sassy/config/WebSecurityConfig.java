@@ -1,5 +1,6 @@
 package com.projectsassy.sassy.config;
 
+import com.projectsassy.sassy.common.util.RedisUtil;
 import com.projectsassy.sassy.token.TokenProvider;
 import com.projectsassy.sassy.token.accessRestriction.JwtAccessDeniedHandler;
 import com.projectsassy.sassy.token.accessRestriction.JwtAuthenticationEntryPoint;
@@ -22,6 +23,7 @@ public class WebSecurityConfig {
     private final TokenProvider tokenProvider;
     private final JwtAuthenticationEntryPoint jwtAuthenticationEntryPoint;
     private final JwtAccessDeniedHandler jwtAccessDeniedHandler;
+    private final RedisUtil redisUtil;
 
     // h2 database 테스트가 원활하도록 관련 API 들은 전부 무시
     @Bean
@@ -49,7 +51,7 @@ public class WebSecurityConfig {
                     .sessionCreationPolicy(SessionCreationPolicy.STATELESS) // jwt 사용할 경우 세션을 사용하지 않는다.
                 .and()
                     // JwtFilter 를 addFilterBefore 로 등록했던 JwtSecurityConfig 클래스를 적용
-                    .apply(new JwtSecurityConfig(tokenProvider))
+                    .apply(new JwtSecurityConfig(tokenProvider, redisUtil))
                 .and()
                     .formLogin().disable()  //폼로그인 안쓰겠다
                     .httpBasic().disable()

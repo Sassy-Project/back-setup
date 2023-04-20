@@ -82,6 +82,19 @@ public class UserController {
         return new ResponseEntity<>(loginResponse, HttpStatus.OK);
     }
 
+    @ApiOperation(value = "로그아웃")
+    @GetMapping("/logout")
+    public ResponseEntity<ApiResponse> logout(
+            @RequestHeader(value = "Authorization") String acTokenRequest,
+            @RequestHeader(value = "RefreshToken") String rfTokenRequest
+    ) {
+        String accessToken = acTokenRequest.substring(7);
+        String refreshToken = rfTokenRequest.substring(7);
+        userService.logout(accessToken, refreshToken);
+
+        return new ResponseEntity<>(new ApiResponse(SuccessCode.LOGOUT), HttpStatus.OK);
+    }
+
     @ApiOperation(value = "토큰 재발급")
     @PostMapping("/reissue")
     public ResponseEntity<TokenResponse> reissue(
