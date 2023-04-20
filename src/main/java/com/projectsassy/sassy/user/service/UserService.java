@@ -168,7 +168,6 @@ public class UserService {
                 .orElseThrow(() -> {
                     throw new CustomIllegalStateException(ErrorCode.NOT_FOUND_USER);
                 });
-
     }
 
     //이메일 발송
