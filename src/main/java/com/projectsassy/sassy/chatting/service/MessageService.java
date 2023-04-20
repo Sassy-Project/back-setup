@@ -1,11 +1,12 @@
-package com.projectsassy.sassy.websoket;
+package com.projectsassy.sassy.chatting.service;
 
-import com.projectsassy.sassy.chattingroom.domain.ChattingRoom;
-import com.projectsassy.sassy.message.domain.Message;
-import com.projectsassy.sassy.message.repository.MessageRepository;
+import com.projectsassy.sassy.chatting.domain.ChattingRoom;
+import com.projectsassy.sassy.chatting.domain.Message;
+import com.projectsassy.sassy.chatting.repository.MessageRepository;
+import com.projectsassy.sassy.chatting.dto.MessageRequest;
 import com.projectsassy.sassy.user.domain.User;
 import com.projectsassy.sassy.user.service.UserService;
-import com.projectsassy.sassy.websoket.second.MessageRequest2;
+import com.projectsassy.sassy.chatting.dto.MessageRequest2;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;

@@ -1,4 +1,4 @@
-package com.projectsassy.sassy.websoket;
+package com.projectsassy.sassy.chatting.dto;
 
 import lombok.AccessLevel;
 import lombok.Getter;

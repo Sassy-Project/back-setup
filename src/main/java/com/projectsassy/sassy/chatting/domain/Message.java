@@ -1,6 +1,5 @@
-package com.projectsassy.sassy.message.domain;
+package com.projectsassy.sassy.chatting.domain;
 
-import com.projectsassy.sassy.chattingroom.domain.ChattingRoom;
 import com.projectsassy.sassy.user.domain.User;
 import lombok.AccessLevel;
 import lombok.Builder;

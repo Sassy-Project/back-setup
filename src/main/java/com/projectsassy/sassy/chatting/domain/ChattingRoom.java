@@ -1,4 +1,4 @@
-package com.projectsassy.sassy.chattingroom.domain;
+package com.projectsassy.sassy.chatting.domain;
 
 import com.projectsassy.sassy.user.domain.User;
 import lombok.AccessLevel;
@@ -25,21 +25,6 @@ public class ChattingRoom {
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "receive_user_id")
     private User receiveUser;
-
-    private String wantMbti;
-
-    @Builder
-    private ChattingRoom(User sendUser, String wantMbti) {
-        this.sendUser = sendUser;
-        this.wantMbti = wantMbti;
-    }
-
-    public static ChattingRoom of(User sendUser, String wantMbti) {
-        return ChattingRoom.builder()
-            .sendUser(sendUser)
-            .wantMbti(wantMbti)
-            .build();
-    }
 
     public ChattingRoom (User sendUser, User receiveUser) {
         this.sendUser = sendUser;

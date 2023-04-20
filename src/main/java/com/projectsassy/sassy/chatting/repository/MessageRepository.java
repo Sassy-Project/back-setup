@@ -1,6 +1,6 @@
-package com.projectsassy.sassy.message.repository;
+package com.projectsassy.sassy.chatting.repository;
 
-import com.projectsassy.sassy.message.domain.Message;
+import com.projectsassy.sassy.chatting.domain.Message;
 import org.springframework.data.jpa.repository.JpaRepository;
 
 public interface MessageRepository extends JpaRepository<Message, Long> {

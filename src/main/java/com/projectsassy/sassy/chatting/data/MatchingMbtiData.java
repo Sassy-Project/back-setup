@@ -1,11 +1,11 @@
-package com.projectsassy.sassy.websoket.second;
+package com.projectsassy.sassy.chatting.data;
 
 import lombok.AllArgsConstructor;
 import lombok.Getter;
 
 @Getter
 @AllArgsConstructor
-public class MbtiCondition {
+public class MatchingMbtiData {
 
     private String myMbti;
     private String selectMbti;

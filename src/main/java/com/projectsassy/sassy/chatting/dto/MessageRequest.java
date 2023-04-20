@@ -1,4 +1,4 @@
-package com.projectsassy.sassy.websoket.second;
+package com.projectsassy.sassy.chatting.dto;
 
 import lombok.AccessLevel;
 import lombok.AllArgsConstructor;
@@ -8,9 +8,11 @@ import lombok.NoArgsConstructor;
 @Getter
 @AllArgsConstructor
 @NoArgsConstructor(access = AccessLevel.PROTECTED)
-public class MatchRequest {
+public class MessageRequest {
 
     private String type;
+    private String sendUserId;
     private String roomId;
+    private String content;
 
 }
