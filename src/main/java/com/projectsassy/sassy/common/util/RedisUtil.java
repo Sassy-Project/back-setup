@@ -1,4 +1,4 @@
-package com.projectsassy.sassy.user.service;
+package com.projectsassy.sassy.common.util;
 
 import lombok.RequiredArgsConstructor;
 import org.springframework.data.redis.core.StringRedisTemplate;

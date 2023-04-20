@@ -2,27 +2,25 @@ package com.projectsassy.sassy.user.controller;
 
 import com.projectsassy.sassy.common.code.ErrorCode;
 import com.projectsassy.sassy.common.code.SuccessCode;
-import com.projectsassy.sassy.user.domain.SessionConst;
-import com.projectsassy.sassy.user.domain.User;
+import com.projectsassy.sassy.common.exception.CustomIllegalStateException;
+import com.projectsassy.sassy.token.dto.*;
 
-import com.projectsassy.sassy.common.exception.UnauthorizedException;
 import com.projectsassy.sassy.common.response.ApiResponse;
+import com.projectsassy.sassy.common.util.SecurityUtil;
 import com.projectsassy.sassy.user.dto.EmailRequest;
 import com.projectsassy.sassy.user.dto.*;
 
 import com.projectsassy.sassy.user.service.UserService;
 import io.swagger.annotations.ApiOperation;
 import lombok.RequiredArgsConstructor;
+import lombok.SneakyThrows;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.*;
 
-import javax.servlet.http.HttpServletRequest;
-import javax.servlet.http.HttpSession;
-
-import static com.projectsassy.sassy.user.domain.SessionConst.USER_ID;
-
+@Slf4j
 @RestController
 @RequiredArgsConstructor
 @RequestMapping("/users")
@@ -31,7 +29,7 @@ public class UserController {
     private final UserService userService;
 
     @ApiOperation(value = "회원가입")
-    @PostMapping("/signUp")
+    @PostMapping("/signup")
     public ResponseEntity<ApiResponse> signUp(@Validated @RequestBody UserJoinDto joinDto) {
         userService.join(joinDto);
         return new ResponseEntity<>(new ApiResponse(SuccessCode.SIGNUP_SUCCESS), HttpStatus.OK);
@@ -39,7 +37,7 @@ public class UserController {
 
 
     @ApiOperation(value = "회원가입 시 아이디 중복 검사")
-    @PostMapping("/signUp/id")
+    @PostMapping("/signup/id")
     public ResponseEntity<ApiResponse> duplicateLoginId(@Validated @RequestBody DuplicateLoginIdDto duplicateLoginIdDto) {
         userService.duplicateLoginId(duplicateLoginIdDto);
         return new ResponseEntity<>(new ApiResponse(SuccessCode.CAN_USE_ID), HttpStatus.OK);
@@ -47,7 +45,7 @@ public class UserController {
 
 
     @ApiOperation(value = "회원가입 시 이메일 중복 검사")
-    @PostMapping("/signUp/email")
+    @PostMapping("/signup/email")
     public ResponseEntity<ApiResponse> duplicateEmail(@Validated @RequestBody DuplicateEmailDto duplicateEmailDto) {
         userService.duplicateEmail(duplicateEmailDto);
         return new ResponseEntity<>(new ApiResponse(SuccessCode.CAN_USE_EMAIL), HttpStatus.OK);
@@ -76,66 +74,85 @@ public class UserController {
         return new ResponseEntity<>(new ApiResponse(SuccessCode.SEND_EMAIL), HttpStatus.OK);
     }
 
+    @SneakyThrows
     @ApiOperation(value = "로그인")
     @PostMapping("/login")
-    public ResponseEntity<LoginResponse> login(@Validated @RequestBody LoginRequest loginRequest, HttpServletRequest request) {
-        User findUser = userService.login(loginRequest);
+    public ResponseEntity<LoginResponse> login(@Validated @RequestBody LoginRequest loginRequest) {
+        LoginResponse loginResponse = userService.login(loginRequest);
+        return new ResponseEntity<>(loginResponse, HttpStatus.OK);
+    }
 
-        HttpSession session = request.getSession();
-        session.setAttribute(SessionConst.USER_ID, findUser.getId());
-        return new ResponseEntity<>(new LoginResponse(findUser.getId(), findUser.getNickname()), HttpStatus.OK);
+    @ApiOperation(value = "로그아웃")
+    @GetMapping("/logout")
+    public ResponseEntity<ApiResponse> logout(
+            @RequestHeader(value = "Authorization") String acTokenRequest,
+            @RequestHeader(value = "RefreshToken") String rfTokenRequest
+    ) {
+        String accessToken = acTokenRequest.substring(7);
+        String refreshToken = rfTokenRequest.substring(7);
+        userService.logout(accessToken, refreshToken);
+
+        return new ResponseEntity<>(new ApiResponse(SuccessCode.LOGOUT), HttpStatus.OK);
+    }
+
+    @ApiOperation(value = "토큰 재발급")
+    @PostMapping("/reissue")
+    public ResponseEntity<TokenResponse> reissue(
+            @RequestHeader(value = "Authorization") String acTokenRequest,
+            @RequestHeader(value = "RefreshToken") String rfTokenRequest) {
+
+        String accessToken = acTokenRequest.substring(7);
+        String refreshToken = rfTokenRequest.substring(7);
+
+        TokenResponse tokenResponse = userService.reissue(accessToken, refreshToken);
+
+        return new ResponseEntity<>(tokenResponse, HttpStatus.OK);
     }
 
     @ApiOperation(value = "마이페이지 조회")
     @GetMapping("/{userId}")
-    public ResponseEntity<UserProfileResponse> getProfile(
-        @PathVariable(value = ("userId")) Long userId,
-        @SessionAttribute(name = SessionConst.USER_ID, required = false) Long loginUserId
-    ) {
-        validateUser(userId, loginUserId);
-        UserProfileResponse userProfileResponse = userService.getProfile(userId);
+    public ResponseEntity<UserProfileResponse> getProfile(@PathVariable(value = ("userId")) Long userId) {
+        Long loginUserId = SecurityUtil.getCurrentUserId();
+        validateUserId(userId, loginUserId);
+
+        UserProfileResponse userProfileResponse = userService.getProfile(loginUserId);
         return new ResponseEntity<>(userProfileResponse, HttpStatus.OK);
+    }
+
+    private void validateUserId(Long userId, Long loginUserId) {
+        if (userId != loginUserId) {
+            throw new CustomIllegalStateException(ErrorCode.NO_MATCHES_INFO);
+        }
     }
 
     @ApiOperation(value = "마이페이지 수정")
     @PatchMapping("/{userId}")
-    public ResponseEntity<UpdateProfileResponse> updateProfile(
-        @PathVariable(value = ("userId")) Long userId,
-        @SessionAttribute(name = SessionConst.USER_ID, required = false) Long loginUserId,
-        @Validated @RequestBody UpdateProfileRequest updateProfileRequest
-    ) {
-        validateUser(userId, loginUserId);
-        UpdateProfileResponse updateProfileResponse = userService.updateProfile(userId, updateProfileRequest);
+    public ResponseEntity<UpdateProfileResponse> updateProfile(@PathVariable(value = ("userId")) Long userId,
+                                                               @Validated @RequestBody UpdateProfileRequest updateProfileRequest) {
+        Long loginUserId = SecurityUtil.getCurrentUserId();
+        validateUserId(userId, loginUserId);
+        UpdateProfileResponse updateProfileResponse = userService.updateProfile(loginUserId, updateProfileRequest);
         return new ResponseEntity<>(updateProfileResponse, HttpStatus.OK);
     }
 
     @ApiOperation(value = "비밀번호 수정")
     @PatchMapping("/{userId}/password")
-    public ResponseEntity updatePassword(
-        @PathVariable(value = ("userId")) Long userId,
-        @SessionAttribute(name = SessionConst.USER_ID, required = false) Long loginUserId,
-        @RequestBody UpdatePasswordRequest updatePasswordRequest
-    ) {
-        validateUser(userId, loginUserId);
-        userService.updatePassword(userId, updatePasswordRequest);
+    public ResponseEntity updatePassword(@PathVariable(value = ("userId")) Long userId,
+                                         @RequestBody UpdatePasswordRequest updatePasswordRequest) {
+        Long loginUserId = SecurityUtil.getCurrentUserId();
+        validateUserId(userId, loginUserId);
+        userService.updatePassword(loginUserId, updatePasswordRequest);
         return new ResponseEntity<>(new ApiResponse(SuccessCode.UPDATE_PASSWORD), HttpStatus.OK);
     }
 
     @ApiOperation(value = "회원 삭제")
     @DeleteMapping("/{userId}")
-    public ResponseEntity deleteUser(
-        @PathVariable(value = ("userId")) Long userId,
-        @SessionAttribute(name = SessionConst.USER_ID, required = false) Long loginUserId
-    ) {
-        validateUser(userId, loginUserId);
-        userService.delete(userId);
+    public ResponseEntity deleteUser(@PathVariable(value = ("userId")) Long userId) {
+        Long loginUserId = SecurityUtil.getCurrentUserId();
+        validateUserId(userId, loginUserId);
+        userService.delete(loginUserId);
         return new ResponseEntity<>(new ApiResponse(SuccessCode.DELETE_USER), HttpStatus.OK);
     }
 
-    private static void validateUser(Long userId, Long loginUserId) {
-        if (loginUserId == null || userId != loginUserId) {
-            throw new UnauthorizedException(ErrorCode.UNAUTHORIZED);
-        }
-    }
 
 }
