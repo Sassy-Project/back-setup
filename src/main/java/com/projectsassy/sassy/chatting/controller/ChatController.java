@@ -8,6 +8,7 @@ import com.projectsassy.sassy.chatting.dto.MatchRequest;
 import com.projectsassy.sassy.chatting.data.MatchingMbtiData;
 import com.projectsassy.sassy.chatting.dto.MessageRequest2;
 import com.projectsassy.sassy.chatting.dto.WaitingRequest;
+import io.swagger.annotations.ApiOperation;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.messaging.handler.annotation.DestinationVariable;
@@ -68,6 +69,7 @@ public class ChatController {
     // 둘이 매칭 돼서 roomId를 받음.
     // ws://localhost:8080/ws/pub/chat/match/{roomId}  MessageRequest2 : type:채팅(대화), 나갔을때경우 , roomId, sendUserId, content
     // ws://localhost:8080/ws/sub/chat/match/{roomId}  MessageRequest2 : type:채팅(대화), 나갔을때경우 , roomId, sendUserId, content
+    @ApiOperation(value = "매칭 대기")
     @MessageMapping("/chat/wait")  // 유저는 자신의 userId인 /sub/chat/wait/{userId} 에서 대기.
     public void addUserToWaiting(WaitingRequest waitingRequest) { // type:일단 wait, close 두개로. userId, selectMbti
         Long userId = Long.valueOf(waitingRequest.getUserId());
@@ -78,6 +80,8 @@ public class ChatController {
             System.out.println(waiting.size());
             return;
         }
+
+        simpMessageSendingOperations.convertAndSend("/sub/chat/wait/" + userId, waitingRequest);
 
         User user = userService.findById(userId);
         String myMbti = user.getMbti();
