@@ -12,5 +12,6 @@ public class MatchResponse {
 
     private String type;
     private String roomId;
+    private String matchedUserNickname;
 
 }
