@@ -3,6 +3,7 @@ package com.projectsassy.sassy.chatting.service;
 import com.projectsassy.sassy.chatting.data.MatchingMbtiData;
 import com.projectsassy.sassy.chatting.dto.ChatCloseResponse;
 import com.projectsassy.sassy.chatting.dto.MatchResponse;
+import com.projectsassy.sassy.chatting.dto.RoomInformation;
 import com.projectsassy.sassy.chatting.dto.WaitingRequest;
 import com.projectsassy.sassy.user.domain.User;
 import com.projectsassy.sassy.user.service.UserService;
@@ -34,11 +35,9 @@ public class ChatService {
         String myMbti = user.getMbti();
         String selectMbti = waitingRequest.getSelectMbti();
 
-        //나의 mbti와 내가 원하는 mbti로 대기 줄 waiting에 mbti 조건으로 추가. -> 이 조건을 이용하여 매칭.
         MatchingMbtiData matchingMbtiData = new MatchingMbtiData(myMbti, selectMbti);
         waitingData.put(sessionId, matchingMbtiData);
 
-        //waiting에 2명 이상이 있을때 매칭 시작
         if (waiting.size() > 1) {
             startMatching(user, myMbti, selectMbti);
         }
@@ -56,11 +55,13 @@ public class ChatService {
             String waitingUserSelectMbti = waitingMatchingMbtiData.getSelectMbti();
 
             if (selectMbti.equals(waitingUserMbti) && myMbti.equals(waitingUserSelectMbti)) {
-                Long roomId = chattingRoomService.createChattingRoom(user, waitingUserId);
+                RoomInformation roomInformation = chattingRoomService.createChattingRoom(user, waitingUserId);
+                Long roomId = roomInformation.getRoomId();
 
-                MatchResponse matchResponse = new MatchResponse("match", String.valueOf(roomId));
-                simpMessageSendingOperations.convertAndSend("/sub/chat/wait/" + userId, matchResponse);
-                simpMessageSendingOperations.convertAndSend("/sub/chat/wait/" + waitingUserId, matchResponse);
+                MatchResponse myMatchResponse = new MatchResponse("match", String.valueOf(roomId), roomInformation.getMatchedUserNickname());
+                MatchResponse matchedUserResponse = new MatchResponse("match", String.valueOf(roomId), user.getNickname());
+                simpMessageSendingOperations.convertAndSend("/sub/chat/wait/" + userId, myMatchResponse);
+                simpMessageSendingOperations.convertAndSend("/sub/chat/wait/" + waitingUserId, matchedUserResponse);
 
                 chattingRoomSessions.put(waiting.get(userId), roomId);
                 chattingRoomSessions.put(waiting.get(waitingUserId), roomId);
