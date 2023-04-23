@@ -1,6 +1,7 @@
 package com.projectsassy.sassy.chatting.service;
 
 import com.projectsassy.sassy.chatting.domain.ChattingRoom;
+import com.projectsassy.sassy.chatting.dto.RoomInformation;
 import com.projectsassy.sassy.chatting.repository.ChattingRoomRepository;
 import com.projectsassy.sassy.common.code.ErrorCode;
 import com.projectsassy.sassy.common.exception.CustomIllegalStateException;
@@ -31,9 +32,9 @@ public class ChattingRoomService {
     }
 
     @Transactional
-    public Long createChattingRoom(User sendUser, Long waitingUserId) {
+    public RoomInformation createChattingRoom(User sendUser, Long waitingUserId) {
         User receiveUser = userService.findById(waitingUserId);
         ChattingRoom chattingRoom = chattingRoomRepository.save(new ChattingRoom(sendUser, receiveUser));
-        return chattingRoom.getId();
+        return new RoomInformation(chattingRoom.getId(), receiveUser.getNickname());
     }
 }
