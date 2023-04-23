@@ -32,12 +32,12 @@ public class MessageService {
         String content = messageRequest.getContent();
 
         Message message = Message.of(room, user, content);
-        messageRepository.save(message);
+        Message savedMessage = messageRepository.save(message);
 
         LocalDateTime createdAt = message.getCreatedAt();
         String time = createdAt.format(DateTimeFormatter.ofPattern("HH:mm"));
 
-        MessageResponse messageResponse = new MessageResponse(room.getId(), user.getId(), content, time, user.getNickname());
+        MessageResponse messageResponse = new MessageResponse(room.getId(), user.getId(), content, time, user.getNickname(), savedMessage.getId());
         simpMessageSendingOperations.convertAndSend("/sub/chat/match/" + roomId, messageResponse);
     }
 }
