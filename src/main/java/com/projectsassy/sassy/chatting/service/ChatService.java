@@ -1,10 +1,8 @@
 package com.projectsassy.sassy.chatting.service;
 
+import com.projectsassy.sassy.chatting.data.ChatConst;
 import com.projectsassy.sassy.chatting.data.MatchingMbtiData;
-import com.projectsassy.sassy.chatting.dto.ChatCloseResponse;
-import com.projectsassy.sassy.chatting.dto.MatchResponse;
-import com.projectsassy.sassy.chatting.dto.RoomInformation;
-import com.projectsassy.sassy.chatting.dto.WaitingRequest;
+import com.projectsassy.sassy.chatting.dto.*;
 import com.projectsassy.sassy.user.domain.User;
 import com.projectsassy.sassy.user.service.UserService;
 import lombok.RequiredArgsConstructor;
@@ -58,10 +56,10 @@ public class ChatService {
                 RoomInformation roomInformation = chattingRoomService.createChattingRoom(user, waitingUserId);
                 Long roomId = roomInformation.getRoomId();
 
-                MatchResponse myMatchResponse = new MatchResponse("match", String.valueOf(roomId), roomInformation.getMatchedUserNickname());
-                MatchResponse matchedUserResponse = new MatchResponse("match", String.valueOf(roomId), user.getNickname());
-                simpMessageSendingOperations.convertAndSend("/sub/chat/wait/" + userId, myMatchResponse);
-                simpMessageSendingOperations.convertAndSend("/sub/chat/wait/" + waitingUserId, matchedUserResponse);
+                MatchResponse myMatchResponse = new MatchResponse(ChatConst.MATCH, String.valueOf(roomId), roomInformation.getMatchedUserNickname());
+                MatchResponse matchedUserResponse = new MatchResponse(ChatConst.MATCH, String.valueOf(roomId), user.getNickname());
+                simpMessageSendingOperations.convertAndSend(ChatConst.SUBSCRIBE_WAIT + userId, myMatchResponse);
+                simpMessageSendingOperations.convertAndSend(ChatConst.SUBSCRIBE_WAIT + waitingUserId, matchedUserResponse);
 
                 chattingRoomSessions.put(waiting.get(userId), roomId);
                 chattingRoomSessions.put(waiting.get(waitingUserId), roomId);
@@ -70,14 +68,72 @@ public class ChatService {
                 waitingData.remove(waiting.get(waitingUserId));
                 waiting.remove(userId);
                 waiting.remove(waitingUserId);
+
+                plusRecommendScore(myMbti, selectMbti);
                 break;
             }
 
         }
     }
 
+    private static void plusRecommendScore(String myMbti, String selectMbti) {
+        int selectMbtiIndex = mbtiGraph.get(selectMbti);
+        int myMbtiIndex = mbtiGraph.get(myMbti);
+        recommendGraph[selectMbtiIndex][myMbtiIndex]++;
+        recommendGraph[myMbtiIndex][selectMbtiIndex]++;
+    }
+
     public void sendCloseMessage(Long roomId) {
         ChatCloseResponse chatCloseResponse = new ChatCloseResponse(roomId);
-        simpMessageSendingOperations.convertAndSend("/sub/chat/match/" + roomId, chatCloseResponse);
+        simpMessageSendingOperations.convertAndSend(ChatConst.SUBSCRIBE_MATCH + roomId, chatCloseResponse);
+    }
+
+    //추천 MBTI 매칭
+    public void matchWithRecommendedUser(RecommendWaitingRequest recommendWaitingRequest, String sessionId) {
+        Long userId = Long.valueOf(recommendWaitingRequest.getUserId());
+        waiting.put(userId, sessionId);
+
+        User user = userService.findById(userId);
+        String myMbti = user.getMbti();
+        log.info("myMbti={}", myMbti);
+        String recommendedMbti = recommendMbti(myMbti);
+        log.info("recommendedMbti={}", recommendedMbti);
+
+        MatchingMbtiData matchingMbtiData = new MatchingMbtiData(myMbti, recommendedMbti);
+        waitingData.put(sessionId, matchingMbtiData);
+
+        if (waiting.size() > 1) {
+            startMatching(user, myMbti, recommendedMbti);
+        }
+    }
+
+    private String recommendMbti(String myMbti) {
+        String basicRecommendedMbti = basicRecommend(myMbti);
+        int myIndex = mbtiGraph.get(myMbti);
+        int recommendIndex = mbtiGraph.get(basicRecommendedMbti);
+        int score = recommendGraph[myIndex][recommendIndex];
+        int index = recommendIndex;
+
+        for (int i = 0; i < 16; i++) {
+            if (recommendGraph[myIndex][i] > score) {
+                score = recommendGraph[myIndex][i];
+                index = i;
+            }
+        }
+        return mbti[index];
+    }
+
+    private static String basicRecommend(String myMbti) {
+        char firstIndex = myMbti.charAt(0);
+        char lastIndex = myMbti.charAt(3);
+
+        if (firstIndex == 'E') firstIndex = 'I';
+        else firstIndex = 'E';
+
+        if (lastIndex == 'P') lastIndex = 'J';
+        else lastIndex = 'P';
+
+        String basicRecommendedMbti = firstIndex + myMbti.substring(1, 3) + lastIndex;
+        return basicRecommendedMbti;
     }
 }

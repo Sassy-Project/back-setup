@@ -1,5 +1,6 @@
 package com.projectsassy.sassy;
 
+import com.projectsassy.sassy.chatting.data.ChattingData;
 import org.springframework.boot.SpringApplication;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
 import org.springframework.data.jpa.repository.config.EnableJpaAuditing;
@@ -18,5 +19,6 @@ public class SassyApplication {
 	@PostConstruct
 	public void started() {
 		TimeZone.setDefault(TimeZone.getTimeZone("Asia/Seoul"));
+		ChattingData.initAddMbti();
 	}
 }
