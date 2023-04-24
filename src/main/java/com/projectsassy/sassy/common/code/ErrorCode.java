@@ -30,6 +30,7 @@ public enum ErrorCode {
     NOT_FOUND_USER(404, "U006", "유저를 찾을 수 없습니다."),
     INVALID_NUMBER(400, "U007", "유효하지 않은 인증번호 입니다."),
     NO_MATCHES_INFO(400, "U008", "토큰의 유저 정보가 일치하지 않습니다."),
+    NO_MATCHES_PASSWORD(400, "U009", "비밀번호가 일치하지 않습니다."),
 
     // ChattingRoom
     NOT_FOUND_ROOM(404, "C001", "채팅방을 찾을 수 없습니다.");
