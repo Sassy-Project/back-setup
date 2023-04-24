@@ -9,4 +9,11 @@ import java.util.List;
 
 public interface ChattingRoomRepository extends JpaRepository<ChattingRoom, Long> {
 
+    @Query("select r " +
+        "from ChattingRoom r " +
+        "where r.sendUser.mbti = :myMbti " +
+        "group by r.receiveUser.mbti " +
+        "order by count(r.receiveUser.mbti) desc")
+    List<ChattingRoom> findRecommendMbti(@Param("myMbti") String myMbti);
+
 }

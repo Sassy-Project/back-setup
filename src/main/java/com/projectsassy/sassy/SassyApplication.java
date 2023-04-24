@@ -19,6 +19,5 @@ public class SassyApplication {
 	@PostConstruct
 	public void started() {
 		TimeZone.setDefault(TimeZone.getTimeZone("Asia/Seoul"));
-		ChattingData.initAddMbti();
 	}
 }

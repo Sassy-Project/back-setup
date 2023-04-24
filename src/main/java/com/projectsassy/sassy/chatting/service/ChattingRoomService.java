@@ -12,7 +12,7 @@ import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
-import java.util.UUID;
+import java.util.List;
 
 @Slf4j
 @Service
@@ -36,5 +36,28 @@ public class ChattingRoomService {
         User receiveUser = userService.findById(waitingUserId);
         ChattingRoom chattingRoom = chattingRoomRepository.save(new ChattingRoom(sendUser, receiveUser));
         return new RoomInformation(chattingRoom.getId(), receiveUser.getNickname());
+    }
+
+    public String findRecommendMbti(String myMbti) {
+        List<ChattingRoom> recommendMbti = chattingRoomRepository.findRecommendMbti(myMbti);
+        if (recommendMbti.isEmpty()) {
+            return basicRecommend(myMbti);
+        }
+
+        return recommendMbti.get(0).getReceiveUser().getMbti();
+    }
+
+    private String basicRecommend(String myMbti) {
+        char firstIndex = myMbti.charAt(0);
+        char lastIndex = myMbti.charAt(3);
+
+        if (firstIndex == 'E') firstIndex = 'I';
+        else firstIndex = 'E';
+
+        if (lastIndex == 'P') lastIndex = 'J';
+        else lastIndex = 'P';
+
+        String basicRecommendedMbti = firstIndex + myMbti.substring(1, 3) + lastIndex;
+        return basicRecommendedMbti;
     }
 }

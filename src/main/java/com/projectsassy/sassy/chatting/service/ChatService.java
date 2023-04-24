@@ -68,19 +68,10 @@ public class ChatService {
                 waitingData.remove(waiting.get(waitingUserId));
                 waiting.remove(userId);
                 waiting.remove(waitingUserId);
-
-                plusRecommendScore(myMbti, selectMbti);
                 break;
             }
 
         }
-    }
-
-    private static void plusRecommendScore(String myMbti, String selectMbti) {
-        int selectMbtiIndex = mbtiGraph.get(selectMbti);
-        int myMbtiIndex = mbtiGraph.get(myMbti);
-        recommendGraph[selectMbtiIndex][myMbtiIndex]++;
-        recommendGraph[myMbtiIndex][selectMbtiIndex]++;
     }
 
     public void sendCloseMessage(Long roomId) {
@@ -108,32 +99,7 @@ public class ChatService {
     }
 
     private String recommendMbti(String myMbti) {
-        String basicRecommendedMbti = basicRecommend(myMbti);
-        int myIndex = mbtiGraph.get(myMbti);
-        int recommendIndex = mbtiGraph.get(basicRecommendedMbti);
-        int score = recommendGraph[myIndex][recommendIndex];
-        int index = recommendIndex;
-
-        for (int i = 0; i < 16; i++) {
-            if (recommendGraph[myIndex][i] > score) {
-                score = recommendGraph[myIndex][i];
-                index = i;
-            }
-        }
-        return mbti[index];
+        return chattingRoomService.findRecommendMbti(myMbti);
     }
 
-    private static String basicRecommend(String myMbti) {
-        char firstIndex = myMbti.charAt(0);
-        char lastIndex = myMbti.charAt(3);
-
-        if (firstIndex == 'E') firstIndex = 'I';
-        else firstIndex = 'E';
-
-        if (lastIndex == 'P') lastIndex = 'J';
-        else lastIndex = 'P';
-
-        String basicRecommendedMbti = firstIndex + myMbti.substring(1, 3) + lastIndex;
-        return basicRecommendedMbti;
-    }
 }
