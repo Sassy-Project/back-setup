@@ -74,6 +74,7 @@ public class UserService {
             });
     }
 
+    @Transactional
     public LoginResponse login(LoginRequest loginRequest) {
 
         UsernamePasswordAuthenticationToken authenticationToken =
@@ -82,6 +83,7 @@ public class UserService {
         log.info("authenticateGetName={}", authenticate.getName());
 
         User user = findById(Long.valueOf(authenticate.getName()));
+        user.addPoint();
         TokenResponse tokenResponse = tokenProvider.generateTokenDto(authenticate);
         redisUtil.setDataExpire(authenticate.getName(), tokenResponse.getRefreshToken(), 1000 * 60 * 60 * 24 * 7);
 

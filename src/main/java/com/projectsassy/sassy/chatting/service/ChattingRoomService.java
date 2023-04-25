@@ -34,6 +34,8 @@ public class ChattingRoomService {
     @Transactional
     public RoomInformation createChattingRoom(User sendUser, Long waitingUserId) {
         User receiveUser = userService.findById(waitingUserId);
+        sendUser.addPoint();
+        receiveUser.addPoint();
         ChattingRoom chattingRoom = chattingRoomRepository.save(new ChattingRoom(sendUser, receiveUser));
         return new RoomInformation(chattingRoom.getId(), receiveUser.getNickname());
     }

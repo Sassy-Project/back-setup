@@ -41,6 +41,7 @@ public class ChatService {
         }
     }
 
+    @Transactional
     private void startMatching(User user, String myMbti, String selectMbti) {
         for (Long waitingUserId : waiting.keySet()) {
             Long userId = user.getId();
@@ -80,15 +81,14 @@ public class ChatService {
     }
 
     //추천 MBTI 매칭
+    @Transactional
     public void matchWithRecommendedUser(RecommendWaitingRequest recommendWaitingRequest, String sessionId) {
         Long userId = Long.valueOf(recommendWaitingRequest.getUserId());
         waiting.put(userId, sessionId);
 
         User user = userService.findById(userId);
         String myMbti = user.getMbti();
-        log.info("myMbti={}", myMbti);
         String recommendedMbti = recommendMbti(myMbti);
-        log.info("recommendedMbti={}", recommendedMbti);
 
         MatchingMbtiData matchingMbtiData = new MatchingMbtiData(myMbti, recommendedMbti);
         waitingData.put(sessionId, matchingMbtiData);

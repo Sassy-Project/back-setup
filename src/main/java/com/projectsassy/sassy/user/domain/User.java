@@ -23,6 +23,7 @@ public class User {
     private String gender;
     private String mbti;
     private String image;
+    private int point;
 
     @Embedded
     private Email email;
@@ -40,6 +41,7 @@ public class User {
         this.mbti = mbti;
         this.image = image;
         this.role = Role.ROLE_USER;
+        this.point = 0;
     }
 
     public static User of(String loginId, String password, String nickname, String email, String gender, String mbti, String image) {
@@ -68,5 +70,9 @@ public class User {
 
     public void changePassword(String updatePassword) {
         this.password = updatePassword;
+    }
+
+    public void addPoint() {
+        this.point += 10;
     }
 }
