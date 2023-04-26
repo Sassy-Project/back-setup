@@ -4,7 +4,7 @@ import com.projectsassy.sassy.common.code.ErrorCode;
 import com.projectsassy.sassy.common.exception.CustomIllegalStateException;
 import com.projectsassy.sassy.item.domain.Badge;
 import com.projectsassy.sassy.item.domain.Item;
-import com.projectsassy.sassy.item.domain.UserItem;
+import com.projectsassy.sassy.user.domain.UserItem;
 import com.projectsassy.sassy.item.dto.*;
 import com.projectsassy.sassy.item.repository.ItemRepository;
 import com.projectsassy.sassy.user.domain.User;

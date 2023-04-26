@@ -1,6 +1,6 @@
-package com.projectsassy.sassy.item.domain;
+package com.projectsassy.sassy.user.domain;
 
-import com.projectsassy.sassy.user.domain.User;
+import com.projectsassy.sassy.item.domain.Item;
 import lombok.AccessLevel;
 import lombok.Getter;
 import lombok.NoArgsConstructor;

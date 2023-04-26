@@ -2,7 +2,6 @@ package com.projectsassy.sassy.user.domain;
 
 import com.projectsassy.sassy.common.code.ErrorCode;
 import com.projectsassy.sassy.common.exception.BusinessExceptionHandler;
-import com.projectsassy.sassy.item.domain.UserItem;
 import lombok.*;
 
 import javax.persistence.*;

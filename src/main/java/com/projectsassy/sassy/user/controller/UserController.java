@@ -156,11 +156,4 @@ public class UserController {
         return new ResponseEntity<>(new ApiResponse(SuccessCode.DELETE_USER), HttpStatus.OK);
     }
 
-    @GetMapping("/items/badge")
-    public ResponseEntity<UserAllBadgesResponse> findAllBadges() {
-        Long userId = SecurityUtil.getCurrentUserId();
-        List<UserBadgeDto> userBadgeDtoList = userService.findBadges(userId);
-        UserAllBadgesResponse userBadges = new UserAllBadgesResponse(userBadgeDtoList);
-        return new ResponseEntity<>(userBadges, HttpStatus.OK);
-    }
 }

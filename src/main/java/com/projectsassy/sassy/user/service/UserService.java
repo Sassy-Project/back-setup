@@ -265,18 +265,4 @@ public class UserService {
         redisUtil.setDataExpire(accessToken, "logout", expiration);
     }
 
-    public List<UserBadgeDto> findBadges(Long userId) {
-        User user = userRepository.findItemsById(userId)
-            .orElseThrow(() -> {
-                throw new CustomIllegalStateException(ErrorCode.NOT_FOUND_USER);
-            });
-
-//        List<Badge> badges = itemRepository.findAllBadgeByUserId(userId);
-//        return badges.stream().map(badge -> new UserBadgeDto(badge))
-//            .collect(Collectors.toList());
-
-        return user.getUserItems().stream()
-            .map(userItem -> new UserBadgeDto((Badge) userItem.getItem()))
-            .collect(Collectors.toList());
-    }
 }
