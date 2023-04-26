@@ -33,7 +33,10 @@ public enum ErrorCode {
     NO_MATCHES_PASSWORD(400, "U009", "비밀번호가 일치하지 않습니다."),
 
     // ChattingRoom
-    NOT_FOUND_ROOM(404, "C001", "채팅방을 찾을 수 없습니다.");
+    NOT_FOUND_ROOM(404, "C001", "채팅방을 찾을 수 없습니다."),
+
+    // Post
+    NOT_FOUND_POST(404, "P001", "게시물을 찾을 수 없습니다.");
 
 
 

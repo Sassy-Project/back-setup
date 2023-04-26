@@ -56,7 +56,7 @@ public class WebSecurityConfig {
                     .formLogin().disable()  //폼로그인 안쓰겠다
                     .httpBasic().disable()
                     .authorizeRequests()
-                    .antMatchers("/", "/**", "/users/**").permitAll()
+                    .antMatchers("/", "/**", "/users/**", "/posts/**").permitAll()
                     .anyRequest().permitAll()   // 나머지 API 는 전부 인증 필요
                 .and()
                 .build();

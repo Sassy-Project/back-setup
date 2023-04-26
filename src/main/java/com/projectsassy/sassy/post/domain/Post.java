@@ -32,16 +32,19 @@ public class Post {
     private List<Comment> comments = new ArrayList<>();
 
     private String title;
+    private String content;
+
+    private Long count;
+
     @Enumerated(EnumType.STRING)
     private Category category;
-    private String content;
 
     @CreatedDate
     private LocalDateTime createdAt;
 
     @Builder
     public Post(Long id, User user, List<Comment> comments, String title, Category category,
-                String content, LocalDateTime createdAt) {
+                String content, Long count, LocalDateTime createdAt) {
         this.id = id;
         this.user = user;
         this.comments = comments;
@@ -70,4 +73,6 @@ public class Post {
             this.category = Category.MBTI;
         }
     }
+
+
 }
