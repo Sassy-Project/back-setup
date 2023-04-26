@@ -32,7 +32,10 @@ public enum ErrorCode {
     NO_MATCHES_INFO(400, "U008", "토큰의 유저 정보가 일치하지 않습니다."),
 
     // ChattingRoom
-    NOT_FOUND_ROOM(404, "C001", "채팅방을 찾을 수 없습니다.");
+    NOT_FOUND_ROOM(404, "C001", "채팅방을 찾을 수 없습니다."),
+
+    //Item
+    NOT_FOUND_ITEM(404, "I001", "아이템을 찾을 수 없습니다.");
 
 
 

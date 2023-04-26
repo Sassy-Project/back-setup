@@ -4,6 +4,7 @@ import com.projectsassy.sassy.common.code.SuccessCode;
 import com.projectsassy.sassy.common.response.ApiResponse;
 import com.projectsassy.sassy.item.dto.AllBadgeResponse;
 import com.projectsassy.sassy.item.dto.CreateBadgeRequest;
+import com.projectsassy.sassy.item.dto.ItemDeleteRequest;
 import com.projectsassy.sassy.item.service.ItemService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpStatus;
@@ -27,5 +28,11 @@ public class ItemController {
     public ResponseEntity<AllBadgeResponse> findAllBadge() {
         AllBadgeResponse allBadgeResponse = itemService.findAllBadge();
         return new ResponseEntity<>(allBadgeResponse, HttpStatus.OK);
+    }
+
+    @DeleteMapping
+    public ResponseEntity deleteBadge(@RequestBody ItemDeleteRequest itemDeleteRequest) {
+        itemService.deleteItem(itemDeleteRequest);
+        return new ResponseEntity<>(new ApiResponse(SuccessCode.DELETE_ITEM), HttpStatus.OK);
     }
 }

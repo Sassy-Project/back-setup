@@ -14,7 +14,8 @@ public enum SuccessCode {
     CERTIFY_CODE("CertifyCode", "인증이 완료되었습니다."),
     LOGOUT("Logout", "로그아웃 되었습니다."),
 
-    CREATE_ITEM("CreateItem", "아이템을 등록하였습니다.");
+    CREATE_ITEM("CreateItem", "아이템을 등록하였습니다."),
+    DELETE_ITEM("DeleteItem", "아이템이 삭제되었습니다.");
 
     private final String code;
     private final String message;
