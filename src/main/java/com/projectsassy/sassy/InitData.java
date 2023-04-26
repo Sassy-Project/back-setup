@@ -26,9 +26,9 @@ public class InitData {
 
 
         public void init() {
-            Badge badge1 = new Badge("LV1_Badge", 100, "badge1");
-            Badge badge2 = new Badge("LV2_Badge", 500, "badge2");
-            Badge badge3 = new Badge("LV3_Badge", 1000, "badge3");
+            Badge badge1 = new Badge("LV1_Badge", 10, "badge1");
+            Badge badge2 = new Badge("LV2_Badge", 20, "badge2");
+            Badge badge3 = new Badge("LV3_Badge", 30, "badge3");
             itemRepository.save(badge1);
             itemRepository.save(badge2);
             itemRepository.save(badge3);

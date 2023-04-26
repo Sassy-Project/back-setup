@@ -37,5 +37,4 @@ public class UserItem {
     public void addUser(User user) {
         this.user = user;
     }
-
 }

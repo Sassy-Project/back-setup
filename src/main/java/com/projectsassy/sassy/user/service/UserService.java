@@ -4,6 +4,9 @@ import com.projectsassy.sassy.common.code.ErrorCode;
 import com.projectsassy.sassy.common.exception.BusinessExceptionHandler;
 import com.projectsassy.sassy.common.exception.CustomIllegalStateException;
 import com.projectsassy.sassy.common.util.RedisUtil;
+import com.projectsassy.sassy.item.domain.Badge;
+import com.projectsassy.sassy.item.domain.Item;
+import com.projectsassy.sassy.item.repository.ItemRepository;
 import com.projectsassy.sassy.token.TokenProvider;
 import com.projectsassy.sassy.token.dto.TokenResponse;
 import com.projectsassy.sassy.user.domain.Email;
@@ -23,7 +26,9 @@ import org.springframework.transaction.annotation.Transactional;
 
 import javax.mail.MessagingException;
 import javax.mail.internet.MimeMessage;
+import java.util.List;
 import java.util.Random;
+import java.util.stream.Collectors;
 
 
 @Service
@@ -37,10 +42,12 @@ public class UserService {
     private final JavaMailSender javaMailSender;
     private final RedisUtil redisUtil;
     private final TokenProvider tokenProvider;
+    private final ItemRepository itemRepository;
 
 
     public UserService(AuthenticationManagerBuilder authenticationManagerBuilder, UserRepository userRepository,
-                       BCryptPasswordEncoder encoder, JavaMailSender javaMailSender, RedisUtil redisUtil, TokenProvider tokenProvider
+                       BCryptPasswordEncoder encoder, JavaMailSender javaMailSender, RedisUtil redisUtil, TokenProvider tokenProvider,
+                       ItemRepository itemRepository
     ) {
         this.authenticationManagerBuilder = authenticationManagerBuilder;
         this.userRepository = userRepository;
@@ -48,6 +55,7 @@ public class UserService {
         this.javaMailSender = javaMailSender;
         this.redisUtil = redisUtil;
         this.tokenProvider = tokenProvider;
+        this.itemRepository = itemRepository;
     }
 
 
@@ -61,9 +69,9 @@ public class UserService {
 
     public void duplicateLoginId(DuplicateLoginIdDto duplicateLoginIdDto) {
         userRepository.findByLoginId(duplicateLoginIdDto.getLoginId())
-                .ifPresent(d -> {
-                        throw new DuplicatedException(ErrorCode.DUPLICATE_LOGIN_ID);
-                });
+            .ifPresent(d -> {
+                throw new DuplicatedException(ErrorCode.DUPLICATE_LOGIN_ID);
+            });
     }
 
     public void duplicateEmail(DuplicateEmailDto duplicateEmailDto) {
@@ -78,7 +86,7 @@ public class UserService {
     public LoginResponse login(LoginRequest loginRequest) {
 
         UsernamePasswordAuthenticationToken authenticationToken =
-                new UsernamePasswordAuthenticationToken(loginRequest.getLoginId(), loginRequest.getPassword());
+            new UsernamePasswordAuthenticationToken(loginRequest.getLoginId(), loginRequest.getPassword());
         Authentication authenticate = authenticationManagerBuilder.getObject().authenticate(authenticationToken);
         log.info("authenticateGetName={}", authenticate.getName());
 
@@ -143,14 +151,14 @@ public class UserService {
     public FindIdResponse findMyId(FindIdRequest findIdRequest) {
         String redisEmail = redisUtil.getData(findIdRequest.getCode());
         String email = findIdRequest.getEmail();
-        if (!redisEmail.equals(email)){
+        if (!redisEmail.equals(email)) {
             throw new BusinessExceptionHandler(ErrorCode.INVALID_NUMBER);
         }
 
         User findUser = userRepository.findByEmail(new Email(email))
-                .orElseThrow(() -> {
-                    throw new CustomIllegalStateException(ErrorCode.NOT_FOUND_USER);
-                });
+            .orElseThrow(() -> {
+                throw new CustomIllegalStateException(ErrorCode.NOT_FOUND_USER);
+            });
 
         FindIdResponse findIdResponse = new FindIdResponse();
         findIdResponse.setLoginId(findUser.getLoginId());
@@ -167,9 +175,9 @@ public class UserService {
             throw new BusinessExceptionHandler(ErrorCode.INVALID_NUMBER);
         }
         userRepository.findByEmailAndLoginId(new Email(email), loginId)
-                .orElseThrow(() -> {
-                    throw new CustomIllegalStateException(ErrorCode.NOT_FOUND_USER);
-                });
+            .orElseThrow(() -> {
+                throw new CustomIllegalStateException(ErrorCode.NOT_FOUND_USER);
+            });
     }
 
     //이메일 발송
@@ -201,7 +209,7 @@ public class UserService {
         }
 
         //유효시간
-        redisUtil.setDataExpire(authKey, email, 60*5L);
+        redisUtil.setDataExpire(authKey, email, 60 * 5L);
 
     }
 
@@ -257,4 +265,18 @@ public class UserService {
         redisUtil.setDataExpire(accessToken, "logout", expiration);
     }
 
+    public List<UserBadgeDto> findBadges(Long userId) {
+        User user = userRepository.findItemsById(userId)
+            .orElseThrow(() -> {
+                throw new CustomIllegalStateException(ErrorCode.NOT_FOUND_USER);
+            });
+
+//        List<Badge> badges = itemRepository.findAllBadgeByUserId(userId);
+//        return badges.stream().map(badge -> new UserBadgeDto(badge))
+//            .collect(Collectors.toList());
+
+        return user.getUserItems().stream()
+            .map(userItem -> new UserBadgeDto((Badge) userItem.getItem()))
+            .collect(Collectors.toList());
+    }
 }
