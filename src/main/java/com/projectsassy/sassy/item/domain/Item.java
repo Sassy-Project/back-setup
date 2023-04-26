@@ -9,7 +9,7 @@ import javax.persistence.*;
 @Getter
 @NoArgsConstructor(access = AccessLevel.PROTECTED)
 @Inheritance(strategy = InheritanceType.SINGLE_TABLE)
-@DiscriminatorColumn(name = "DTYPE")
+@DiscriminatorColumn(name = "dtype")
 @Entity
 public abstract class Item {
 
@@ -21,4 +21,11 @@ public abstract class Item {
     private String name;
     private int price;
 
+    @Column(insertable = false, updatable = false)
+    private String dtype;
+
+    public Item(String name, int price) {
+        this.name = name;
+        this.price = price;
+    }
 }

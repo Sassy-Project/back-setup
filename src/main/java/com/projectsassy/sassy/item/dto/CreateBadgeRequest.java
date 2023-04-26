@@ -3,9 +3,10 @@ package com.projectsassy.sassy.item.dto;
 import lombok.Getter;
 
 @Getter
-public class CreateItemRequest {
+public class CreateBadgeRequest {
 
     private String itemName;
     private int price;
+    private String badgeImage;
 
 }
