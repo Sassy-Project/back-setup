@@ -25,4 +25,17 @@ public class UserItem {
     @JoinColumn(name = "item_id")
     private Item item;
 
+    private UserItem(Item item) {
+        this.item = item;
+    }
+
+    public static UserItem createUserItem(Item item) {
+        UserItem userItem = new UserItem(item);
+        return userItem;
+    }
+
+    public void addUser(User user) {
+        this.user = user;
+    }
+
 }

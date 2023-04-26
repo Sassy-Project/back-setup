@@ -4,11 +4,11 @@ import com.projectsassy.sassy.common.code.ErrorCode;
 import com.projectsassy.sassy.common.exception.CustomIllegalStateException;
 import com.projectsassy.sassy.item.domain.Badge;
 import com.projectsassy.sassy.item.domain.Item;
-import com.projectsassy.sassy.item.dto.AllBadgeResponse;
-import com.projectsassy.sassy.item.dto.BadgeDto;
-import com.projectsassy.sassy.item.dto.CreateBadgeRequest;
-import com.projectsassy.sassy.item.dto.ItemDeleteRequest;
+import com.projectsassy.sassy.item.domain.UserItem;
+import com.projectsassy.sassy.item.dto.*;
 import com.projectsassy.sassy.item.repository.ItemRepository;
+import com.projectsassy.sassy.user.domain.User;
+import com.projectsassy.sassy.user.service.UserService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -22,6 +22,7 @@ import java.util.stream.Collectors;
 public class ItemService {
 
     private final ItemRepository itemRepository;
+    private final UserService userService;
 
     @Transactional
     public void createBadge(CreateBadgeRequest createBadgeRequest) {
@@ -41,10 +42,23 @@ public class ItemService {
 
     @Transactional
     public void deleteItem(ItemDeleteRequest itemDeleteRequest) {
-        Item findItem = itemRepository.findById(itemDeleteRequest.getItemId())
+        Item findItem = findItemById(itemDeleteRequest.getItemId());
+        itemRepository.delete(findItem);
+    }
+
+    private Item findItemById(Long itemId) {
+        return itemRepository.findById(itemId)
             .orElseThrow(() -> {
                 throw new CustomIllegalStateException(ErrorCode.NOT_FOUND_ITEM);
             });
-        itemRepository.delete(findItem);
+    }
+
+    @Transactional
+    public void purchaseItem(Long userId, ItemPurchaseRequest itemPurchaseRequest) {
+        User user = userService.findById(userId);
+        Item item = findItemById(itemPurchaseRequest.getItemId());
+        UserItem userItem = UserItem.createUserItem(item);
+
+        user.purchaseItem(userItem);
     }
 }

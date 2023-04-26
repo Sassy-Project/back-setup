@@ -1,8 +1,14 @@
 package com.projectsassy.sassy.user.domain;
 
+import com.projectsassy.sassy.common.code.ErrorCode;
+import com.projectsassy.sassy.common.exception.BusinessExceptionHandler;
+import com.projectsassy.sassy.item.domain.UserItem;
 import lombok.*;
 
 import javax.persistence.*;
+
+import java.util.ArrayList;
+import java.util.List;
 
 import static lombok.AccessLevel.*;
 
@@ -24,6 +30,9 @@ public class User {
     private String mbti;
     private String image;
     private int point;
+
+    @OneToMany(mappedBy = "user", fetch = FetchType.LAZY, cascade = CascadeType.ALL)
+    private List<UserItem> userItems = new ArrayList<>();
 
     @Embedded
     private Email email;
@@ -74,5 +83,20 @@ public class User {
 
     public void addPoint() {
         this.point += 10;
+    }
+
+    public void addUserItem(UserItem userItem) {
+        this.userItems.add(userItem);
+        userItem.addUser(this);
+    }
+
+    public void purchaseItem(UserItem userItem) {
+        if (this.point >= userItem.getItem().getPrice()) {
+            this.point -= userItem.getItem().getPrice();
+            this.addUserItem(userItem);
+            return;
+        }
+
+        throw new BusinessExceptionHandler(ErrorCode.INSUFFICIENT_POINTS);
     }
 }

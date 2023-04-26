@@ -15,7 +15,8 @@ public enum SuccessCode {
     LOGOUT("Logout", "로그아웃 되었습니다."),
 
     CREATE_ITEM("CreateItem", "아이템을 등록하였습니다."),
-    DELETE_ITEM("DeleteItem", "아이템이 삭제되었습니다.");
+    DELETE_ITEM("DeleteItem", "아이템이 삭제되었습니다."),
+    PURCHASE_ITEM("PurchaseItem", "아이템을 구매하였습니다.");
 
     private final String code;
     private final String message;
