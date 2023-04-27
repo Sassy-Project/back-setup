@@ -1,6 +1,6 @@
-package com.projectsassy.sassy.user.repository;
+package com.projectsassy.sassy.userItem.repository;
 
-import com.projectsassy.sassy.user.domain.UserItem;
+import com.projectsassy.sassy.userItem.domain.UserItem;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.Query;
 import org.springframework.data.repository.query.Param;

@@ -1,4 +1,4 @@
-package com.projectsassy.sassy.user.dto.userItem;
+package com.projectsassy.sassy.userItem.dto;
 
 import lombok.Getter;
 

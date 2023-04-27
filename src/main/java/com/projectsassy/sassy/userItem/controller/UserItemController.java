@@ -1,12 +1,12 @@
-package com.projectsassy.sassy.user.controller;
+package com.projectsassy.sassy.userItem.controller;
 
 import com.projectsassy.sassy.common.code.SuccessCode;
 import com.projectsassy.sassy.common.response.ApiResponse;
 import com.projectsassy.sassy.common.util.SecurityUtil;
 import com.projectsassy.sassy.user.dto.UserAllBadgesResponse;
 import com.projectsassy.sassy.user.dto.UserBadgeDto;
-import com.projectsassy.sassy.user.dto.userItem.AttachBadgeRequest;
-import com.projectsassy.sassy.user.service.UserItemService;
+import com.projectsassy.sassy.userItem.dto.AttachBadgeRequest;
+import com.projectsassy.sassy.userItem.service.UserItemService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -29,10 +29,10 @@ public class UserItemController {
         return new ResponseEntity<>(userBadges, HttpStatus.OK);
     }
 
-    @PostMapping("/items/badge")
-    public ResponseEntity attachBadge(@RequestBody AttachBadgeRequest attachBadgeRequest) {
+    @PatchMapping("/items/badge")
+    public ResponseEntity changeBadgeImage(@RequestBody AttachBadgeRequest attachBadgeRequest) {
         Long userId = SecurityUtil.getCurrentUserId();
-        userItemService.attachBadge(userId, attachBadgeRequest);
+        userItemService.changeBadgeImage(userId, attachBadgeRequest);
         return new ResponseEntity<>(new ApiResponse(SuccessCode.CHANGE_ITEM), HttpStatus.OK);
     }
 }
