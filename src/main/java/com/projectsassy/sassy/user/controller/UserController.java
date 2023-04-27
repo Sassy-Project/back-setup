@@ -115,7 +115,7 @@ public class UserController {
     @GetMapping("/{userId}")
     public ResponseEntity<UserProfileResponse> getProfile(@PathVariable(value = ("userId")) Long userId) {
         Long loginUserId = SecurityUtil.getCurrentUserId();
-        validateUserId(userId, loginUserId);
+//         validateUserId(userId, loginUserId);
 
         UserProfileResponse userProfileResponse = userService.getProfile(loginUserId);
         return new ResponseEntity<>(userProfileResponse, HttpStatus.OK);
@@ -132,7 +132,7 @@ public class UserController {
     public ResponseEntity<UpdateProfileResponse> updateProfile(@PathVariable(value = ("userId")) Long userId,
                                                                @Validated @RequestBody UpdateProfileRequest updateProfileRequest) {
         Long loginUserId = SecurityUtil.getCurrentUserId();
-        validateUserId(userId, loginUserId);
+//         validateUserId(userId, loginUserId);
         UpdateProfileResponse updateProfileResponse = userService.updateProfile(loginUserId, updateProfileRequest);
         return new ResponseEntity<>(updateProfileResponse, HttpStatus.OK);
     }
@@ -142,7 +142,7 @@ public class UserController {
     public ResponseEntity updatePassword(@PathVariable(value = ("userId")) Long userId,
                                          @RequestBody UpdatePasswordRequest updatePasswordRequest) {
         Long loginUserId = SecurityUtil.getCurrentUserId();
-        validateUserId(userId, loginUserId);
+//         validateUserId(userId, loginUserId);
         userService.updatePassword(loginUserId, updatePasswordRequest);
         return new ResponseEntity<>(new ApiResponse(SuccessCode.UPDATE_PASSWORD), HttpStatus.OK);
     }
@@ -159,7 +159,7 @@ public class UserController {
     @DeleteMapping("/{userId}")
     public ResponseEntity deleteUser(@PathVariable(value = ("userId")) Long userId) {
         Long loginUserId = SecurityUtil.getCurrentUserId();
-        validateUserId(userId, loginUserId);
+//         validateUserId(userId, loginUserId);
         userService.delete(loginUserId);
         return new ResponseEntity<>(new ApiResponse(SuccessCode.DELETE_USER), HttpStatus.OK);
     }
