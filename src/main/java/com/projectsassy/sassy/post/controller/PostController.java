@@ -57,8 +57,8 @@ public class PostController {
     @ApiOperation("게시글 단건 조회")
     @GetMapping("/{postId}")
     public ResponseEntity<LookUpPostResponse> lookUpPost(@PathVariable("postId") Long postId) {
-        postService.lookUpPost(postId);
+        LookUpPostResponse lookUpPostResponse = postService.findPost(postId);
 
-        return new ResponseEntity(HttpStatus.OK);
+        return new ResponseEntity(lookUpPostResponse, HttpStatus.OK);
     }
 }

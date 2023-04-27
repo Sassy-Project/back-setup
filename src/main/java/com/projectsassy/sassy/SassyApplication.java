@@ -1,5 +1,6 @@
 package com.projectsassy.sassy;
 
+import com.projectsassy.sassy.user.domain.User;
 import org.springframework.boot.SpringApplication;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
 import org.springframework.data.jpa.repository.config.EnableJpaAuditing;
