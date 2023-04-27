@@ -46,7 +46,7 @@ public class ItemService {
         itemRepository.delete(findItem);
     }
 
-    private Item findItemById(Long itemId) {
+    public Item findItemById(Long itemId) {
         return itemRepository.findById(itemId)
             .orElseThrow(() -> {
                 throw new CustomIllegalStateException(ErrorCode.NOT_FOUND_ITEM);

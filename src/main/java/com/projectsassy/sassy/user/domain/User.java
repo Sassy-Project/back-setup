@@ -98,4 +98,8 @@ public class User {
 
         throw new BusinessExceptionHandler(ErrorCode.INSUFFICIENT_POINTS);
     }
+
+    public void changeImage(String badgeImage) {
+        this.image = badgeImage;
+    }
 }

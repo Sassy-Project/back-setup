@@ -36,7 +36,8 @@ public enum ErrorCode {
 
     //Item
     NOT_FOUND_ITEM(404, "I001", "아이템을 찾을 수 없습니다."),
-    INSUFFICIENT_POINTS(400, "I002", "포인트가 부족합니다.");
+    INSUFFICIENT_POINTS(400, "I002", "포인트가 부족합니다."),
+    NOT_FOUND_USERITEM(404, "I003", "구매하지 않은 아이템입니다.");
 
 
 
