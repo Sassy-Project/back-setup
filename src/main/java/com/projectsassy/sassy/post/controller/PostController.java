@@ -1,14 +1,10 @@
 package com.projectsassy.sassy.post.controller;
 
-import com.projectsassy.sassy.post.dto.CreatePostResponse;
-import com.projectsassy.sassy.post.dto.HomeResponse;
-import com.projectsassy.sassy.post.dto.CreatePostRequest;
-import com.projectsassy.sassy.post.dto.LookUpPostResponse;
+import com.projectsassy.sassy.post.dto.*;
 import com.projectsassy.sassy.post.service.PostService;
 import io.swagger.annotations.ApiOperation;
 import lombok.RequiredArgsConstructor;
 import org.springframework.data.domain.Pageable;
-import org.springframework.data.domain.Sort;
 import org.springframework.data.web.PageableDefault;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -23,14 +19,23 @@ public class PostController {
 
     private final PostService postService;
 
+//    @ApiOperation("게시판 메인 작성 시간순")
+//    @GetMapping
+//    public ResponseEntity<> postHomeTime(
+//            @PageableDefault(size = 10, sort = {"postId"}) Pageable pageable
+//    ) {
+//
+//    }
+
     @ApiOperation("게시판 메인 페이지 조회순")
     @GetMapping("/home")
-    public ResponseEntity<HomeResponse> postHome(
-            @PageableDefault(size = 10, sort = {"postId"}) Pageable pageable) {
-        List<HomeResponse> homeResponse = postService.getPostHome(pageable);
+    public ResponseEntity<ViewedListResponse> postHomeViewed(
+            @PageableDefault(size = 10, sort = {"id"}) Pageable pageable) {
+        List<ViewedHomeDto> viewedHomeDto = postService.findViewedPost(pageable);
 
+        ViewedListResponse viewedListResponse = new ViewedListResponse(viewedHomeDto);
 
-        return new ResponseEntity(homeResponse, HttpStatus.OK);
+        return new ResponseEntity(viewedListResponse, HttpStatus.OK);
     }
 
 //    @ApiOperation("게시판 메인 페이지 조회순")

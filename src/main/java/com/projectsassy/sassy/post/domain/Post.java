@@ -7,14 +7,19 @@ import lombok.Builder;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import org.springframework.data.annotation.CreatedDate;
+import org.springframework.data.annotation.LastModifiedDate;
+import org.springframework.data.jpa.domain.support.AuditingEntityListener;
+import org.springframework.data.jpa.repository.config.EnableJpaAuditing;
 
 import javax.persistence.*;
 import java.time.LocalDateTime;
 import java.util.ArrayList;
+import java.util.Date;
 import java.util.List;
 
 @Entity
 @Getter
+@EntityListeners(AuditingEntityListener.class)
 @NoArgsConstructor(access = AccessLevel.PROTECTED)
 @Table(name = "POST")
 public class Post {
@@ -39,6 +44,7 @@ public class Post {
     private String category;
 
     @CreatedDate
+    @LastModifiedDate
     private LocalDateTime createdAt;
 
     @Builder

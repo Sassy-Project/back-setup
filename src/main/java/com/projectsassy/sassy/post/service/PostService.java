@@ -3,7 +3,7 @@ package com.projectsassy.sassy.post.service;
 import com.projectsassy.sassy.common.code.ErrorCode;
 import com.projectsassy.sassy.common.exception.CustomIllegalStateException;
 import com.projectsassy.sassy.post.domain.Post;
-import com.projectsassy.sassy.post.dto.HomeResponse;
+import com.projectsassy.sassy.post.dto.ViewedHomeDto;
 import com.projectsassy.sassy.post.dto.CreatePostRequest;
 import com.projectsassy.sassy.post.dto.LookUpPostResponse;
 import com.projectsassy.sassy.post.repository.PostRepository;
@@ -28,12 +28,11 @@ public class PostService {
     private final UserService userService;
 
     //게시판 홈
-    public List<HomeResponse> getPostHome(Pageable pageable) {
+    public List<ViewedHomeDto> findViewedPost(Pageable pageable) {
 
-        Page<Post> postOfPage = postRepository.findAll(pageable);
+        Page<Post> postOfPage = postRepository.findAllByViewed(pageable);
 
-
-        return postOfPage.stream().map(p -> new HomeResponse(
+        return postOfPage.stream().map(p -> new ViewedHomeDto(
                         p.getId(), p.getTitle(), p.getUser().getNickname(), p.getCategory(),
                         p.getCreatedAt().format(DateTimeFormatter.ofPattern("MM DD HH:mm"))))
                 .collect(Collectors.toList());
