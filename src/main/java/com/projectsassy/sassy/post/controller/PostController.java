@@ -1,5 +1,7 @@
 package com.projectsassy.sassy.post.controller;
 
+import com.projectsassy.sassy.chatting.dto.NewestHomeDto;
+import com.projectsassy.sassy.chatting.dto.NewestListResponse;
 import com.projectsassy.sassy.post.dto.*;
 import com.projectsassy.sassy.post.service.PostService;
 import io.swagger.annotations.ApiOperation;
@@ -28,7 +30,7 @@ public class PostController {
 //    }
 
     @ApiOperation("게시판 메인 페이지 조회순")
-    @GetMapping("/home")
+    @GetMapping("/home/viewed")
     public ResponseEntity<ViewedListResponse> postHomeViewed(
             @PageableDefault(size = 10, sort = {"id"}) Pageable pageable) {
         List<ViewedHomeDto> viewedHomeDto = postService.findViewedPost(pageable);
@@ -38,17 +40,16 @@ public class PostController {
         return new ResponseEntity(viewedListResponse, HttpStatus.OK);
     }
 
-//    @ApiOperation("게시판 메인 페이지 조회순")
-//    @GetMapping("/home")
-//    public ResponseEntity<HomeResponse> postHome(
-//            @RequestParam(value = "limit", required = false, defaultValue = "10") Integer limit,
-//            @RequestParam(value = "page", required = false, defaultValue = "0") Integer page
-//    ) {
-//        List<HomeResponse> homeResponse = postService.getPostHome(limit, page);
-//
-//
-//        return new ResponseEntity(homeResponse, HttpStatus.OK);
-//    }
+    @ApiOperation("게시판 메인 페이지 최신순")
+    @GetMapping("/home/newest")
+    public ResponseEntity<NewestListResponse> postHomeNewest(
+            @PageableDefault(size = 10, sort = {"id"}) Pageable pageable) {
+        List<NewestHomeDto> newestHomeDto = postService.findNewestPost(pageable);
+
+        NewestListResponse newestListResponse = new NewestListResponse(newestHomeDto);
+
+        return new ResponseEntity<>(newestListResponse, HttpStatus.OK);
+    }
 
     @ApiOperation("게시글 등록")
     @PostMapping("/new")
