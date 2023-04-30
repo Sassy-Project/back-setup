@@ -1,10 +1,11 @@
 package com.projectsassy.sassy.post.dto;
 
-import com.projectsassy.sassy.user.domain.User;
 import lombok.AllArgsConstructor;
+import lombok.Getter;
 
+@Getter
 @AllArgsConstructor
-public class HomeResponse {
+public class ViewedHomeDto {
 
     private Long postId;
     private String title;

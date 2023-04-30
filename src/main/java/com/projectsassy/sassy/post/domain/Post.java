@@ -7,14 +7,19 @@ import lombok.Builder;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import org.springframework.data.annotation.CreatedDate;
+import org.springframework.data.annotation.LastModifiedDate;
+import org.springframework.data.jpa.domain.support.AuditingEntityListener;
+import org.springframework.data.jpa.repository.config.EnableJpaAuditing;
 
 import javax.persistence.*;
 import java.time.LocalDateTime;
 import java.util.ArrayList;
+import java.util.Date;
 import java.util.List;
 
 @Entity
 @Getter
+@EntityListeners(AuditingEntityListener.class)
 @NoArgsConstructor(access = AccessLevel.PROTECTED)
 @Table(name = "POST")
 public class Post {
@@ -34,17 +39,17 @@ public class Post {
     private String title;
     private String content;
 
-    private Long count;
+    private int count;
 
-    @Enumerated(EnumType.STRING)
-    private Category category;
+    private String category;
 
     @CreatedDate
+    @LastModifiedDate
     private LocalDateTime createdAt;
 
     @Builder
-    public Post(Long id, User user, List<Comment> comments, String title, Category category,
-                String content, Long count, LocalDateTime createdAt) {
+    public Post(Long id, User user, List<Comment> comments, String title, String category,
+                String content, LocalDateTime createdAt) {
         this.id = id;
         this.user = user;
         this.comments = comments;
@@ -58,21 +63,13 @@ public class Post {
         return Post.builder()
                 .title(createPostRequest.getTitle())
                 .content(createPostRequest.getContent())
-                .category(Category.valueOf(createPostRequest.getCategory()))
+                .category(createPostRequest.getCategory())
                 .user(user)
                 .build();
     }
 
-    /**
-     to Enum (나중에 String 값 변경)
-     */
-    public void toEnum(String categoryRequest) {
-        if (categoryRequest.equals("자유게시판")) {
-            this.category = Category.FREE;
-        } else {
-            this.category = Category.MBTI;
-        }
+
+    public void addPostCount() {
+        this.count++;
     }
-
-
 }
