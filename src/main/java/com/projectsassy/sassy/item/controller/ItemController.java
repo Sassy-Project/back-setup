@@ -1,6 +1,8 @@
 package com.projectsassy.sassy.item.controller;
 
+import com.projectsassy.sassy.common.code.ErrorCode;
 import com.projectsassy.sassy.common.code.SuccessCode;
+import com.projectsassy.sassy.common.exception.CustomIllegalArgumentException;
 import com.projectsassy.sassy.common.response.ApiResponse;
 import com.projectsassy.sassy.common.util.SecurityUtil;
 import com.projectsassy.sassy.item.dto.AllBadgeResponse;
@@ -12,6 +14,7 @@ import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
+import org.springframework.web.multipart.MultipartFile;
 
 @RestController
 @RequiredArgsConstructor
@@ -21,8 +24,8 @@ public class ItemController {
     private final ItemService itemService;
 
     @PostMapping("/badge/new")
-    public ResponseEntity createItem(@RequestBody CreateBadgeRequest createBadgeRequest) {
-        itemService.createBadge(createBadgeRequest);
+    public ResponseEntity createItem(@RequestParam MultipartFile multipartFile, @RequestBody CreateBadgeRequest createBadgeRequest){
+        itemService.createBadge(multipartFile, createBadgeRequest, "badge");
         return new ResponseEntity<>(new ApiResponse(SuccessCode.CREATE_ITEM), HttpStatus.OK);
     }
 

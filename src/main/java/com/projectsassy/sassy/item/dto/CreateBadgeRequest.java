@@ -7,6 +7,5 @@ public class CreateBadgeRequest {
 
     private String itemName;
     private int price;
-    private String badgeImage;
 
 }

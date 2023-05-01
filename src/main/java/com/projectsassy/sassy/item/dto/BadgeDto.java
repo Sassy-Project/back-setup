@@ -15,6 +15,6 @@ public class BadgeDto {
         this.itemId = badge.getId();
         this.badgeName = badge.getName();
         this.price = badge.getPrice();
-        this.badgeImage = badge.getBadgeImage();
+        this.badgeImage = "https://s3.ap-northeast-2.amazonaws.com/projectsassy.net/images/badge" + badge.getBadgeImage();
     }
 }

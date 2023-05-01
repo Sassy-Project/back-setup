@@ -1,4 +1,4 @@
-package com.projectsassy.sassy.config;
+package com.projectsassy.sassy.s3;
 
 import com.amazonaws.auth.AWSCredentials;
 import com.amazonaws.auth.AWSStaticCredentialsProvider;

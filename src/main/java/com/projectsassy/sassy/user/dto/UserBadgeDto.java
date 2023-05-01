@@ -13,6 +13,6 @@ public class UserBadgeDto {
     public UserBadgeDto(Badge badge) {
         this.itemId = badge.getId();
         this.itemName = badge.getName();
-        this.badgeImage = badge.getBadgeImage();
+        this.badgeImage = "https://s3.ap-northeast-2.amazonaws.com/projectsassy.net/images/badge" + badge.getBadgeImage();
     }
 }
