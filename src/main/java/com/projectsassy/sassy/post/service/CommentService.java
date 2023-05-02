@@ -12,13 +12,14 @@ import org.springframework.transaction.annotation.Transactional;
 
 @Service
 @RequiredArgsConstructor
-@Transactional(readOnly = true)
+@Transactional
 public class CommentService {
 
     private final CommentRepository commentRepository;
     private final PostService postService;
     private final UserService userService;
 
+    
     public Long createComment(CreateCommentRequest createCommentRequest) {
         Post post = postService.findById(createCommentRequest.getPostId());
         User user = userService.findById(createCommentRequest.getUserId());

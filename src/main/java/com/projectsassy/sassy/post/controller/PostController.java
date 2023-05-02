@@ -21,13 +21,6 @@ public class PostController {
 
     private final PostService postService;
 
-//    @ApiOperation("게시판 메인 작성 시간순")
-//    @GetMapping
-//    public ResponseEntity<> postHomeTime(
-//            @PageableDefault(size = 10, sort = {"postId"}) Pageable pageable
-//    ) {
-//
-//    }
 
     @ApiOperation("게시판 메인 페이지 조회순")
     @GetMapping("/home/viewed")

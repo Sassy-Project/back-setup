@@ -17,7 +17,7 @@ public interface PostRepository extends JpaRepository<Post, Long> {
 
     @Query(value = "select p from Post p " +
             "join fetch p.user u " +
-            "order by p.createAt desc",
+            "order by p.createdAt desc",
             countQuery = "select count(p) from Post p")
     Page<Post> findAllByNewest(Pageable pageable);
 }

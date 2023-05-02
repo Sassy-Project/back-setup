@@ -29,7 +29,6 @@ public class PostService {
 
     private final PostRepository postRepository;
     private final UserService userService;
-    private final CommentService commentService;
 
     //게시판 홈 조회순
     public List<ViewedHomeDto> findViewedPost(Pageable pageable) {
@@ -64,7 +63,6 @@ public class PostService {
     }
 
 
-    @Transactional
     public LookUpPostResponse findPost(Long postId) {
         Post findPost = postRepository.findById(postId)
                 .orElseThrow(() -> {throw new CustomIllegalStateException(ErrorCode.NOT_FOUND_POST);
