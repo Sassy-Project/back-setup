@@ -15,6 +15,7 @@
 
 ## 구조 및 설계
 ### DB 설계
+![erd 초안 이미지](https://user-images.githubusercontent.com/123151812/235838685-51281492-aff6-42d2-8a6b-f3d4f6fe4ee9.png)
 
 ### CI/CD 구축
 ![image](https://user-images.githubusercontent.com/111469930/229506681-aa8ec884-ce90-43f4-b8e4-c418db1842da.png)
