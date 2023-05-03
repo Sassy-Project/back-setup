@@ -1,17 +1,59 @@
 # MBTI-CHAT
 ![image](https://user-images.githubusercontent.com/111469930/235820575-9e9d843b-9683-4986-a28b-da608543d2eb.png)
 
+---
+
 ## Description
 프로젝트 정보, 기간, 인원, 소개 등
-기술스택
-<img src="https://img.shields.io/badge/java-007396?style=for-the-badge&logo=java&logoColor=white">
-<img src="https://img.shields.io/badge/springboot-6DB33F?style=for-the-badge&logo=springboot&logoColor=white">
-<img src="https://img.shields.io/badge/mysql-4479A1?style=for-the-badge&logo=mysql&logoColor=white">
-<img src="https://img.shields.io/badge/amazonaws-232F3E?style=for-the-badge&logo=amazonaws&logoColor=white">
-<img src="https://img.shields.io/badge/github-181717?style=for-the-badge&logo=github&logoColor=white">
-<img src="https://img.shields.io/badge/git-F05032?style=for-the-badge&logo=git&logoColor=white">
+
+
+### 기술스택 
+Environment
+<div>
+  <img src="https://img.shields.io/badge/github-181717?style=for-the-badge&logo=github&logoColor=white">
+  <img src="https://img.shields.io/badge/git-F05032?style=for-the-badge&logo=git&logoColor=white">
+</div>
+
+Development
+<div>
+  <img src="https://img.shields.io/badge/java-007396?style=for-the-badge&logo=java&logoColor=white">
+  <img src="https://img.shields.io/badge/springboot-6DB33F?style=for-the-badge&logo=springboot&logoColor=white">
+  <img src="https://img.shields.io/badge/mysql-4479A1?style=for-the-badge&logo=mysql&logoColor=white">
+</div>
+
+Infra
+<div>
+  <img src="https://img.shields.io/badge/amazonec2-FF9900?style=for-the-badge&logo=amazonec2&logoColor=white">
+  <img src="https://img.shields.io/badge/amazonrds-527FFF?style=for-the-badge&logo=amazonrds&logoColor=white">
+  <img src="https://img.shields.io/badge/amazons3-569A31?style=for-the-badge&logo=amazons3&logoColor=white">
+</div>
+
+Communication
+<div>
+  <img src="https://img.shields.io/badge/slack-4A154B?style=for-the-badge&logo=slack&logoColor=white">
+  <img src="https://img.shields.io/badge/notion-000000?style=for-the-badge&logo=notion&logoColor=white">
+</div>
+
+---
 
 ## 주요기능
+>Release
+#### 원하는 MBTI가 서로 일치하는 유저 간 1대1 매칭 기능
+- 원하는 MBTI를 선택 시 자바의 ConcurrentHashMap을 사용해 waiting 기능 구현
+- 원하는 MBTI를 선택해 자신이 원하는 MBTI와 상대방의 MBTI가 일치하는 유저 간 매칭 성공
+
+#### 유저 간 1대1 채팅 기능
+- 매칭이 성공적으로 진행된 유저끼리 1대1 채팅 가능
+
+>Dev
+#### 게시판 및 댓글 기능 추가
+- 카테고리 별 게시판 및 댓글 기능
+
+#### 추천 MBTI와 매칭 기능 추가
+- 자신의 MBTI와 가장 많이 매칭된 MBTI를 추천해주는 기능
+
+
+---
 
 ## 구조 및 설계
 ### DB 설계
