@@ -10,7 +10,6 @@ import org.springframework.messaging.simp.stomp.StompHeaderAccessor;
 import org.springframework.messaging.support.ChannelInterceptor;
 import org.springframework.stereotype.Component;
 
-import static com.projectsassy.sassy.chatting.data.ChattingData.*;
 
 @Slf4j
 @Component
@@ -28,22 +27,8 @@ public class StompHandler implements ChannelInterceptor {
 
         if (StompCommand.DISCONNECT == accessor.getCommand()) {
             String sessionId = (String) message.getHeaders().get("simpSessionId");
-            if (waitingData.get(sessionId) != null) {
-                waitingData.remove(sessionId);
-
-                for (Long userId : waiting.keySet()) {
-                    if (waiting.get(userId).equals(sessionId)) {
-                        waiting.remove(userId);
-                        break;
-                    }
-                }
-            }
-            if (chattingRoomSessions.get(sessionId) != null) {
-                Long roomId = chattingRoomSessions.get(sessionId);
-                chatService.sendCloseMessage(roomId);
-                chattingRoomSessions.remove(sessionId);
-            }
-
+            chatService.exitWaiting(sessionId);
+            chatService.exitChattingRoom(sessionId);
         }
 
         return message;

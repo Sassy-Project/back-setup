@@ -19,13 +19,13 @@ public class ChatController {
     private final MessageService messageService;
     private final ChatService chatService;
 
-    @MessageMapping("/chat/wait")  // 유저는 자신의 userId인 /sub/chat/wait/{userId} 에서 대기.
-    public void addUserToWaiting(WaitingRequest waitingRequest, @Header("simpSessionId") String sessionId) { // type:일단 wait, close 두개로. userId, selectMbti
+    @MessageMapping("/chat/wait")
+    public void addUserToWaiting(WaitingRequest waitingRequest, @Header("simpSessionId") String sessionId) {
         chatService.matchUserWithMbti(waitingRequest, sessionId);
     }
 
     @MessageMapping("/chat/match/{roomId}")
-    public void sendMessage(@DestinationVariable("roomId") Long roomId, MessageRequest messageRequest) {//type:여기도 2가지?, roomId, sendUserId, content
+    public void sendMessage(@DestinationVariable("roomId") Long roomId, MessageRequest messageRequest) {
         messageService.sendMessage(roomId, messageRequest);
     }
 

@@ -1,6 +1,5 @@
 package com.projectsassy.sassy.chatting.dto;
 
-import lombok.AllArgsConstructor;
 import lombok.Getter;
 
 @Getter
