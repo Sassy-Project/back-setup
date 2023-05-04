@@ -63,11 +63,13 @@ public class UserController {
 
     @ApiOperation(value = "비밀번호 찾기")
     @PostMapping("/find/password")
-    public ResponseEntity<ApiResponse> findPassword(@Validated @RequestBody FindPasswordRequest findPasswordRequest) {
-        userService.findMyPassword(findPasswordRequest);
+    public ResponseEntity<IdResponse> findPassword(@Validated @RequestBody FindPasswordRequest findPasswordRequest) {
+        Long userId = userService.findMyPassword(findPasswordRequest);
+        IdResponse idResponse = new IdResponse(userId);
 
-        return new ResponseEntity<>(new ApiResponse(SuccessCode.CERTIFY_CODE), HttpStatus.OK);
+        return new ResponseEntity<>(idResponse, HttpStatus.OK);
     }
+
 
     @ApiOperation(value = "인증 코드 이메일 전송")
     @PostMapping("/email")
@@ -145,6 +147,14 @@ public class UserController {
         validateUserId(userId, loginUserId);
         userService.updatePassword(loginUserId, updatePasswordRequest);
         return new ResponseEntity<>(new ApiResponse(SuccessCode.UPDATE_PASSWORD), HttpStatus.OK);
+    }
+
+    @ApiOperation(value = "찾기 이후 비밀번호 변경")
+    @PatchMapping("/find/new/password")
+    public ResponseEntity<LoginResponse> newPassword(@RequestBody NewPasswordRequest newPasswordRequest) {
+        LoginResponse loginResponse = userService.newPassword(newPasswordRequest);
+
+        return new ResponseEntity<>(loginResponse, HttpStatus.OK);
     }
 
     @ApiOperation(value = "회원 삭제")

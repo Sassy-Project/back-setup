@@ -1,10 +1,8 @@
 package com.projectsassy.sassy.token;
 
-import com.projectsassy.sassy.common.exception.CustomIllegalStateException;
 import com.projectsassy.sassy.common.util.RedisUtil;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
-import org.springframework.data.redis.core.RedisTemplate;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.util.StringUtils;
@@ -20,8 +18,8 @@ import java.io.IOException;
 @RequiredArgsConstructor
 public class JwtFilter extends OncePerRequestFilter {
 
-    // 직접 DB 를 조회한 것이 아니라 Access Token 에 있는 Member ID 를 꺼낸 거라서,
-    // 탈퇴로 인해 Member ID 가 DB 에 없는 경우 등 예외 상황은 Service 단에서 고려해야 함
+    // 직접 DB 를 조회한 것이 아니라 Access Token 에 있는 UserID 를 꺼낸 거라서,
+    // 탈퇴로 인해 UserID 가 DB 에 없는 경우 등 예외 상황은 Service 단에서 고려해야 함
 
     public static final String AUTHORIZATION_HEADER = "Authorization";
     public static final String BEARER_PREFIX = "Bearer";

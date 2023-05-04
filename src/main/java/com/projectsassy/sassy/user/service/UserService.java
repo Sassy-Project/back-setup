@@ -88,7 +88,6 @@ public class UserService {
         UsernamePasswordAuthenticationToken authenticationToken =
             new UsernamePasswordAuthenticationToken(loginRequest.getLoginId(), loginRequest.getPassword());
         Authentication authenticate = authenticationManagerBuilder.getObject().authenticate(authenticationToken);
-        log.info("authenticateGetName={}", authenticate.getName());
 
         User user = findById(Long.valueOf(authenticate.getName()));
         user.addPoint();
@@ -166,7 +165,7 @@ public class UserService {
         return findIdResponse;
     }
 
-    public void findMyPassword(FindPasswordRequest findPasswordRequest) {
+    public Long findMyPassword(FindPasswordRequest findPasswordRequest) {
         String redisEmail = redisUtil.getData(findPasswordRequest.getCode());
         String email = findPasswordRequest.getEmail();
         String loginId = findPasswordRequest.getLoginId();
@@ -174,10 +173,13 @@ public class UserService {
         if (!redisEmail.equals(email)) {
             throw new BusinessExceptionHandler(ErrorCode.INVALID_NUMBER);
         }
-        userRepository.findByEmailAndLoginId(new Email(email), loginId)
-            .orElseThrow(() -> {
-                throw new CustomIllegalStateException(ErrorCode.NOT_FOUND_USER);
-            });
+
+        User findUser = userRepository.findByEmailAndLoginId(new Email(email), loginId)
+                .orElseThrow(() -> {
+                    throw new CustomIllegalStateException(ErrorCode.NOT_FOUND_USER);
+                });
+
+        return findUser.getId();
     }
 
     //이메일 발송
@@ -264,5 +266,30 @@ public class UserService {
         // 4. 해당 Access Token 저장
         redisUtil.setDataExpire(accessToken, "logout", expiration);
     }
+
+    //비밀번호 찾기 이후 새 비밀번호
+    @Transactional
+    public LoginResponse newPassword(NewPasswordRequest newPasswordRequest) {
+
+        if (!newPasswordRequest.getNewPassword().equals(newPasswordRequest.getNewPasswordCheck())) {
+            throw new CustomIllegalStateException(ErrorCode.NO_MATCHES_PASSWORD);
+        }
+        User findUser = findById(newPasswordRequest.getUserId());
+        findUser.changePassword(encoder.encode(newPasswordRequest.getNewPassword()));
+
+
+        UsernamePasswordAuthenticationToken authenticationToken =
+                new UsernamePasswordAuthenticationToken(findUser.getLoginId(), newPasswordRequest.getNewPassword());
+        Authentication authenticate = authenticationManagerBuilder.getObject().authenticate(authenticationToken);
+
+        TokenResponse tokenResponse = tokenProvider.generateTokenDto(authenticate);
+
+        redisUtil.setDataExpire(authenticate.getName(), tokenResponse.getRefreshToken(), 1000 * 60 * 60 * 24 * 7);
+
+        LoginResponse loginResponse = new LoginResponse(findUser.getId(), findUser.getNickname(), tokenResponse);
+
+        return loginResponse;
+    }
+
 
 }
