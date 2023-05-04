@@ -1,10 +1,8 @@
 package com.projectsassy.sassy.chatting.service;
 
+import com.projectsassy.sassy.chatting.data.ChatConst;
 import com.projectsassy.sassy.chatting.data.MatchingMbtiData;
-import com.projectsassy.sassy.chatting.dto.ChatCloseResponse;
-import com.projectsassy.sassy.chatting.dto.MatchResponse;
-import com.projectsassy.sassy.chatting.dto.RoomInformation;
-import com.projectsassy.sassy.chatting.dto.WaitingRequest;
+import com.projectsassy.sassy.chatting.dto.*;
 import com.projectsassy.sassy.user.domain.User;
 import com.projectsassy.sassy.user.service.UserService;
 import lombok.RequiredArgsConstructor;
@@ -45,6 +43,7 @@ public class ChatService {
         }
     }
 
+    @Transactional
     private void startMatching(User user, String myMbti, String selectMbti) {
         for (Long waitingUserId : waiting.keySet()) {
             Long userId = user.getId();
@@ -104,4 +103,27 @@ public class ChatService {
             chattingRoomSessions.remove(sessionId);
         }
     }
+
+    //추천 MBTI 매칭
+    @Transactional
+    public void matchWithRecommendedUser(RecommendWaitingRequest recommendWaitingRequest, String sessionId) {
+        Long userId = Long.valueOf(recommendWaitingRequest.getUserId());
+        waiting.put(userId, sessionId);
+
+        User user = userService.findById(userId);
+        String myMbti = user.getMbti();
+        String recommendedMbti = recommendMbti(myMbti);
+
+        MatchingMbtiData matchingMbtiData = new MatchingMbtiData(myMbti, recommendedMbti);
+        waitingData.put(sessionId, matchingMbtiData);
+
+        if (waiting.size() > 1) {
+            startMatching(user, myMbti, recommendedMbti);
+        }
+    }
+
+    private String recommendMbti(String myMbti) {
+        return chattingRoomService.findRecommendMbti(myMbti);
+    }
+
 }

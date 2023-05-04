@@ -1,5 +1,6 @@
 package com.projectsassy.sassy.chatting.service;
 
+import com.projectsassy.sassy.chatting.data.ChatConst;
 import com.projectsassy.sassy.chatting.domain.ChattingRoom;
 import com.projectsassy.sassy.chatting.domain.Message;
 import com.projectsassy.sassy.chatting.dto.MessageResponse;
@@ -38,6 +39,6 @@ public class MessageService {
         String time = createdAt.format(DateTimeFormatter.ofPattern("HH:mm"));
 
         MessageResponse messageResponse = new MessageResponse(room.getId(), user.getId(), content, time, user.getNickname(), savedMessage.getId());
-        simpMessageSendingOperations.convertAndSend("/sub/chat/match/" + roomId, messageResponse);
+        simpMessageSendingOperations.convertAndSend(ChatConst.SUBSCRIBE_MATCH + roomId, messageResponse);
     }
 }

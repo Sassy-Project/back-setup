@@ -1,5 +1,6 @@
 package com.projectsassy.sassy.chatting.controller;
 
+import com.projectsassy.sassy.chatting.dto.RecommendWaitingRequest;
 import com.projectsassy.sassy.chatting.service.ChatService;
 import com.projectsassy.sassy.chatting.service.MessageService;
 import com.projectsassy.sassy.chatting.dto.MessageRequest;
@@ -29,4 +30,8 @@ public class ChatController {
         messageService.sendMessage(roomId, messageRequest);
     }
 
+    @MessageMapping("/chat/wait/recommend")
+    public void waitForRecommendedMatching(RecommendWaitingRequest recommendWaitingRequest, @Header("simpSessionId") String sessionId) {
+        chatService.matchWithRecommendedUser(recommendWaitingRequest, sessionId);
+    }
 }

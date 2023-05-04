@@ -20,6 +20,8 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.*;
 
+import java.util.List;
+
 @Slf4j
 @RestController
 @RequiredArgsConstructor
@@ -87,8 +89,8 @@ public class UserController {
     @ApiOperation(value = "로그아웃")
     @GetMapping("/logout")
     public ResponseEntity<ApiResponse> logout(
-            @RequestHeader(value = "Authorization") String acTokenRequest,
-            @RequestHeader(value = "RefreshToken") String rfTokenRequest
+        @RequestHeader(value = "Authorization") String acTokenRequest,
+        @RequestHeader(value = "RefreshToken") String rfTokenRequest
     ) {
         String accessToken = acTokenRequest.substring(7);
         String refreshToken = rfTokenRequest.substring(7);
@@ -100,8 +102,8 @@ public class UserController {
     @ApiOperation(value = "토큰 재발급")
     @PostMapping("/reissue")
     public ResponseEntity<TokenResponse> reissue(
-            @RequestHeader(value = "Authorization") String acTokenRequest,
-            @RequestHeader(value = "RefreshToken") String rfTokenRequest) {
+        @RequestHeader(value = "Authorization") String acTokenRequest,
+        @RequestHeader(value = "RefreshToken") String rfTokenRequest) {
 
         String accessToken = acTokenRequest.substring(7);
         String refreshToken = rfTokenRequest.substring(7);
@@ -163,6 +165,5 @@ public class UserController {
         userService.delete(loginUserId);
         return new ResponseEntity<>(new ApiResponse(SuccessCode.DELETE_USER), HttpStatus.OK);
     }
-
 
 }
