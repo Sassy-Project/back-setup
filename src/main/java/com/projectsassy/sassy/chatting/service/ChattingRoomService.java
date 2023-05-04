@@ -1,6 +1,7 @@
 package com.projectsassy.sassy.chatting.service;
 
 import com.projectsassy.sassy.chatting.domain.ChattingRoom;
+import com.projectsassy.sassy.chatting.dto.MbtiRecommendList;
 import com.projectsassy.sassy.chatting.dto.RoomInformation;
 import com.projectsassy.sassy.chatting.repository.ChattingRoomRepository;
 import com.projectsassy.sassy.common.code.ErrorCode;
@@ -12,6 +13,7 @@ import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
+import java.util.HashMap;
 import java.util.List;
 
 @Slf4j
@@ -41,12 +43,31 @@ public class ChattingRoomService {
     }
 
     public String findRecommendMbti(String myMbti) {
-        List<ChattingRoom> recommendMbti = chattingRoomRepository.findRecommendMbti(myMbti);
-        if (recommendMbti.isEmpty()) {
+        List<MbtiRecommendList> recommendMbtiBySendUser = chattingRoomRepository.findRecommendMbtiBySendUser(myMbti);
+        List<MbtiRecommendList> recommendMbtiByReceiveUser = chattingRoomRepository.findRecommendMbtiByReceiveUser(myMbti);
+
+        if (recommendMbtiBySendUser.isEmpty() && recommendMbtiByReceiveUser.isEmpty()) {
             return basicRecommend(myMbti);
         }
 
-        return recommendMbti.get(0).getReceiveUser().getMbti();
+        HashMap<String, Long> matchedMbtiCount = new HashMap<>();
+        for (MbtiRecommendList mbtiRecommend : recommendMbtiBySendUser) {
+            matchedMbtiCount.put(mbtiRecommend.getMbti(), mbtiRecommend.getCount());
+        }
+
+        for (MbtiRecommendList mbtiRecommend : recommendMbtiByReceiveUser) {
+            matchedMbtiCount.put(mbtiRecommend.getMbti(), matchedMbtiCount.getOrDefault(mbtiRecommend.getMbti(), 0L) + mbtiRecommend.getCount());
+        }
+
+        String recommendedMbti = null;
+        Long count = 0L;
+        for (String mbti : matchedMbtiCount.keySet()) {
+            if (matchedMbtiCount.get(mbti) > count) {
+                recommendedMbti = mbti;
+            }
+        }
+
+        return recommendedMbti;
     }
 
     private String basicRecommend(String myMbti) {
