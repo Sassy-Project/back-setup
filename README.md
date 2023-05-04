@@ -4,10 +4,24 @@
 ---
 
 ## Description
-프로젝트 정보, 기간, 인원, 소개 등
+2명의 백엔드와 4명의 프론트엔드로 구성된 팀 프로젝트입니다.
 
+원하는 MBTI와 매칭을 통해 1대1 채팅을 할 수 있는 서비스입니다.
 
-### 기술스택 
+> Release branch는 프론트 엔드와 협업하여 실제 서비스 가능한 기능까지 구현되어 있습니다.
+
+> Dev branch는 서비스 되는 기능에 실제 배포는 되지 않았지만 백엔드에서 추가한 기능도 구현되어 있습니다.
+
+## 프로젝트 기간
+2023.04.02. ~ 2023.05.02.
+
+## Back-End Contributors
+|이름|github|
+|---|---|
+|조건희|[조건희 github](https://github.com/gunhee93)|
+|유호빈|[유호빈 github](https://github.com/youhobin)|
+
+## 기술스택 
 Environment
 <div>
   <img src="https://img.shields.io/badge/github-181717?style=for-the-badge&logo=github&logoColor=white">
@@ -34,10 +48,15 @@ Communication
   <img src="https://img.shields.io/badge/notion-000000?style=for-the-badge&logo=notion&logoColor=white">
 </div>
 
+## 배포주소 
+실제 배포 : http://projectsassy.net/
+
+테스트 서버 : http://test.projectsassy.net/
+
 ---
 
 ## 주요기능
->Release
+>Release branch
 #### 원하는 MBTI가 서로 일치하는 유저 간 1대1 매칭 기능
 - 원하는 MBTI를 선택 시 자바의 ConcurrentHashMap을 사용해 waiting 기능 구현
 - 원하는 MBTI를 선택해 자신이 원하는 MBTI와 상대방의 MBTI가 일치하는 유저 간 매칭 성공
@@ -45,22 +64,24 @@ Communication
 #### 유저 간 1대1 채팅 기능
 - 매칭이 성공적으로 진행된 유저끼리 1대1 채팅 가능
 
->Dev
+>Dev branch
 #### 게시판 및 댓글 기능 추가
 - 카테고리 별 게시판 및 댓글 기능
 
 #### 추천 MBTI와 매칭 기능 추가
 - 자신의 MBTI와 가장 많이 매칭된 MBTI를 추천해주는 기능
 
+#### 마일리지 아이템 시스템 추가
+- 마일리지를 이용해 아이템을 구매하여 프로필 이미지를 바꿀 수 있는 기능
 
 ---
 
 ## 구조 및 설계
 ### DB 설계
->Release
+>Release branch
 ![erd 초안 이미지](https://user-images.githubusercontent.com/123151812/235838685-51281492-aff6-42d2-8a6b-f3d4f6fe4ee9.png)
 
->Dev
+>Dev branch
 ![KakaoTalk_20230503_151540018](https://user-images.githubusercontent.com/111469930/236074182-d82047af-9fa9-4c1f-b61f-1320494ad895.png)
 
 ---
