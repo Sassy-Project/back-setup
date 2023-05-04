@@ -2,7 +2,6 @@ package com.projectsassy.sassy.chatting.domain;
 
 import com.projectsassy.sassy.user.domain.User;
 import lombok.AccessLevel;
-import lombok.Builder;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 

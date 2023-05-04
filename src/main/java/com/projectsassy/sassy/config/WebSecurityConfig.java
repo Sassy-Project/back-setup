@@ -7,7 +7,6 @@ import com.projectsassy.sassy.token.accessRestriction.JwtAuthenticationEntryPoin
 import lombok.RequiredArgsConstructor;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
-import org.springframework.http.HttpMethod;
 import org.springframework.security.config.annotation.web.builders.HttpSecurity;
 import org.springframework.security.config.annotation.web.configuration.EnableWebSecurity;
 import org.springframework.security.config.annotation.web.configuration.WebSecurityCustomizer;
@@ -25,7 +24,6 @@ public class WebSecurityConfig {
     private final JwtAccessDeniedHandler jwtAccessDeniedHandler;
     private final RedisUtil redisUtil;
 
-    // h2 database 테스트가 원활하도록 관련 API 들은 전부 무시
     @Bean
     public WebSecurityCustomizer webSecurityCustomizer() {
         return (web) -> web.ignoring()
@@ -38,11 +36,10 @@ public class WebSecurityConfig {
         return httpSecurity
                 .httpBasic().disable() // ui에서 들어오는 것. auth 기반의 로그인창이 안뜨도록 설정.(security 사용하면 기본 로그인 창이있음)
                     .csrf().disable() // crosssite 기능. csrf 보안 기능이 rest api 에서 안쓰이므로 disable.
-                    .cors()// crosssite 다른 domain 허용. webconfig에서 설정.
+                    .cors()
                 .and()
                     .headers().frameOptions().sameOrigin()
-                .and()// exception handling 할 때 우리가 만든 클래스를 추가
-
+                .and()
                     .exceptionHandling()
                     .authenticationEntryPoint(jwtAuthenticationEntryPoint)
                     .accessDeniedHandler(jwtAccessDeniedHandler)
@@ -57,7 +54,7 @@ public class WebSecurityConfig {
                     .httpBasic().disable()
                     .authorizeRequests()
                     .antMatchers("/", "/**", "/users/**", "/posts/**", "/comments/**").permitAll()
-                    .anyRequest().permitAll()   // 나머지 API 는 전부 인증 필요
+                    .anyRequest().permitAll()
                 .and()
                 .build();
     }
